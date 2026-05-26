@@ -1,0 +1,61 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+glork-frontend/.next/
+glork-frontend/out/
+glork-frontend/.swc/
+
+# Python / FastAPI
+glork-backend/__pycache__/
+glork-backend/*.pyc
+glork-backend/*.pyo
+glork-backend/*.pyd
+glork-backend/.Python
+glork-backend/.venv/
+glork-backend/venv/
+glork-backend/env/
+glork-backend/.env
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+glork-frontend/.env.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts
+glork-backend/dist/
+glork-backend/build/
+glork-frontend/dist/
+glork-frontend/build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Alembic versions (keep tracked)
+# glork-backend/alembic/versions/
+
+# Docker volumes
+postgres_data/
+
+# Test coverage
+htmlcov/
+.coverage
+.pytest_cache/

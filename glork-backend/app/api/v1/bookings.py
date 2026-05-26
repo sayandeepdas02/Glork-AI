@@ -1,0 +1,270 @@
+from __future__ import annotations
+
+from datetime import datetime, timezone
+from uuid import UUID
+
+import structlog
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import and_, extract, func, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.dependencies import get_current_active_doctor, get_db
+from app.models.booking import Booking, BookingStatus
+from app.models.call_log import CallLog
+from app.models.calendar_integration import CalendarIntegration
+from app.models.doctor import Doctor
+from app.schemas.booking import (
+    BookingCreate,
+    BookingListResponse,
+    BookingResponse,
+    BookingStatsResponse,
+    BookingUpdate,
+)
+from app.services.booking_service import booking_service
+from app.services.calendar_service import calendar_service
+from app.tasks.celery_tasks import send_sms_confirmation
+
+logger = structlog.get_logger()
+
+router = APIRouter(prefix="/bookings", tags=["bookings"])
+
+
+async def _get_calendar_id(doctor_id: UUID, db: AsyncSession) -> str:
+    result = await db.execute(
+        select(CalendarIntegration).where(CalendarIntegration.doctor_id == doctor_id)
+    )
+    cal = result.scalar_one_or_none()
+    if cal and cal.is_connected:
+        return cal.google_calendar_id or "primary"
+    return "primary"
+
+
+@router.get("/stats", response_model=BookingStatsResponse)
+async def get_booking_stats(
+    doctor: Doctor = Depends(get_current_active_doctor),
+    db: AsyncSession = Depends(get_db),
+):
+    now = datetime.now(timezone.utc)
+    month_start = datetime(now.year, now.month, 1, tzinfo=timezone.utc)
+
+    base = select(func.count(Booking.id)).where(
+        and_(
+            Booking.doctor_id == doctor.id,
+            Booking.appointment_start >= month_start,
+        )
+    )
+
+    total_result = await db.execute(base)
+    total = total_result.scalar_one()
+
+    confirmed_result = await db.execute(
+        base.where(Booking.status == BookingStatus.confirmed)
+    )
+    confirmed = confirmed_result.scalar_one()
+
+    cancelled_result = await db.execute(
+        base.where(Booking.status == BookingStatus.cancelled)
+    )
+    cancelled = cancelled_result.scalar_one()
+
+    no_show_result = await db.execute(
+        base.where(Booking.status == BookingStatus.no_show)
+    )
+    no_show = no_show_result.scalar_one()
+
+    calls_result = await db.execute(
+        select(func.count(CallLog.id)).where(
+            and_(
+                CallLog.doctor_id == doctor.id,
+                CallLog.created_at >= month_start,
+            )
+        )
+    )
+    total_calls = calls_result.scalar_one()
+
+    conversion_rate = (total / total_calls * 100) if total_calls > 0 else 0.0
+
+    return BookingStatsResponse(
+        total_this_month=total,
+        confirmed_this_month=confirmed,
+        cancelled_this_month=cancelled,
+        no_show_this_month=no_show,
+        conversion_rate=round(conversion_rate, 2),
+    )
+
+
+@router.get("", response_model=BookingListResponse)
+async def list_bookings(
+    date: str | None = Query(None),
+    status: BookingStatus | None = Query(None),
+    search: str | None = Query(None),
+    page: int = Query(1, ge=1),
+    limit: int = Query(20, ge=1, le=100),
+    doctor: Doctor = Depends(get_current_active_doctor),
+    db: AsyncSession = Depends(get_db),
+):
+    bookings, total = await booking_service.get_bookings(
+        doctor_id=doctor.id,
+        date=date,
+        status_filter=status,
+        search=search,
+        page=page,
+        limit=limit,
+        db=db,
+    )
+    return BookingListResponse(
+        items=[BookingResponse.model_validate(b) for b in bookings],
+        total=total,
+        page=page,
+        limit=limit,
+    )
+
+
+@router.get("/{booking_id}", response_model=BookingResponse)
+async def get_booking(
+    booking_id: UUID,
+    doctor: Doctor = Depends(get_current_active_doctor),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(Booking).where(
+            and_(Booking.id == booking_id, Booking.doctor_id == doctor.id)
+        )
+    )
+    booking = result.scalar_one_or_none()
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    return BookingResponse.model_validate(booking)
+
+
+@router.post("", response_model=BookingResponse, status_code=201)
+async def create_booking(
+    payload: BookingCreate,
+    doctor: Doctor = Depends(get_current_active_doctor),
+    db: AsyncSession = Depends(get_db),
+):
+    calendar_id = await _get_calendar_id(doctor.id, db)
+
+    google_event_id = None
+    try:
+        google_event_id = await calendar_service.create_event(
+            doctor_id=doctor.id,
+            patient_name=payload.patient_name,
+            patient_phone=payload.patient_phone,
+            start_datetime=payload.appointment_start,
+            end_datetime=payload.appointment_end,
+            reason=payload.reason,
+            calendar_id=calendar_id,
+            db=db,
+        )
+    except HTTPException:
+        logger.warning("calendar_event_skipped_no_integration", doctor_id=str(doctor.id))
+
+    booking = await booking_service.create_booking(
+        doctor_id=doctor.id,
+        patient_name=payload.patient_name,
+        patient_phone=payload.patient_phone,
+        patient_email=payload.patient_email,
+        appointment_start=payload.appointment_start,
+        appointment_end=payload.appointment_end,
+        reason=payload.reason,
+        notes=payload.notes,
+        google_event_id=google_event_id,
+        db=db,
+    )
+
+    send_sms_confirmation.delay(str(booking.id))
+    return BookingResponse.model_validate(booking)
+
+
+@router.patch("/{booking_id}", response_model=BookingResponse)
+async def update_booking(
+    booking_id: UUID,
+    payload: BookingUpdate,
+    doctor: Doctor = Depends(get_current_active_doctor),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(Booking).where(
+            and_(Booking.id == booking_id, Booking.doctor_id == doctor.id)
+        )
+    )
+    booking = result.scalar_one_or_none()
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+
+    calendar_id = await _get_calendar_id(doctor.id, db)
+    is_rescheduling = (
+        payload.appointment_start is not None or payload.appointment_end is not None
+    )
+    is_cancelling = payload.status == BookingStatus.cancelled
+
+    if is_rescheduling:
+        new_start = payload.appointment_start or booking.appointment_start
+        new_end = payload.appointment_end or booking.appointment_end
+        booking = await booking_service.reschedule_booking(
+            booking_id=booking_id,
+            new_start=new_start,
+            new_end=new_end,
+            doctor_id=doctor.id,
+            db=db,
+        )
+        if booking.google_event_id:
+            await calendar_service.update_event(
+                doctor_id=doctor.id,
+                event_id=booking.google_event_id,
+                start=new_start,
+                end=new_end,
+                calendar_id=calendar_id,
+                db=db,
+            )
+
+    if is_cancelling:
+        booking = await booking_service.cancel_booking(booking_id, doctor.id, db)
+        if booking.google_event_id:
+            await calendar_service.delete_event(
+                doctor_id=doctor.id,
+                event_id=booking.google_event_id,
+                calendar_id=calendar_id,
+                db=db,
+            )
+
+    if payload.notes is not None and not is_rescheduling and not is_cancelling:
+        booking.notes = payload.notes
+        booking.status = payload.status or booking.status
+        await db.commit()
+        await db.refresh(booking)
+
+    return BookingResponse.model_validate(booking)
+
+
+@router.delete("/{booking_id}", status_code=204)
+async def delete_booking(
+    booking_id: UUID,
+    doctor: Doctor = Depends(get_current_active_doctor),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(Booking).where(
+            and_(Booking.id == booking_id, Booking.doctor_id == doctor.id)
+        )
+    )
+    booking = result.scalar_one_or_none()
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+
+    calendar_id = await _get_calendar_id(doctor.id, db)
+
+    if booking.status != BookingStatus.cancelled:
+        booking.status = BookingStatus.cancelled
+        if booking.google_event_id:
+            await calendar_service.delete_event(
+                doctor_id=doctor.id,
+                event_id=booking.google_event_id,
+                calendar_id=calendar_id,
+                db=db,
+            )
+        await db.commit()
+    else:
+        await db.delete(booking)
+        await db.commit()
