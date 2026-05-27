@@ -29,10 +29,10 @@ type FormValues = z.infer<typeof schema>
 
 interface BookingFormProps {
   open: boolean
-  onClose: () => void
+  onOpenChange: (open: boolean) => void
 }
 
-export function BookingForm({ open, onClose }: BookingFormProps) {
+export function BookingForm({ open, onOpenChange }: BookingFormProps) {
   const { mutate: create, isPending } = useCreateBooking()
   const { data: agentConfig } = useAgentConfig()
   const slotDuration = agentConfig?.slot_duration_mins ?? 30
@@ -59,14 +59,14 @@ export function BookingForm({ open, onClose }: BookingFormProps) {
       {
         onSuccess: () => {
           reset()
-          onClose()
+          onOpenChange(false)
         },
       }
     )
   }
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { if (!v) { reset(); onClose() } }}>
+    <Dialog open={open} onOpenChange={(v) => { if (!v) { reset(); onOpenChange(false) } }}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>New Booking</DialogTitle>
@@ -129,7 +129,7 @@ export function BookingForm({ open, onClose }: BookingFormProps) {
             Appointment duration: {slotDuration} minutes
           </p>
           <DialogFooter>
-            <Button variant="outline" type="button" onClick={() => { reset(); onClose() }}>
+            <Button variant="outline" type="button" onClick={() => { reset(); onOpenChange(false) }}>
               Cancel
             </Button>
             <Button type="submit" disabled={isPending}>
