@@ -1,5 +1,7 @@
 "use client"
 
+import { Panel, PanelContent } from "@/components/ui/panel"
+
 const stats = [
   { value: "3 min",  label: "Average setup time",    sub: "No technical skills needed" },
   { value: "24/7",   label: "Call coverage",          sub: "Including holidays" },
@@ -9,27 +11,27 @@ const stats = [
 
 export default function Stats() {
   return (
-    <section className="relative overflow-hidden py-20">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#FF5500] via-[#CC3300] to-[#991F00]" />
-      {/* Noise texture */}
-      <div className="absolute inset-0 bg-grid-dots opacity-20" />
-      {/* Grid pattern */}
-      <div className="absolute inset-0 bg-grid-pattern bg-grid opacity-10" />
-
-      <div className="relative max-w-6xl mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          {stats.map((item) => (
-            <div key={item.label} className="group">
-              <p className="text-4xl lg:text-5xl font-bold text-white mb-2 tracking-tight">
-                {item.value}
-              </p>
-              <p className="text-sm font-semibold text-orange-100 mb-1">{item.label}</p>
-              <p className="text-xs text-orange-200/60">{item.sub}</p>
-            </div>
-          ))}
-        </div>
+    <Panel id="stats" className="border-t-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        {stats.map((item, i) => (
+          <div
+            key={item.label}
+            className={[
+              "flex flex-col p-8 transition-colors duration-150 hover:bg-white/5",
+              /* Internal grid lines */
+              "border-b border-edge",
+              (i + 1) % 4 !== 0 ? "lg:border-r" : "",
+              (i + 1) % 2 !== 0 ? "sm:border-r lg:border-r" : "", 
+            ].join(" ")}
+          >
+            <p className="text-5xl md:text-6xl font-serif italic font-bold text-white/95 mb-4 tracking-tight">
+              {item.value}
+            </p>
+            <p className="text-[15px] font-semibold text-white/90 mb-1">{item.label}</p>
+            <p className="text-[13px] text-white/75">{item.sub}</p>
+          </div>
+        ))}
       </div>
-    </section>
+    </Panel>
   )
 }

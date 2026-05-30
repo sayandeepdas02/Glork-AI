@@ -47,7 +47,7 @@ export function TopNav() {
 
         <div>
           <h1 className="text-sm font-semibold text-white leading-none">{title}</h1>
-          {sub && <p className="text-[10px] font-mono text-[#4A4540] mt-0.5">{sub}</p>}
+          {sub && <p className="text-[10px] font-mono text-[#736F6B] mt-0.5">{sub}</p>}
         </div>
       </div>
 
@@ -62,7 +62,7 @@ export function TopNav() {
         )}
 
         {/* Notifications */}
-        <button className="flex h-8 w-8 items-center justify-center rounded-lg text-[#4A4540] hover:bg-white/5 hover:text-[#8A8480] transition-colors">
+        <button className="flex h-8 w-8 items-center justify-center rounded-lg text-[#736F6B] hover:bg-white/5 hover:text-[#8A8480] transition-colors">
           <Bell className="h-4 w-4" />
         </button>
 
@@ -77,7 +77,7 @@ export function TopNav() {
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col gap-0.5">
                 <p className="text-sm font-semibold text-white">{doctor?.name}</p>
-                <p className="text-xs text-[#4A4540] font-mono">{doctor?.email}</p>
+                <p className="text-xs text-[#736F6B] font-mono">{doctor?.email}</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="bg-white/5" />

@@ -58,7 +58,7 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
     return (
       <div className="rounded-2xl border border-dashed border-white/10 bg-[#141210] flex flex-col items-center justify-center py-20 text-center">
         <div className="h-14 w-14 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center mb-4">
-          <Calendar className="h-6 w-6 text-[#4A4540]" />
+          <Calendar className="h-6 w-6 text-[#736F6B]" />
         </div>
         <p className="text-sm font-semibold text-white">No bookings found</p>
         <p className="text-xs font-mono text-[#8A8480] mt-1.5 max-w-sm">
@@ -74,7 +74,7 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
         {/* Table header */}
         <div className="hidden md:grid grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,1fr)_40px] gap-4 items-center px-5 py-3 bg-white/3 border-b border-white/5">
           {["Patient", "Date & Time", "Status", "Source", ""].map((h) => (
-            <p key={h} className="text-[10px] font-mono font-semibold text-[#4A4540] uppercase tracking-widest">{h}</p>
+            <p key={h} className="text-[10px] font-mono font-semibold text-[#736F6B] uppercase tracking-widest">{h}</p>
           ))}
         </div>
 
@@ -94,7 +94,7 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-white truncate">{booking.patient_name}</p>
-                  <p className="text-[11px] text-[#4A4540] flex items-center gap-1 mt-0.5">
+                  <p className="text-[11px] text-[#736F6B] flex items-center gap-1 mt-0.5">
                     <Phone className="h-2.5 w-2.5 shrink-0" />
                     <span className="font-mono">{booking.patient_phone}</span>
                   </p>
@@ -133,7 +133,7 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
               <div onClick={(e) => e.stopPropagation()}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="flex h-7 w-7 items-center justify-center rounded-lg text-[#4A4540] hover:bg-white/10 hover:text-white transition-colors opacity-0 group-hover:opacity-100">
+                    <button className="flex h-7 w-7 items-center justify-center rounded-lg text-[#736F6B] hover:bg-white/10 hover:text-white transition-colors opacity-0 group-hover:opacity-100">
                       <MoreHorizontal className="h-4 w-4" />
                     </button>
                   </DropdownMenuTrigger>

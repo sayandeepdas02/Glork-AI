@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Calendar, LayoutDashboard, LogOut, Phone, Settings, Settings2, Zap } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Logo } from "@/components/ui/logo"
 import { useAuth } from "@/hooks/use-auth"
 import { useAuthStore } from "@/store/auth-store"
 
@@ -25,9 +26,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
 
       {/* ── Logo ── */}
       <div className="flex items-center gap-2.5 px-5 pt-6 pb-5 border-b border-white/5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#FF5500] shadow-glow-sm">
-          <Zap className="h-4 w-4 text-white fill-white" />
-        </div>
+        <Logo className="w-8 h-8 rounded-lg shadow-glow-sm transition-transform hover:scale-105" />
         <span className="text-base font-bold text-white tracking-tight">Glork</span>
         <span className="ml-auto rounded-full border border-[#FF5500]/30 bg-[#FF5500]/10 px-1.5 py-0.5 text-[9px] font-bold text-[#FF7733] uppercase tracking-widest">
           beta
@@ -44,13 +43,13 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-white truncate">{doctor.name}</p>
-              <p className="text-xs text-[#4A4540] truncate">{doctor.clinic_name}</p>
+              <p className="text-xs text-[#736F6B] truncate">{doctor.clinic_name}</p>
             </div>
             {/* Agent status dot */}
             <div className="relative shrink-0">
               <div className={cn(
                 "h-2 w-2 rounded-full",
-                doctor.is_agent_active ? "bg-[#FF5500]" : "bg-[#4A4540]"
+                doctor.is_agent_active ? "bg-[#FF5500]" : "bg-[#736F6B]"
               )} />
               {doctor.is_agent_active && (
                 <div className="absolute inset-0 h-2 w-2 rounded-full bg-[#FF5500] animate-ping opacity-60" />
@@ -62,7 +61,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
 
       {/* ── Nav ── */}
       <nav className="flex-1 px-2 py-4 space-y-0.5">
-        <p className="px-3 mb-3 text-[10px] font-mono font-semibold text-[#4A4540] uppercase tracking-[0.2em]">
+        <p className="px-3 mb-3 text-[10px] font-mono font-semibold text-[#736F6B] uppercase tracking-[0.2em]">
           Menu
         </p>
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
@@ -81,7 +80,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
             >
               <Icon className={cn(
                 "h-4 w-4 shrink-0 transition-colors",
-                active ? "text-[#FF7733]" : "text-[#4A4540] group-hover:text-[#8A8480]"
+                active ? "text-[#FF7733]" : "text-[#736F6B] group-hover:text-[#8A8480]"
               )} />
               {label}
               {active && (
@@ -96,7 +95,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       <div className="p-3 border-t border-white/5">
         <button
           onClick={() => { onClose?.(); logout() }}
-          className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[#4A4540] hover:text-[#8A8480] hover:bg-white/4 transition-all duration-150"
+          className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[#736F6B] hover:text-[#8A8480] hover:bg-white/4 transition-all duration-150"
         >
           <LogOut className="h-4 w-4 shrink-0" />
           Sign out
