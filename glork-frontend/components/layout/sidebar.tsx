@@ -74,13 +74,13 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
               className={cn(
                 "sidebar-nav-item group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
                 active
-                  ? "active bg-[#FF5500]/10 text-white border border-[#FF5500]/20"
-                  : "text-[#8A8480] hover:bg-white/4 hover:text-[#F5F0EB] border border-transparent"
+                  ? "active bg-brand/10 text-white border border-brand/20"
+                  : "text-white/65 hover:bg-white/5 hover:text-white/90 border border-transparent"
               )}
             >
               <Icon className={cn(
                 "h-4 w-4 shrink-0 transition-colors",
-                active ? "text-[#FF7733]" : "text-[#736F6B] group-hover:text-[#8A8480]"
+                active ? "text-brand" : "text-white/50 group-hover:text-white/70"
               )} />
               {label}
               {active && (
@@ -95,7 +95,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       <div className="p-3 border-t border-white/5">
         <button
           onClick={() => { onClose?.(); logout() }}
-          className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[#736F6B] hover:text-[#8A8480] hover:bg-white/4 transition-all duration-150"
+          className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/60 hover:text-white/85 hover:bg-white/5 transition-all duration-150"
         >
           <LogOut className="h-4 w-4 shrink-0" />
           Sign out

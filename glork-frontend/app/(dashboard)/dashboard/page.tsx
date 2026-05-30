@@ -80,27 +80,27 @@ function CallsChart() {
             dataKey="date"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#4A4540", fontSize: 11, fontWeight: 500 }}
+            tick={{ fill: "rgba(255,255,255,0.50)", fontSize: 11, fontWeight: 500 }}
             dy={8}
           />
           <YAxis
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#4A4540", fontSize: 11 }}
+            tick={{ fill: "rgba(255,255,255,0.50)", fontSize: 11 }}
             allowDecimals={false}
             width={28}
           />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255,255,255,0.03)", radius: 6 }} />
-          <Bar dataKey="other" name="Other" fill="#2A2420" radius={[4, 4, 0, 0]} maxBarSize={28} />
-          <Bar dataKey="booked" name="Booked" fill="#FF5500" radius={[4, 4, 0, 0]} maxBarSize={28} />
+          <Bar dataKey="other" name="Other" fill="#3A3430" radius={[4, 4, 0, 0]} maxBarSize={28} />
+          <Bar dataKey="booked" name="Booked" fill="var(--brand)" radius={[4, 4, 0, 0]} maxBarSize={28} />
         </BarChart>
       </ResponsiveContainer>
       <div className="flex items-center gap-4 mt-3 px-1">
-        <span className="flex items-center gap-1.5 text-[11px] text-[#8A8480]">
-          <span className="inline-block h-2 w-2 rounded-sm bg-[#2A2420]" /> Other
+        <span className="flex items-center gap-1.5 text-[11px] text-white/55">
+          <span className="inline-block h-2 w-2 rounded-sm bg-[#3A3430]" /> Other
         </span>
-        <span className="flex items-center gap-1.5 text-[11px] text-[#8A8480]">
-          <span className="inline-block h-2 w-2 rounded-sm bg-[#FF5500]" /> Booked
+        <span className="flex items-center gap-1.5 text-[11px] text-white/55">
+          <span className="inline-block h-2 w-2 rounded-sm bg-brand" /> Booked
         </span>
       </div>
     </div>
@@ -115,7 +115,7 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold text-white">{getGreeting()} 👋</h2>
-          <p className="text-sm text-[#8A8480] mt-0.5 font-mono">Here's what's happening with your clinic</p>
+          <p className="text-[13px] text-white/55 mt-0.5 font-mono">Here's what's happening with your clinic</p>
         </div>
       </div>
 
@@ -128,14 +128,14 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="text-sm font-semibold text-white">Call volume</h3>
-              <p className="text-[10px] font-mono text-[#4A4540] mt-0.5">Last 7 days</p>
+              <p className="text-[11px] font-mono text-white/50 mt-0.5">Last 7 days</p>
             </div>
             {stats && (
               <div className="text-right">
                 <p className="text-lg font-bold text-white tabular-nums">
                   {stats.total_this_month}
                 </p>
-                <p className="text-[10px] font-mono text-[#4A4540]">bookings this month</p>
+                <p className="text-[11px] font-mono text-white/50">bookings this month</p>
               </div>
             )}
           </div>

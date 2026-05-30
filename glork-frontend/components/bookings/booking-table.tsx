@@ -74,7 +74,7 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
         {/* Table header */}
         <div className="hidden md:grid grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,1fr)_40px] gap-4 items-center px-5 py-3 bg-white/3 border-b border-white/5">
           {["Patient", "Date & Time", "Status", "Source", ""].map((h) => (
-            <p key={h} className="text-[10px] font-mono font-semibold text-[#736F6B] uppercase tracking-widest">{h}</p>
+            <p key={h} className="text-[11px] font-mono font-semibold text-white/60 uppercase tracking-widest">{h}</p>
           ))}
         </div>
 
@@ -94,7 +94,7 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-white truncate">{booking.patient_name}</p>
-                  <p className="text-[11px] text-[#736F6B] flex items-center gap-1 mt-0.5">
+                  <p className="text-[11px] text-white/55 flex items-center gap-1 mt-0.5">
                     <Phone className="h-2.5 w-2.5 shrink-0" />
                     <span className="font-mono">{booking.patient_phone}</span>
                   </p>

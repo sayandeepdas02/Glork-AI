@@ -42,7 +42,7 @@ export default function Hero() {
   const badgeText = useTypewriter(BADGES)
 
   return (
-    <div className="screen-line-after flex flex-col md:flex-row border-x border-edge max-w-5xl mx-auto min-h-[80vh]">
+    <div className="screen-line-after flex flex-col md:flex-row border-x border-white/6 max-w-[1200px] mx-auto min-h-[88vh]">
       
       {/* ── Left Column: Main Copy ── */}
       <div className="flex flex-1 flex-col border-b md:border-b-0 md:border-r border-edge bg-noise relative">
@@ -50,10 +50,10 @@ export default function Hero() {
         {/* Subtle grid background noise via class if needed, or just pure solid dark */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDIiIC8+Cjwvc3ZnPg==')] opacity-20 pointer-events-none" />
 
-        <div className="flex flex-col flex-1 justify-center p-8 lg:p-12 z-10">
+        <div className="flex flex-col flex-1 justify-center p-10 lg:p-16 z-10">
           
-          <div className="mb-6">
-            <span className="font-mono text-xs text-muted uppercase tracking-widest inline-flex items-center gap-[2px]">
+          <div className="mb-5">
+            <span className="font-mono text-[12px] font-bold text-brand uppercase tracking-[0.25em] inline-flex items-center gap-[2px]">
               {badgeText}
               <span className="inline-block w-[1.5px] h-[0.85em] bg-muted ml-[1px] align-middle animate-cursor-blink" />
             </span>
@@ -65,7 +65,7 @@ export default function Hero() {
             <span className="font-serif italic text-brand">again.</span>
           </h1>
 
-          <p className="text-[15px] text-white/80 leading-[1.6] max-w-[550px] font-medium mb-10 font-sans">
+          <p className="text-[16px] text-white/80 leading-[1.65] max-w-[600px] font-normal mb-10 font-sans">
             Glork&rsquo;s AI answers every call 24/7, books appointments straight
             into Google Calendar, and sends confirmations &mdash; so you can focus
             on medicine, not admin.
@@ -92,7 +92,7 @@ export default function Hero() {
         </div>
         
         {/* Footer info bar inside the cell */}
-        <div className="border-t border-edge px-8 py-3 flex items-center gap-4 text-[10px] font-mono text-muted uppercase tracking-widest bg-black/20">
+        <div className="border-t border-white/8 px-10 lg:px-16 py-4 flex items-center gap-4 text-[11px] font-mono text-white/50 uppercase tracking-widest bg-black/20">
           <span>No credit card</span>
           <span className="hidden sm:inline">&middot; Live in 3 mins</span>
           <span className="hidden sm:inline">&middot; Free plan</span>
@@ -117,7 +117,7 @@ export default function Hero() {
           
           {/* Wireframe Phone Card */}
           <div className="w-full max-w-[300px] rounded-xl border border-white/10 bg-white/[0.03] backdrop-blur-md shadow-2xl overflow-hidden relative">
-            <div className="p-5 flex flex-col items-center border-b border-edge relative z-10">
+            <div className="p-5 flex flex-col items-center border-b border-white/10 relative z-10">
               <div className="w-16 h-16 rounded-full bg-brand/15 border border-brand/40 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform duration-500">
                 <Phone className="h-6 w-6 text-brand" />
               </div>
