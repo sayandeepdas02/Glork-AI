@@ -43,7 +43,7 @@ function EmptyState() {
   return (
     <div className="rounded-2xl border border-dashed border-white/10 bg-[#141210] flex flex-col items-center justify-center py-20 text-center">
       <div className="h-14 w-14 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center mb-4">
-        <Phone className="h-6 w-6 text-[#4A4540]" />
+        <Phone className="h-6 w-6 text-[#736F6B]" />
       </div>
       <p className="text-sm font-semibold text-white">No calls yet</p>
       <p className="text-xs font-mono text-[#8A8480] mt-1.5 max-w-xs">
@@ -62,7 +62,7 @@ export function CallLogTable({ calls, isLoading }: CallLogTableProps) {
       {/* Header */}
       <div className="hidden md:grid grid-cols-[minmax(0,1.5fr)_minmax(0,1.5fr)_80px_minmax(0,1fr)_minmax(0,2fr)_60px] gap-4 items-center px-5 py-3 bg-white/3 border-b border-white/5">
         {["Caller", "Date & Time", "Duration", "Outcome", "Summary", ""].map((h) => (
-          <p key={h} className="text-[10px] font-mono font-semibold text-[#4A4540] uppercase tracking-widest">{h}</p>
+          <p key={h} className="text-[10px] font-mono font-semibold text-[#736F6B] uppercase tracking-widest">{h}</p>
         ))}
       </div>
 
@@ -85,7 +85,7 @@ export function CallLogTable({ calls, isLoading }: CallLogTableProps) {
                 </p>
                 {/* Mobile: date below */}
                 {call.started_at && (
-                  <p className="text-[11px] font-mono text-[#4A4540] mt-0.5 md:hidden">
+                  <p className="text-[11px] font-mono text-[#736F6B] mt-0.5 md:hidden">
                     {formatRelativeTime(call.started_at)}
                   </p>
                 )}
@@ -99,13 +99,13 @@ export function CallLogTable({ calls, isLoading }: CallLogTableProps) {
                 <p className="text-[11px] font-mono text-[#8A8480] mt-0.5">{formatAppointmentTime(call.started_at)}</p>
               </div>
             ) : (
-              <div className="hidden md:block text-xs text-[#4A4540]">—</div>
+              <div className="hidden md:block text-xs text-[#736F6B]">—</div>
             )}
 
             {/* Duration */}
             <div className="hidden md:block text-[13px] font-mono text-[#8A8480] tabular-nums">
               {call.duration_seconds != null ? formatDuration(call.duration_seconds) : (
-                <span className="text-[#4A4540]">—</span>
+                <span className="text-[#736F6B]">—</span>
               )}
             </div>
 
@@ -119,7 +119,7 @@ export function CallLogTable({ calls, isLoading }: CallLogTableProps) {
               {call.agent_summary ? (
                 <span className="line-clamp-2">{call.agent_summary}</span>
               ) : (
-                <span className="text-[#4A4540] text-[11px] font-mono">No summary</span>
+                <span className="text-[#736F6B] text-[11px] font-mono">No summary</span>
               )}
             </div>
 

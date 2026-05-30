@@ -9,22 +9,23 @@
   --bg-surface:    #141210;
   --bg-surface-2:  #1C1916;
 
-  /* Brand — #FF5500 Orange */
-  --brand:         #FF5500;
-  --brand-light:   #FF7733;
-  --brand-dark:    #CC3300;
-  --brand-dim:     rgba(255, 85, 0, 0.12);
-  --brand-border:  rgba(255, 85, 0, 0.25);
-  --brand-glow:    rgba(255, 85, 0, 0.20);
+  /* Brand — #FF6B00 Orange */
+  --brand:         #FF6B00;
+  --brand-light:   #FF8533;
+  --brand-dark:    #CC5500;
+  --brand-dim:     rgba(255, 107, 0, 0.12);
+  --brand-border:  rgba(255, 107, 0, 0.25);
+  --brand-glow:    rgba(255, 107, 0, 0.20);
 
   /* Edge / dividers */
-  --edge:          rgba(255, 255, 255, 0.07);
-  --edge-strong:   rgba(255, 255, 255, 0.12);
+  --edge:          rgba(255, 255, 255, 0.04); /* Grid system reduced to 50% opacity */
+  --edge-strong:   rgba(255, 255, 255, 0.15); /* Hover borders */
+  --edge-card:     rgba(255, 255, 255, 0.08); /* Card borders */
 
   /* Text */
-  --text-primary:  #F5F0EB;
-  --text-muted:    #8A8480;
-  --text-faint:    #4A4540;
+  --text-primary:  rgba(255, 255, 255, 0.95);
+  --text-muted:    rgba(255, 255, 255, 0.75);
+  --text-faint:    rgba(255, 255, 255, 0.55);
 
   /* Radius */
   --radius:        0.625rem;
@@ -37,7 +38,7 @@
   --secondary:     28 12% 14%;
   --secondary-foreground: 30 8% 75%;
   --muted:         25 8% 16%;
-  --muted-foreground: 25 5% 55%;
+  --muted-foreground: 25 5% 63%;
   --accent:        25 8% 18%;
   --accent-foreground: 30 8% 90%;
   --destructive:   0 84% 60%;
@@ -118,14 +119,14 @@
 
   /* Brand gradient text */
   .gradient-text {
-    background: linear-gradient(135deg, #FF5500 0%, #FF9966 100%);
+    background: linear-gradient(135deg, #FF6B00 0%, #FF9966 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .gradient-text-warm {
-    background: linear-gradient(135deg, #FFB380 0%, #FF5500 60%, #CC2200 100%);
+    background: linear-gradient(135deg, #FFB380 0%, #FF6B00 60%, #CC2200 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -187,8 +188,8 @@
 }
 
 @keyframes glow-pulse-orange {
-  0%, 100% { box-shadow: 0 0 20px rgba(255,85,0,0.25); }
-  50%       { box-shadow: 0 0 50px rgba(255,85,0,0.50); }
+  0%, 100% { box-shadow: 0 0 20px rgba(255,107,0,0.25); }
+  50%       { box-shadow: 0 0 50px rgba(255,107,0,0.50); }
 }
 
 @keyframes cursor-blink {
@@ -220,8 +221,8 @@
 /* ─── Hero glow background ───────────────────────────────── */
 .hero-glow-orange {
   background:
-    radial-gradient(ellipse 70% 50% at 15% 20%, rgba(255,85,0,0.14) 0%, transparent 65%),
-    radial-gradient(ellipse 50% 40% at 85% 80%, rgba(255,85,0,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 15% 20%, rgba(255,107,0,0.14) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 85% 80%, rgba(255,107,0,0.07) 0%, transparent 60%),
     var(--bg-base);
 }
 
@@ -263,9 +264,9 @@
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 .bento-card:hover {
-  border-color: rgba(255, 85, 0, 0.30);
+  border-color: rgba(255, 107, 0, 0.30);
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(255, 85, 0, 0.08);
+  box-shadow: 0 8px 32px rgba(255, 107, 0, 0.08);
 }
 
 /* ─── Dashboard sidebar (kept from original) ─────────────── */

@@ -50,7 +50,7 @@ export function AgentStatusBanner() {
       <div className="relative overflow-hidden rounded-2xl border border-white/6 bg-[#141210] px-5 py-4">
         <div className="flex items-center gap-4">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/5 border border-white/8">
-            <PowerOff className="h-5 w-5 text-[#4A4540]" />
+            <PowerOff className="h-5 w-5 text-[#736F6B]" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-white">Agent is inactive</p>

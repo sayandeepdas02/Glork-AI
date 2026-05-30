@@ -66,7 +66,7 @@ function StatCard({
         <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl border", iconBg)}>
           <Icon className={cn("h-5 w-5", iconColor)} />
         </div>
-        <span className="text-[10px] font-mono text-[#4A4540]">{trend}</span>
+        <span className="text-[10px] font-mono text-[#736F6B]">{trend}</span>
       </div>
 
       <p className="text-3xl font-bold text-white tabular-nums tracking-tight mb-1">{value}</p>

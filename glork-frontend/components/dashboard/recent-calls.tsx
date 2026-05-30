@@ -15,7 +15,7 @@ export function RecentCalls() {
       <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
         <div>
           <h3 className="text-sm font-semibold text-white">Recent Calls</h3>
-          <p className="text-[10px] font-mono text-[#4A4540] mt-0.5">Last 5 calls from your agent</p>
+          <p className="text-[10px] font-mono text-[#736F6B] mt-0.5">Last 5 calls from your agent</p>
         </div>
         <Link
           href="/calls"
@@ -44,7 +44,7 @@ export function RecentCalls() {
             <Phone className="h-5 w-5 text-[#FF7733]" />
           </div>
           <p className="text-sm font-medium text-white">No calls yet</p>
-          <p className="text-xs text-[#4A4540] mt-1 font-mono">Call logs appear here once your agent is live</p>
+          <p className="text-xs text-[#736F6B] mt-1 font-mono">Call logs appear here once your agent is live</p>
         </div>
       ) : (
         <div className="divide-y divide-white/4">
@@ -61,7 +61,7 @@ export function RecentCalls() {
                 <p className="text-sm font-semibold text-white font-mono tabular-nums">
                   {call.caller_phone ? formatPhone(call.caller_phone, true) : "Unknown"}
                 </p>
-                <p className="text-xs text-[#4A4540] mt-0.5 flex items-center gap-1.5">
+                <p className="text-xs text-[#736F6B] mt-0.5 flex items-center gap-1.5">
                   {formatRelativeTime(call.created_at)}
                   {call.duration_seconds != null && (
                     <>

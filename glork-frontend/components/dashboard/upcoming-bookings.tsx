@@ -15,7 +15,7 @@ export function UpcomingBookings() {
       <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
         <div>
           <h3 className="text-sm font-semibold text-white">Upcoming Bookings</h3>
-          <p className="text-[10px] font-mono text-[#4A4540] mt-0.5">Next confirmed appointments</p>
+          <p className="text-[10px] font-mono text-[#736F6B] mt-0.5">Next confirmed appointments</p>
         </div>
         <Link
           href="/bookings"
@@ -44,7 +44,7 @@ export function UpcomingBookings() {
             <Calendar className="h-5 w-5 text-[#FF7733]" />
           </div>
           <p className="text-sm font-medium text-white">No upcoming bookings</p>
-          <p className="text-xs text-[#4A4540] mt-1 font-mono">Confirmed appointments will appear here</p>
+          <p className="text-xs text-[#736F6B] mt-1 font-mono">Confirmed appointments will appear here</p>
         </div>
       ) : (
         <div className="divide-y divide-white/4">

@@ -1,81 +1,73 @@
 "use client"
 
+import { Panel, PanelHeader, PanelTitle, PanelTitleSup } from "@/components/ui/panel"
+
 const steps = [
   {
     n: "01",
     title: "Set up in 3 minutes",
-    description:
-      "Create your account, connect Google Calendar, and configure your greeting. No technical knowledge needed — if you can send an email, you can set up Glork.",
+    description: "Create your account, connect Google Calendar, and configure your greeting. No technical knowledge needed — if you can send an email, you can set up Glork.",
     detail: "Average setup: 2 min 47 sec",
   },
   {
     n: "02",
     title: "Forward your clinic number",
-    description:
-      "Forward your existing clinic phone to your unique Glork number. Patients call the same number they always have — nothing changes for them.",
+    description: "Forward your existing clinic phone to your unique Glork number. Patients call the same number they always have — nothing changes for them.",
     detail: "Works with any phone provider",
   },
   {
     n: "03",
     title: "Sit back and relax",
-    description:
-      "The AI handles all incoming calls. View bookings, call logs, and full transcripts on your dashboard in real time.",
+    description: "The AI handles all incoming calls. View bookings, call logs, and full transcripts on your dashboard in real time.",
     detail: "Live dashboard + notifications",
   },
 ]
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="bg-[#0C0A09] py-28 border-t border-white/5">
-      <div className="max-w-6xl mx-auto px-6">
+    <Panel id="how-it-works">
+      <PanelHeader className="flex flex-col gap-1 items-start pt-12 pb-6 border-b border-edge">
+        <span className="text-[13px] font-mono font-bold text-brand uppercase tracking-[0.3em] mb-2">
+          How it works
+        </span>
+        <PanelTitle>
+          Up and running in minutes
+          <PanelTitleSup>(03)</PanelTitleSup>
+        </PanelTitle>
+      </PanelHeader>
 
-        {/* ── Section label + heading ── */}
-        <div className="text-center mb-20">
-          <p className="text-[10px] font-mono font-semibold text-[#FF5500] uppercase tracking-[0.25em] mb-4">
-            How it works
-          </p>
-          <h2 className="text-4xl lg:text-5xl font-serif italic font-normal text-white mb-5 tracking-tight">
-            Up and running in minutes
-          </h2>
-          <p className="text-lg text-[#8A8480] max-w-lg mx-auto leading-relaxed">
-            No hardware, no complex integrations. Just three steps to a fully automated reception desk.
-          </p>
-        </div>
-
-        {/* ── Steps ── */}
-        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-0">
-
-          {/* Connector line (desktop) */}
-          <div className="hidden md:block absolute top-[28px] left-[calc(16.67%+28px)] right-[calc(16.67%+28px)] h-px bg-gradient-to-r from-[#FF5500]/40 via-[#FF5500]/60 to-[#FF5500]/40" />
-
-          {steps.map((step, idx) => (
-            <div
-              key={step.n}
-              className="relative flex flex-col items-start md:items-center md:text-center px-6 py-8 group"
-            >
-              {/* Step number circle */}
-              <div className="relative mb-7 shrink-0">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#FF5500]/30 bg-[#FF5500]/10 z-10 relative transition-all duration-300 group-hover:border-[#FF5500]/60 group-hover:bg-[#FF5500]/15 group-hover:shadow-glow-sm">
-                  <span className="text-lg font-bold text-[#FF7733] font-mono">{step.n}</span>
-                </div>
-              </div>
-
-              <h3 className="text-xl font-semibold text-white mb-3">{step.title}</h3>
-              <p className="text-sm text-[#8A8480] leading-relaxed mb-4">{step.description}</p>
-
-              {/* Detail chip */}
-              <span className="inline-flex items-center rounded-full border border-white/8 bg-white/4 px-3 py-1 text-[10px] font-mono font-medium text-[#4A4540]">
-                {step.detail}
+      <div className="flex flex-col">
+        {steps.map((step, idx) => (
+          <div
+            key={step.n}
+            className={[
+              "group flex flex-col md:flex-row md:items-start gap-4 md:gap-8 p-6 md:p-8 transition-colors duration-200 hover:bg-white/[0.03]",
+              idx < steps.length - 1 ? "border-b border-edge" : "",
+            ].join(" ")}
+          >
+            {/* Huge Number */}
+            <div className="md:w-32 shrink-0">
+              <span className="text-6xl md:text-7xl font-serif italic text-white/40 group-hover:text-brand/40 transition-colors duration-300 tracking-tighter leading-none select-none">
+                {step.n}
               </span>
-
-              {/* Mobile connector */}
-              {idx < steps.length - 1 && (
-                <div className="md:hidden mt-6 self-center w-px h-8 bg-gradient-to-b from-[#FF5500]/40 to-transparent" />
-              )}
             </div>
-          ))}
-        </div>
+
+            {/* Content */}
+            <div className="flex-1 flex flex-col justify-center">
+              <h3 className="text-[22px] font-semibold text-white/95 mb-2">{step.title}</h3>
+              <p className="text-[15px] text-white/80 leading-relaxed max-w-2xl mb-5">
+                {step.description}
+              </p>
+              
+              <div className="self-start">
+                <span className="inline-flex items-center px-2.5 py-1 text-[11px] font-mono font-medium text-white/80 uppercase tracking-widest border border-white/20 bg-white/10 rounded">
+                  {step.detail}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
-    </section>
+    </Panel>
   )
 }
