@@ -7,11 +7,12 @@ import { useBookingStats } from "@/hooks/use-bookings"
 const CARDS = [
   {
     key: "total_this_month" as const,
-    label: "Total bookings",
+    label: "Total Bookings",
     icon: Calendar,
-    iconBg: "bg-[#1d6b4a]/10",
-    iconColor: "text-[#1d6b4a]",
-    accent: "before:bg-[#1d6b4a]",
+    iconColor: "text-[#FF7733]",
+    iconBg: "bg-[#FF5500]/15 border-[#FF5500]/20",
+    glowColor: "shadow-glow-sm",
+    accentColor: "from-[#FF5500]",
     trend: "This month",
     format: (v: number | string) => v,
   },
@@ -19,9 +20,10 @@ const CARDS = [
     key: "confirmed_this_month" as const,
     label: "Confirmed",
     icon: CheckCircle2,
-    iconBg: "bg-emerald-50",
-    iconColor: "text-emerald-600",
-    accent: "before:bg-emerald-500",
+    iconColor: "text-emerald-400",
+    iconBg: "bg-emerald-500/10 border-emerald-500/20",
+    glowColor: "",
+    accentColor: "from-emerald-500",
     trend: "Active appointments",
     format: (v: number | string) => v,
   },
@@ -29,58 +31,57 @@ const CARDS = [
     key: "cancelled_this_month" as const,
     label: "Cancelled",
     icon: XCircle,
-    iconBg: "bg-red-50",
-    iconColor: "text-red-500",
-    accent: "before:bg-red-400",
+    iconColor: "text-red-400",
+    iconBg: "bg-red-500/10 border-red-500/20",
+    glowColor: "",
+    accentColor: "from-red-500",
     trend: "This month",
     format: (v: number | string) => v,
   },
   {
     key: "conversion_rate" as const,
-    label: "Conversion rate",
+    label: "Conversion Rate",
     icon: TrendingUp,
-    iconBg: "bg-blue-50",
-    iconColor: "text-blue-600",
-    accent: "before:bg-blue-500",
+    iconColor: "text-blue-400",
+    iconBg: "bg-blue-500/10 border-blue-500/20",
+    glowColor: "",
+    accentColor: "from-blue-500",
     trend: "Calls → Bookings",
     format: (v: number | string) => `${Number(v).toFixed(1)}%`,
   },
 ]
 
 function StatCard({
-  label, value, icon: Icon, iconBg, iconColor, accent, trend,
+  label, value, icon: Icon, iconBg, iconColor, accentColor, trend,
 }: {
   label: string; value: number | string; icon: React.ElementType
-  iconBg: string; iconColor: string; accent: string; trend: string
+  iconBg: string; iconColor: string; accentColor: string; trend: string
 }) {
   return (
-    <div className={cn(
-      "relative rounded-2xl bg-white border border-gray-100 p-5 shadow-card",
-      "before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:rounded-t-2xl",
-      accent
-    )}>
-      <div className="flex items-start justify-between mb-3">
-        <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl", iconBg)}>
+    <div className="relative rounded-2xl bg-[#141210] border border-white/6 p-5 overflow-hidden group hover:border-white/10 transition-all duration-200">
+      {/* Top gradient line */}
+      <div className={cn("absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r to-transparent opacity-60", accentColor)} />
+
+      <div className="flex items-start justify-between mb-4">
+        <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl border", iconBg)}>
           <Icon className={cn("h-5 w-5", iconColor)} />
         </div>
+        <span className="text-[10px] font-mono text-[#4A4540]">{trend}</span>
       </div>
-      <div className="space-y-1">
-        <p className="text-2xl font-bold text-gray-900 tabular-nums">{value}</p>
-        <p className="text-sm font-medium text-gray-600">{label}</p>
-        <p className="text-xs text-gray-400">{trend}</p>
-      </div>
+
+      <p className="text-3xl font-bold text-white tabular-nums tracking-tight mb-1">{value}</p>
+      <p className="text-xs font-medium text-[#8A8480]">{label}</p>
     </div>
   )
 }
 
-export function StatCardSkeleton() {
+function StatCardSkeleton() {
   return (
-    <div className="rounded-2xl bg-white border border-gray-100 p-5 shadow-card">
-      <div className="h-10 w-10 rounded-xl bg-gray-100 animate-pulse mb-3" />
+    <div className="rounded-2xl bg-[#141210] border border-white/6 p-5">
+      <div className="h-10 w-10 rounded-xl bg-white/5 animate-pulse mb-4" />
       <div className="space-y-2">
-        <div className="h-6 w-16 rounded-lg bg-gray-100 animate-pulse" />
-        <div className="h-4 w-24 rounded bg-gray-100 animate-pulse" />
-        <div className="h-3 w-20 rounded bg-gray-100 animate-pulse" />
+        <div className="h-7 w-14 rounded bg-white/5 animate-pulse" />
+        <div className="h-3 w-24 rounded bg-white/5 animate-pulse" />
       </div>
     </div>
   )
@@ -107,7 +108,7 @@ export function StatsCards() {
           icon={c.icon}
           iconBg={c.iconBg}
           iconColor={c.iconColor}
-          accent={c.accent}
+          accentColor={c.accentColor}
           trend={c.trend}
         />
       ))}
