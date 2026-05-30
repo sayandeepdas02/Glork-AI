@@ -9,9 +9,7 @@ from __future__ import annotations
 
 from typing import Sequence, Union
 
-import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.dialects import postgresql
 
 revision: str = "0001"
 down_revision: Union[str, None] = None
@@ -20,154 +18,133 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.create_table(
-        "doctors",
-        sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("email", sa.String(255), nullable=False),
-        sa.Column("password_hash", sa.Text(), nullable=False),
-        sa.Column("name", sa.String(200), nullable=False),
-        sa.Column("clinic_name", sa.String(200), nullable=False),
-        sa.Column("phone_number", sa.String(20), nullable=True),
-        sa.Column("specialty", sa.String(100), nullable=True),
-        sa.Column("clinic_address", sa.Text(), nullable=True),
-        sa.Column("is_active", sa.Boolean(), nullable=False, server_default=sa.text("true")),
-        sa.Column("is_agent_active", sa.Boolean(), nullable=False, server_default=sa.text("false")),
-        sa.Column(
-            "created_at",
-            sa.DateTime(timezone=True),
-            server_default=sa.text("now()"),
-            nullable=False,
-        ),
-        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
-        sa.PrimaryKeyConstraint("id"),
-    )
-    op.create_index("ix_doctors_email", "doctors", ["email"], unique=True)
+    op.execute('CREATE EXTENSION IF NOT EXISTS "pgcrypto"')
 
-    op.create_table(
-        "agent_configs",
-        sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("doctor_id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("retell_agent_id", sa.String(100), nullable=True),
-        sa.Column("retell_llm_id", sa.String(100), nullable=True),
-        sa.Column("glork_phone_number", sa.String(20), nullable=True),
-        sa.Column("greeting_message", sa.Text(), nullable=False),
-        sa.Column("working_hours", sa.JSON(), nullable=False),
-        sa.Column("slot_duration_mins", sa.Integer(), nullable=False, server_default=sa.text("30")),
-        sa.Column("buffer_mins", sa.Integer(), nullable=False, server_default=sa.text("0")),
-        sa.Column("language", sa.String(10), nullable=False, server_default=sa.text("'en'")),
-        sa.Column("emergency_transfer_number", sa.String(20), nullable=True),
-        sa.Column("max_advance_booking_days", sa.Integer(), nullable=False, server_default=sa.text("30")),
-        sa.Column(
-            "created_at",
-            sa.DateTime(timezone=True),
-            server_default=sa.text("now()"),
-            nullable=False,
-        ),
-        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
-        sa.ForeignKeyConstraint(["doctor_id"], ["doctors.id"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("doctor_id"),
-    )
-    op.create_index("ix_agent_configs_doctor_id", "agent_configs", ["doctor_id"])
+    op.execute("""
+        CREATE TABLE IF NOT EXISTS doctors (
+            id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            email           VARCHAR(255) NOT NULL UNIQUE,
+            password_hash   TEXT NOT NULL,
+            name            VARCHAR(200) NOT NULL,
+            clinic_name     VARCHAR(200) NOT NULL,
+            phone_number    VARCHAR(20),
+            specialty       VARCHAR(100),
+            clinic_address  TEXT,
+            is_active       BOOLEAN NOT NULL DEFAULT TRUE,
+            is_agent_active BOOLEAN NOT NULL DEFAULT FALSE,
+            created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at      TIMESTAMPTZ
+        )
+    """)
+    op.execute("CREATE INDEX IF NOT EXISTS ix_doctors_email ON doctors (email)")
 
-    op.create_table(
-        "calendar_integrations",
-        sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("doctor_id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("google_calendar_id", sa.Text(), nullable=False, server_default=sa.text("'primary'")),
-        sa.Column("access_token_encrypted", sa.Text(), nullable=True),
-        sa.Column("refresh_token_encrypted", sa.Text(), nullable=True),
-        sa.Column("token_expiry", sa.DateTime(timezone=True), nullable=True),
-        sa.Column("is_connected", sa.Boolean(), nullable=False, server_default=sa.text("false")),
-        sa.Column(
-            "created_at",
-            sa.DateTime(timezone=True),
-            server_default=sa.text("now()"),
-            nullable=False,
-        ),
-        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
-        sa.ForeignKeyConstraint(["doctor_id"], ["doctors.id"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("doctor_id"),
-    )
-    op.create_index("ix_calendar_integrations_doctor_id", "calendar_integrations", ["doctor_id"])
+    op.execute("""
+        CREATE TABLE IF NOT EXISTS agent_configs (
+            id                        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            doctor_id                 UUID NOT NULL UNIQUE REFERENCES doctors(id) ON DELETE CASCADE,
+            retell_agent_id           VARCHAR(100),
+            retell_llm_id             VARCHAR(100),
+            glork_phone_number        VARCHAR(20),
+            greeting_message          TEXT NOT NULL,
+            working_hours             JSONB NOT NULL,
+            slot_duration_mins        INTEGER NOT NULL DEFAULT 30,
+            buffer_mins               INTEGER NOT NULL DEFAULT 0,
+            language                  VARCHAR(10) NOT NULL DEFAULT 'en',
+            emergency_transfer_number VARCHAR(20),
+            max_advance_booking_days  INTEGER NOT NULL DEFAULT 30,
+            created_at                TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at                TIMESTAMPTZ
+        )
+    """)
+    op.execute("CREATE INDEX IF NOT EXISTS ix_agent_configs_doctor_id ON agent_configs (doctor_id)")
 
-    booking_status_enum = postgresql.ENUM(
-        "confirmed", "cancelled", "rescheduled", "completed", "no_show",
-        name="bookingstatus",
-    )
-    booking_status_enum.create(op.get_bind())
+    op.execute("""
+        CREATE TABLE IF NOT EXISTS calendar_integrations (
+            id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            doctor_id               UUID NOT NULL UNIQUE REFERENCES doctors(id) ON DELETE CASCADE,
+            google_calendar_id      TEXT NOT NULL DEFAULT 'primary',
+            access_token_encrypted  TEXT,
+            refresh_token_encrypted TEXT,
+            token_expiry            TIMESTAMPTZ,
+            is_connected            BOOLEAN NOT NULL DEFAULT FALSE,
+            calendar_name           TEXT,
+            created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at              TIMESTAMPTZ
+        )
+    """)
+    op.execute("CREATE INDEX IF NOT EXISTS ix_calendar_integrations_doctor_id ON calendar_integrations (doctor_id)")
 
-    call_outcome_enum = postgresql.ENUM(
-        "booked", "enquiry", "cancelled", "rescheduled", "transferred", "failed", "unanswered",
-        name="calloutcome",
-    )
-    call_outcome_enum.create(op.get_bind())
+    op.execute("""
+        DO $$ BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'calloutcome') THEN
+                CREATE TYPE calloutcome AS ENUM (
+                    'booked', 'enquiry', 'cancelled', 'rescheduled',
+                    'transferred', 'failed', 'unanswered'
+                );
+            END IF;
+        END $$
+    """)
 
-    op.create_table(
-        "call_logs",
-        sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("doctor_id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("retell_call_id", sa.String(100), nullable=True),
-        sa.Column("caller_phone", sa.String(20), nullable=True),
-        sa.Column("duration_seconds", sa.Integer(), nullable=True),
-        sa.Column("transcript", sa.Text(), nullable=True),
-        sa.Column("outcome", sa.Enum("booked", "enquiry", "cancelled", "rescheduled", "transferred", "failed", "unanswered", name="calloutcome"), nullable=False, server_default=sa.text("'failed'")),
-        sa.Column("recording_url", sa.Text(), nullable=True),
-        sa.Column("agent_summary", sa.Text(), nullable=True),
-        sa.Column("started_at", sa.DateTime(timezone=True), nullable=True),
-        sa.Column("ended_at", sa.DateTime(timezone=True), nullable=True),
-        sa.Column(
-            "created_at",
-            sa.DateTime(timezone=True),
-            server_default=sa.text("now()"),
-            nullable=False,
-        ),
-        sa.ForeignKeyConstraint(["doctor_id"], ["doctors.id"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("id"),
-    )
-    op.create_index("ix_call_logs_doctor_id", "call_logs", ["doctor_id"])
-    op.create_index("ix_call_logs_retell_call_id", "call_logs", ["retell_call_id"], unique=True)
+    op.execute("""
+        DO $$ BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'bookingstatus') THEN
+                CREATE TYPE bookingstatus AS ENUM (
+                    'confirmed', 'cancelled', 'rescheduled', 'completed', 'no_show'
+                );
+            END IF;
+        END $$
+    """)
 
-    op.create_table(
-        "bookings",
-        sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("doctor_id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("call_log_id", postgresql.UUID(as_uuid=True), nullable=True),
-        sa.Column("patient_name", sa.String(200), nullable=False),
-        sa.Column("patient_phone", sa.String(20), nullable=False),
-        sa.Column("patient_email", sa.String(255), nullable=True),
-        sa.Column("appointment_start", sa.DateTime(timezone=True), nullable=False),
-        sa.Column("appointment_end", sa.DateTime(timezone=True), nullable=False),
-        sa.Column("reason", sa.Text(), nullable=True),
-        sa.Column("status", sa.Enum("confirmed", "cancelled", "rescheduled", "completed", "no_show", name="bookingstatus"), nullable=False, server_default=sa.text("'confirmed'")),
-        sa.Column("google_event_id", sa.Text(), nullable=True),
-        sa.Column("sms_sent", sa.Boolean(), nullable=False, server_default=sa.text("false")),
-        sa.Column("reminder_sent", sa.Boolean(), nullable=False, server_default=sa.text("false")),
-        sa.Column("notes", sa.Text(), nullable=True),
-        sa.Column(
-            "created_at",
-            sa.DateTime(timezone=True),
-            server_default=sa.text("now()"),
-            nullable=False,
-        ),
-        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
-        sa.ForeignKeyConstraint(["call_log_id"], ["call_logs.id"], ondelete="SET NULL"),
-        sa.ForeignKeyConstraint(["doctor_id"], ["doctors.id"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("id"),
-    )
-    op.create_index("ix_bookings_doctor_id", "bookings", ["doctor_id"])
-    op.create_index("ix_bookings_doctor_start", "bookings", ["doctor_id", "appointment_start"])
-    op.create_index("ix_bookings_patient_phone", "bookings", ["patient_phone"])
-    op.create_index("ix_bookings_appointment_start", "bookings", ["appointment_start"])
+    op.execute("""
+        CREATE TABLE IF NOT EXISTS call_logs (
+            id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            doctor_id        UUID NOT NULL REFERENCES doctors(id) ON DELETE CASCADE,
+            retell_call_id   VARCHAR(100) UNIQUE,
+            caller_phone     VARCHAR(20),
+            duration_seconds INTEGER,
+            transcript       TEXT,
+            outcome          calloutcome NOT NULL DEFAULT 'failed',
+            recording_url    TEXT,
+            agent_summary    TEXT,
+            started_at       TIMESTAMPTZ,
+            ended_at         TIMESTAMPTZ,
+            created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )
+    """)
+    op.execute("CREATE INDEX IF NOT EXISTS ix_call_logs_doctor_id ON call_logs (doctor_id)")
+    op.execute("CREATE INDEX IF NOT EXISTS ix_call_logs_retell_call_id ON call_logs (retell_call_id)")
+
+    op.execute("""
+        CREATE TABLE IF NOT EXISTS bookings (
+            id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            doctor_id         UUID NOT NULL REFERENCES doctors(id) ON DELETE CASCADE,
+            call_log_id       UUID REFERENCES call_logs(id) ON DELETE SET NULL,
+            patient_name      VARCHAR(200) NOT NULL,
+            patient_phone     VARCHAR(20) NOT NULL,
+            patient_email     VARCHAR(255),
+            appointment_start TIMESTAMPTZ NOT NULL,
+            appointment_end   TIMESTAMPTZ NOT NULL,
+            reason            TEXT,
+            status            bookingstatus NOT NULL DEFAULT 'confirmed',
+            google_event_id   TEXT,
+            sms_sent          BOOLEAN NOT NULL DEFAULT FALSE,
+            reminder_sent     BOOLEAN NOT NULL DEFAULT FALSE,
+            notes             TEXT,
+            created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at        TIMESTAMPTZ
+        )
+    """)
+    op.execute("CREATE INDEX IF NOT EXISTS ix_bookings_doctor_id ON bookings (doctor_id)")
+    op.execute("CREATE INDEX IF NOT EXISTS ix_bookings_doctor_start ON bookings (doctor_id, appointment_start)")
+    op.execute("CREATE INDEX IF NOT EXISTS ix_bookings_patient_phone ON bookings (patient_phone)")
+    op.execute("CREATE INDEX IF NOT EXISTS ix_bookings_appointment_start ON bookings (appointment_start)")
 
 
 def downgrade() -> None:
-    op.drop_table("bookings")
-    op.drop_table("call_logs")
-    op.drop_table("calendar_integrations")
-    op.drop_table("agent_configs")
-    op.drop_table("doctors")
-
-    sa.Enum(name="bookingstatus").drop(op.get_bind())
-    sa.Enum(name="calloutcome").drop(op.get_bind())
+    op.execute("DROP TABLE IF EXISTS bookings CASCADE")
+    op.execute("DROP TABLE IF EXISTS call_logs CASCADE")
+    op.execute("DROP TABLE IF EXISTS calendar_integrations CASCADE")
+    op.execute("DROP TABLE IF EXISTS agent_configs CASCADE")
+    op.execute("DROP TABLE IF EXISTS doctors CASCADE")
+    op.execute("DROP TYPE IF EXISTS bookingstatus CASCADE")
+    op.execute("DROP TYPE IF EXISTS calloutcome CASCADE")

@@ -9,9 +9,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { sidebarOpen, setSidebarOpen } = useUIStore()
 
   return (
-    <div className="flex h-screen bg-[#f5f7f6] overflow-hidden">
+    <div className="flex h-screen bg-[#0C0A09] overflow-hidden">
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex w-60 shrink-0">
+      <aside className="hidden lg:flex w-60 shrink-0 border-r border-white/5">
         <Sidebar />
       </aside>
 
