@@ -21,6 +21,7 @@ const config: Config = {
           primary: "#1d6b4a",
           "primary-light": "#e6f4ed",
           accent: "#2d9e6e",
+          "lime-cta": "#b9f264",
           background: "#f8f9fa",
           surface: "#ffffff",
           border: "#e5e7eb",
@@ -134,9 +135,14 @@ const config: Config = {
       boxShadow: {
         "glow": "0 0 40px rgba(29, 107, 74, 0.15)",
         "glow-lg": "0 0 80px rgba(29, 107, 74, 0.25)",
+        "lime-glow": "0 0 40px rgba(185, 242, 100, 0.2)",
         "card": "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
         "card-hover": "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)",
         "dark-card": "0 4px 24px rgba(0,0,0,0.4)",
+        "footer-card": "0 -8px 40px rgba(0,0,0,0.25)",
+      },
+      transitionTimingFunction: {
+        spring: "cubic-bezier(0.34, 1.56, 0.64, 1)",
       },
     },
   },

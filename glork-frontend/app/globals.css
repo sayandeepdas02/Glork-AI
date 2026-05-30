@@ -143,12 +143,50 @@
   .card-hover:hover {
     @apply shadow-card-hover -translate-y-0.5;
   }
+
+  /* Section label chips */
+  .section-label-light {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-gray-600;
+  }
+  .section-label-dark {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-emerald-400;
+  }
+
+  /* Button system */
+  .btn-lime {
+    @apply inline-flex items-center gap-2 rounded-full bg-[#b9f264] text-[#0a0f0d] font-semibold transition-all duration-200 hover:brightness-105 active:scale-[0.98];
+  }
+  .btn-lime-lg {
+    @apply btn-lime px-8 py-4 text-base;
+  }
+  .btn-lime-md {
+    @apply btn-lime px-6 py-3 text-sm;
+  }
+  .btn-ghost-dark {
+    @apply inline-flex items-center gap-2 rounded-full border border-white/20 bg-transparent text-white px-6 py-3 text-sm font-medium transition-all duration-200 hover:bg-white/5;
+  }
+  .btn-dark-on-light {
+    @apply inline-flex items-center gap-2 rounded-full bg-[#0f1f17] text-white px-6 py-3 text-sm font-semibold transition-all duration-200 hover:bg-[#1d6b4a];
+  }
 }
 
 /* Landing page specific */
 .hero-glow {
   background: radial-gradient(ellipse 80% 60% at 20% 20%, rgba(29, 107, 74, 0.15) 0%, transparent 60%),
               radial-gradient(ellipse 60% 40% at 80% 80%, rgba(29, 107, 74, 0.08) 0%, transparent 60%);
+}
+
+.hero-glow-center {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(29,107,74,0.18) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 30% at 70% 80%, rgba(29,107,74,0.08) 0%, transparent 60%);
+}
+
+.gradient-text-lime {
+  background: linear-gradient(135deg, #b9f264 0%, #7ec84a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* Dashboard sidebar */
