@@ -30,6 +30,9 @@
   /* Radius */
   --radius:        0.625rem;
 
+  /* Typography */
+  --font-sansation: "Sansation", "Georgia", serif;
+
   /* Tailwind-shadcn compat vars */
   --background:    12 10 9;
   --foreground:    245 240 235;

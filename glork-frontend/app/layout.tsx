@@ -1,16 +1,9 @@
 import type { Metadata } from "next"
-import { Inter, Instrument_Serif } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
 import { Providers } from "@/providers/providers"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  variable: "--font-instrument",
-})
 
 export const metadata: Metadata = {
   title: {
@@ -44,13 +37,24 @@ export const metadata: Metadata = {
     description:
       "AI-powered voice receptionist that books appointments, answers patient calls, and manages your calendar automatically.",
   },
+  other: {
+    "google-fonts-preconnect": "https://fonts.googleapis.com",
+  },
   robots: { index: true, follow: true },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${instrumentSerif.variable} font-sans antialiased`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Sansation:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className={`${inter.variable} font-sans antialiased`} style={{ fontFamily: "inherit" }}>
         <Providers>{children}</Providers>
       </body>
     </html>

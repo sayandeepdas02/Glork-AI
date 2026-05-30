@@ -70,8 +70,8 @@ const config: Config = {
 
       fontFamily: {
         sans:  ["var(--font-inter)",      "system-ui", "sans-serif"],
-        serif: ["var(--font-instrument)", "Georgia",   "serif"],
-        mono:  ["var(--font-inter)",      "Menlo",     "monospace"],
+        serif: ["var(--font-sansation)",   "Georgia",   "serif"],
+        mono:  ["var(--font-inter)",       "Menlo",     "monospace"],
       },
 
       borderRadius: {
