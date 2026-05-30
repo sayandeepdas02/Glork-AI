@@ -116,7 +116,7 @@ export function AgentStatusBanner() {
           disabled={isPending}
           className={cn(
             "shrink-0 inline-flex items-center gap-1.5 rounded-xl border border-white/10",
-            "bg-white/5 hover:bg-white/10 px-4 py-2 text-xs font-semibold text-[#8A8480] hover:text-white",
+            "bg-white/5 hover:bg-white/10 px-4 py-2 text-xs font-semibold text-white/70 hover:text-white",
             "transition-all duration-150 disabled:opacity-60"
           )}
         >

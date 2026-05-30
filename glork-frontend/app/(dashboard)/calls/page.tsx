@@ -60,7 +60,7 @@ export default function CallsPage() {
       <CallLogTable calls={data?.items ?? []} isLoading={isLoading} />
 
       {data && data.total > (data.items?.length ?? 0) && (
-        <p className="text-center text-[10px] font-mono uppercase tracking-widest text-[#4A4540] pt-2">
+        <p className="text-center text-[11px] font-mono uppercase tracking-widest text-white/45 pt-2">
           Showing {data.items?.length} of {data.total} calls
         </p>
       )}

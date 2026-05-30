@@ -62,7 +62,7 @@ export function CallLogTable({ calls, isLoading }: CallLogTableProps) {
       {/* Header */}
       <div className="hidden md:grid grid-cols-[minmax(0,1.5fr)_minmax(0,1.5fr)_80px_minmax(0,1fr)_minmax(0,2fr)_60px] gap-4 items-center px-5 py-3 bg-white/3 border-b border-white/5">
         {["Caller", "Date & Time", "Duration", "Outcome", "Summary", ""].map((h) => (
-          <p key={h} className="text-[10px] font-mono font-semibold text-[#736F6B] uppercase tracking-widest">{h}</p>
+          <p key={h} className="text-[11px] font-mono font-semibold text-white/60 uppercase tracking-widest">{h}</p>
         ))}
       </div>
 
@@ -119,7 +119,7 @@ export function CallLogTable({ calls, isLoading }: CallLogTableProps) {
               {call.agent_summary ? (
                 <span className="line-clamp-2">{call.agent_summary}</span>
               ) : (
-                <span className="text-[#736F6B] text-[11px] font-mono">No summary</span>
+                <span className="text-white/40 text-[11px] font-mono">No summary</span>
               )}
             </div>
 

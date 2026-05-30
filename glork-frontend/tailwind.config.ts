@@ -19,12 +19,12 @@ const config: Config = {
       colors: {
         /* ── Brand ── */
         brand: {
-          DEFAULT:  "#FF5500",
-          light:    "#FF7733",
-          dark:     "#CC3300",
-          dim:      "rgba(255,85,0,0.12)",
-          border:   "rgba(255,85,0,0.25)",
-          glow:     "rgba(255,85,0,0.20)",
+          DEFAULT:  "#FF6B00",
+          light:    "#FF8533",
+          dark:     "#CC5500",
+          dim:      "rgba(255,107,0,0.12)",
+          border:   "rgba(255,107,0,0.25)",
+          glow:     "rgba(255,107,0,0.20)",
         },
         /* ── Surface ── */
         surface: {

@@ -18,8 +18,8 @@
   --brand-glow:    rgba(255, 107, 0, 0.20);
 
   /* Edge / dividers */
-  --edge:          rgba(255, 255, 255, 0.04); /* Grid system reduced to 50% opacity */
-  --edge-strong:   rgba(255, 255, 255, 0.15); /* Hover borders */
+  --edge:          rgba(255, 255, 255, 0.06); /* Subtle dividers */
+  --edge-strong:   rgba(255, 255, 255, 0.16); /* Hover / card borders */
   --edge-card:     rgba(255, 255, 255, 0.08); /* Card borders */
 
   /* Text */
@@ -31,7 +31,7 @@
   --radius:        0.625rem;
 
   /* Tailwind-shadcn compat vars */
-  --background:    17 17 17;
+  --background:    12 10 9;
   --foreground:    245 240 235;
   --primary:       16 74% 50%;
   --primary-foreground: 0 0% 100%;
@@ -291,6 +291,17 @@
 .scrollbar-thin::-webkit-scrollbar-thumb {
   background: rgba(100,116,139,0.25);
   border-radius: 4px;
+}
+
+.scrollbar-sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+.scrollbar-sidebar::-webkit-scrollbar { width: 3px; }
+.scrollbar-sidebar::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
 }
 
 /* ─── Print ──────────────────────────────────────────────── */
