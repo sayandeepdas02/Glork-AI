@@ -116,33 +116,36 @@ export default function Pricing() {
             <article
               key={plan.name}
               className={[
-                "flex flex-col p-8 rounded-xl transition-all duration-200 relative",
+                "flex flex-col p-8 lg:p-10 rounded-2xl transition-all duration-300 relative",
                 plan.highlight
-                  ? "bg-white/[0.03] border border-brand shadow-[0_0_40px_rgba(255,107,0,0.15)]"
-                  : "bg-white/[0.02] border border-white/[0.08] hover:border-white/15"
+                  ? "bg-[#0C0A09] border border-brand/50 shadow-[0_0_60px_rgba(255,107,0,0.20)] md:scale-105 z-10"
+                  : "bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04]"
               ].join(" ")}
             >
+              {plan.highlight && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
+                  <span className="text-[10px] font-mono font-bold text-white uppercase tracking-widest bg-brand px-3 py-1.5 rounded-full shadow-[0_0_20px_rgba(255,107,0,0.4)] whitespace-nowrap">
+                    Most Popular
+                  </span>
+                </div>
+              )}
+
               {/* Plan info */}
-              <div className="mb-8">
+              <div className="mb-8 mt-2">
                 <div className="flex justify-between items-center mb-4">
                   <p className="text-sm font-mono font-semibold uppercase tracking-widest text-white/90">
                     {plan.name}
                   </p>
-                  {plan.highlight && (
-                    <span className="text-[9px] font-mono font-bold text-brand uppercase tracking-widest border border-brand/30 bg-brand/10 px-2 py-0.5 rounded">
-                      Popular
-                    </span>
-                  )}
                 </div>
                 
                 <div className="flex items-end gap-1 mb-2">
-                  <span className="text-6xl font-serif italic font-bold text-white tracking-tight">${price}</span>
+                  <span className="text-6xl lg:text-7xl font-serif italic font-bold text-white tracking-tight">${price}</span>
                   <span className="text-sm text-white/70 mb-2 font-mono">
                     / mo
                   </span>
                 </div>
                 
-                <p className="text-[13px] text-white/70">
+                <p className="text-[14px] text-white/70">
                   {plan.description}
                 </p>
               </div>

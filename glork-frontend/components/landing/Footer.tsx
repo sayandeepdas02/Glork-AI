@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Twitter, Github, Mail } from "lucide-react"
+import { Twitter, Github, Mail, ShieldCheck, Lock, CheckCircle2, Calendar } from "lucide-react"
 import { Panel } from "@/components/ui/panel"
 import { Logo } from "@/components/ui/logo"
 
@@ -14,6 +14,28 @@ const footerLinks = {
 export default function Footer() {
   return (
     <Panel className="bg-background border-t-0">
+
+      {/* ── Trust Layer ── */}
+      <div className="border-b border-edge bg-white/[0.01]">
+        <div className="px-8 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+          {[
+            { icon: ShieldCheck, title: "HIPAA Compliant", desc: "Enterprise-grade security" },
+            { icon: Calendar, title: "Google Calendar", desc: "Native seamless integration" },
+            { icon: Lock, title: "256-bit Security", desc: "Bank-level data encryption" },
+            { icon: CheckCircle2, title: "99.9% Uptime", desc: "Reliable SLA guarantee" },
+          ].map((item) => (
+            <div key={item.title} className="flex items-center gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand/10 border border-brand/20 shadow-[0_0_15px_rgba(255,107,0,0.1)]">
+                <item.icon className="h-5 w-5 text-brand" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white">{item.title}</p>
+                <p className="text-[11px] text-white/50 font-mono mt-0.5">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* ── Main footer ── */}
       <div className="px-8 py-16 grid grid-cols-1 md:grid-cols-5 gap-12 lg:gap-16 border-b border-edge">

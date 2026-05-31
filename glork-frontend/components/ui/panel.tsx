@@ -11,7 +11,7 @@ function Panel({ className, ...props }: React.ComponentProps<"section">) {
         <section
             data-slot="panel"
             className={cn(
-                "screen-line-before screen-line-after border-x border-white/6 max-w-[1200px] mx-auto",
+                "screen-line-before screen-line-after border-x border-white/6 max-w-[1400px] mx-auto",
                 className
             )}
             {...props}

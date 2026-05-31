@@ -18,7 +18,7 @@
   --brand-glow:    rgba(255, 107, 0, 0.20);
 
   /* Edge / dividers */
-  --edge:          rgba(255, 255, 255, 0.06); /* Subtle dividers */
+  --edge:          rgba(255, 255, 255, 0.03); /* Subtle dividers */
   --edge-strong:   rgba(255, 255, 255, 0.16); /* Hover / card borders */
   --edge-card:     rgba(255, 255, 255, 0.08); /* Card borders */
 
