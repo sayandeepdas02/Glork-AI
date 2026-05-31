@@ -16,7 +16,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-white/8 bg-[#0C0A09]/90 backdrop-blur-xl">
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-12 h-16 flex items-center justify-between gap-4">
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-12 h-16 flex items-center justify-between gap-4">
 
         {/* Left: Logo + wordmark */}
         <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">

@@ -1,12 +1,13 @@
 "use client"
 
-import { Panel, PanelContent } from "@/components/ui/panel"
+import { Zap, Phone, Shield, Globe } from "lucide-react"
+import { Panel } from "@/components/ui/panel"
 
 const stats = [
-  { value: "3 min",  label: "Average setup time",    sub: "No technical skills needed" },
-  { value: "24/7",   label: "Call coverage",          sub: "Including holidays" },
-  { value: "99.9%",  label: "Uptime SLA",             sub: "Enterprise-grade reliability" },
-  { value: "15+",    label: "Languages supported",    sub: "Serve every patient" },
+  { icon: Zap,    value: "3 min",  label: "Average setup time",    sub: "No technical skills needed" },
+  { icon: Phone,  value: "24/7",   label: "Call coverage",          sub: "Including holidays" },
+  { icon: Shield, value: "99.9%",  label: "Uptime SLA",             sub: "Enterprise-grade reliability" },
+  { icon: Globe,  value: "15+",    label: "Languages supported",    sub: "Serve every patient" },
 ]
 
 export default function Stats() {
@@ -17,18 +18,23 @@ export default function Stats() {
           <div
             key={item.label}
             className={[
-              "flex flex-col p-8 transition-colors duration-150 hover:bg-white/5",
+              "group flex flex-col p-10 transition-colors duration-300 hover:bg-white/[0.04]",
               /* Internal grid lines */
               "border-b border-edge",
               (i + 1) % 4 !== 0 ? "lg:border-r" : "",
               (i + 1) % 2 !== 0 ? "sm:border-r lg:border-r" : "", 
             ].join(" ")}
           >
-            <p className="text-5xl md:text-6xl font-serif italic font-bold text-white/95 mb-4 tracking-tight">
-              {item.value}
-            </p>
-            <p className="text-[15px] font-semibold text-white/90 mb-1">{item.label}</p>
-            <p className="text-[13px] text-white/75">{item.sub}</p>
+            <div className="transform transition-transform duration-300 group-hover:-translate-y-1">
+              <div className="flex items-center gap-3 mb-4">
+                <item.icon className="h-5 w-5 text-brand opacity-80" />
+                <span className="text-[11px] font-mono text-white/50 uppercase tracking-widest">{item.label}</span>
+              </div>
+              <p className="text-6xl md:text-7xl font-serif italic font-bold text-white mb-4 tracking-tight">
+                {item.value}
+              </p>
+              <p className="text-[14px] text-white/70">{item.sub}</p>
+            </div>
           </div>
         ))}
       </div>
