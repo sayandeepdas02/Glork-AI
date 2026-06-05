@@ -74,20 +74,25 @@ export default function Pricing() {
       </PanelHeader>
 
       <PanelContent>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {plans.map((plan) => {
             const price = annual ? plan.annualPrice : plan.monthlyPrice
             return (
               <article
                 key={plan.name}
                 className={cn(
-                  "flex flex-col p-7 rounded-xl transition-all duration-200 relative",
+                  "relative flex flex-col p-6 rounded-xl transition-all duration-200",
                   plan.highlight
-                    ? "bg-white border border-brand/25 ring-1 ring-brand/10 md:scale-[1.02] z-10"
+                    ? "bg-white border border-brand/25 shadow-[0_4px_24px_rgba(255,107,0,0.08)]"
                     : "bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D0D0CA]"
                 )}
               >
-                <div className="flex items-center justify-between mb-5">
+                {/* Accent stripe for featured plan */}
+                {plan.highlight && (
+                  <div className="absolute inset-x-0 top-0 h-[2px] bg-brand rounded-t-xl" />
+                )}
+
+                <div className="flex items-center justify-between mb-4">
                   <p className="text-[11px] text-[#999] uppercase tracking-wider">{plan.name}</p>
                   {plan.highlight && (
                     <span className="text-[10px] text-brand border border-brand/20 bg-brand/5 px-2 py-0.5 rounded-full">
@@ -96,15 +101,15 @@ export default function Pricing() {
                   )}
                 </div>
 
-                <div className="mb-6">
+                <div className="mb-5">
                   <div className="flex items-end gap-1 mb-1">
-                    <span className="text-[3.25rem] font-light text-[#111] leading-none tracking-tight">${price}</span>
-                    <span className="text-[12px] text-[#bbb] mb-1.5">/ mo</span>
+                    <span className="text-[2.75rem] font-light text-[#111] leading-none tracking-tight">${price}</span>
+                    <span className="text-[12px] text-[#bbb] mb-1">/ mo</span>
                   </div>
                   <p className="text-[13px] text-[#999]">{plan.description}</p>
                 </div>
 
-                <ul className="space-y-2.5 flex-1 mb-7">
+                <ul className="space-y-2.5 flex-1 mb-6">
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-center gap-2.5 text-[13px] text-[#555]">
                       <Check className="h-3.5 w-3.5 shrink-0 text-brand" />
@@ -116,7 +121,7 @@ export default function Pricing() {
                 <Link
                   href={plan.href}
                   className={cn(
-                    "block text-center rounded-xl px-5 py-2.5 text-[13px] transition-all duration-150 border",
+                    "block text-center rounded-xl px-5 py-2.5 text-[13px] font-medium transition-all duration-150 border",
                     plan.highlight
                       ? "bg-brand text-white border-brand hover:bg-brand-light"
                       : "bg-white text-[#555] border-[#DEDED9] hover:border-[#C0C0BB] hover:text-[#111]"

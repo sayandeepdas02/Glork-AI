@@ -18,7 +18,7 @@ function PanelHeader({ className, ...props }: React.ComponentProps<"header">) {
     return (
         <header
             data-slot="panel-header"
-            className={cn("px-8 lg:px-14 pt-9 pb-6", className)}
+            className={cn("px-8 lg:px-14 pt-10 pb-8", className)}
             {...props}
         />
     );
@@ -39,7 +39,7 @@ function PanelTitle({ className, ...props }: React.ComponentProps<"h2">) {
 
 function PanelContent({ className, ...props }: React.ComponentProps<"div">) {
     return (
-        <div data-slot="panel-body" className={cn("px-8 lg:px-14 pb-12", className)} {...props} />
+        <div data-slot="panel-body" className={cn("px-8 lg:px-14 pt-8 pb-16", className)} {...props} />
     );
 }
 

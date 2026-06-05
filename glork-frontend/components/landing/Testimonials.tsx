@@ -35,25 +35,25 @@ export default function Testimonials() {
       </PanelHeader>
 
       <PanelContent>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           {testimonials.map((t) => (
             <article
               key={t.name}
-              className="flex flex-col p-7 rounded-xl bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D0D0CA] transition-colors duration-200"
+              className="flex flex-col p-6 rounded-xl bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D0D0CA] transition-colors duration-200"
             >
-              <p className="text-[11.5px] text-[#aaa] mb-5">{t.outcome}</p>
+              <p className="text-[11px] text-[#aaa] uppercase tracking-[0.16em] font-medium mb-4">{t.outcome}</p>
 
-              <blockquote className="text-[14.5px] text-[#444] leading-[1.7] flex-1 mb-6">
+              <blockquote className="text-[14px] text-[#444] leading-[1.7] flex-1 mb-6">
                 &ldquo;{t.quote}&rdquo;
               </blockquote>
 
-              <div className="flex items-center gap-3 pt-5 border-t border-[#EAEAE5]">
-                <div className="h-8 w-8 shrink-0 rounded-full bg-[#F0F0EC] border border-[#E0E0DB] flex items-center justify-center text-[11px] text-[#888]">
+              <div className="flex items-center gap-3 pt-4 border-t border-[#EAEAE5]">
+                <div className="h-9 w-9 shrink-0 rounded-full bg-[#F0F0EC] border border-[#E0E0DB] flex items-center justify-center text-[11px] font-medium text-[#888]">
                   {t.avatar}
                 </div>
                 <div>
-                  <p className="text-[13px] text-[#222]">{t.name}</p>
-                  <p className="text-[11.5px] text-[#aaa]">{t.specialty}</p>
+                  <p className="text-[13px] font-medium text-[#222]">{t.name}</p>
+                  <p className="text-[11.5px] text-[#aaa] mt-0.5">{t.specialty}</p>
                 </div>
               </div>
             </article>

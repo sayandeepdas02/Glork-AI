@@ -7,32 +7,32 @@ import { Panel } from "@/components/ui/panel"
 export default function CTA() {
   return (
     <Panel id="cta" className="border-t border-[#EAEAE5] bg-[#F7F6F3]">
-      <div className="flex flex-col items-center justify-center py-16 px-6 text-center border-b border-[#E0E0DB]">
+      <div className="flex flex-col items-center justify-center py-20 px-6 text-center border-b border-[#E0E0DB]">
 
-        <p className="text-[11px] text-[#aaa] uppercase tracking-[0.22em] mb-5">
+        <p className="text-[11px] text-[#aaa] uppercase tracking-[0.22em] mb-4">
           Stop missing calls
         </p>
 
-        <h2 className="text-[1.75rem] md:text-[2.25rem] font-light text-[#111] mb-4 leading-[1.15] tracking-tight max-w-2xl">
+        <h2 className="text-[1.75rem] md:text-[2.25rem] font-light text-[#111] mb-4 leading-[1.15] tracking-tight max-w-xl">
           Every missed call is a missed appointment.
         </h2>
 
-        <p className="text-[14px] text-[#777] mb-8 max-w-sm mx-auto leading-relaxed">
+        <p className="text-[14px] text-[#777] mb-8 max-w-[360px] mx-auto leading-relaxed">
           Set up your AI receptionist in under 3 minutes. No credit card required.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 px-7 py-3 text-[14px] bg-brand text-white hover:bg-brand-light transition-colors rounded-full"
+            className="flex items-center gap-2 px-6 py-2.5 text-[13px] bg-brand text-white hover:bg-brand-light transition-colors rounded-full"
           >
             Set up in 3 minutes <ArrowRight className="h-3.5 w-3.5" />
           </Link>
           <Link
             href="/login"
-            className="text-[14px] text-[#888] hover:text-[#333] transition-colors"
+            className="flex items-center gap-2 px-6 py-2.5 text-[13px] text-[#666] hover:text-[#111] border border-[#D8D8D3] hover:border-[#B8B8B3] transition-all rounded-full bg-white"
           >
-            Already have an account →
+            Sign in to your account
           </Link>
         </div>
       </div>

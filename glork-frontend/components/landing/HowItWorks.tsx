@@ -36,11 +36,11 @@ export default function HowItWorks() {
           <div
             key={step.n}
             className={[
-              "flex flex-col md:flex-row md:items-start gap-6 md:gap-12 px-8 lg:px-14 py-8 hover:bg-[#FAFAF8] transition-colors duration-150",
+              "flex flex-col md:flex-row md:items-start gap-5 md:gap-8 px-8 lg:px-14 py-8 hover:bg-[#FAFAF8] transition-colors duration-150",
               idx < steps.length - 1 ? "border-b border-[#EAEAE5]" : "",
             ].join(" ")}
           >
-            <span className="text-[2.5rem] font-light text-[#DDDDD8] leading-none select-none shrink-0 w-14">
+            <span className="text-[1.875rem] font-light text-[#D8D8D3] leading-none select-none shrink-0 w-10 tabular-nums">
               {step.n}
             </span>
 

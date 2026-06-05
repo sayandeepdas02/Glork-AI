@@ -17,7 +17,7 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 w-full">
       {/* Pill navbar */}
-      <div className="max-w-[1100px] mx-auto px-4 pt-4">
+      <div className="max-w-[1200px] mx-auto px-6 pt-3">
         <div className="flex items-center justify-between h-14 px-5 bg-white/90 backdrop-blur-md border border-[#E8E8E3] rounded-2xl shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
 
           <Link href="/" className="flex items-center gap-2 flex-shrink-0">
@@ -69,7 +69,7 @@ export default function Navbar() {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="md:hidden max-w-[1100px] mx-auto px-4 pt-2">
+        <div className="md:hidden max-w-[1200px] mx-auto px-6 pt-2">
           <div className="bg-white border border-[#E8E8E3] rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] px-5 py-4 space-y-1">
             {NAV_LINKS.map((item) => (
               <Link
