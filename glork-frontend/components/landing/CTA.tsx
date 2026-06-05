@@ -1,54 +1,46 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowRight, Phone } from "lucide-react"
-import { Panel, PanelHeader, PanelTitle } from "@/components/ui/panel"
+import { ArrowRight } from "lucide-react"
+import { Panel } from "@/components/ui/panel"
 
 export default function CTA() {
   return (
-    <Panel id="cta" className="bg-surface relative overflow-hidden">
-      {/* Noise background for CTA */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDIiIC8+Cjwvc3ZnPg==')] opacity-40 pointer-events-none" />
+    <Panel id="cta" className="border-t border-[#EAEAE5] bg-[#F7F6F3]">
+      <div className="flex flex-col items-center justify-center py-24 px-6 text-center border-b border-[#E0E0DB]">
 
-      {/* Subtle radial glow inside CTA */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at center, rgba(255,107,0,0.08), transparent 60%)' }} />
-
-      <div className="flex flex-col items-center justify-center py-[120px] px-6 text-center relative z-10 border-b border-edge">
-        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-brand/10 border border-brand/30 mb-8">
-          <Phone className="h-5 w-5 text-brand" />
-        </div>
-
-        <p className="text-[13px] font-mono font-bold text-brand uppercase tracking-[0.3em] mb-4">
+        <p className="text-[11px] text-[#aaa] uppercase tracking-[0.22em] mb-6">
           Stop missing calls
         </p>
-        
-        <h2 className="text-5xl lg:text-6xl font-medium text-white/95 mb-6 leading-tight tracking-tight">
-          Every missed call is a<br />
-          <span className="font-serif italic text-brand">missed appointment.</span>
+
+        <h2 className="text-[2.25rem] md:text-[3.25rem] font-light text-[#111] mb-5 leading-[1.1] tracking-tight max-w-2xl">
+          Every missed call is a<br className="hidden sm:block" /> missed appointment.
         </h2>
-        
-        <p className="text-[15px] text-white/80 mb-12 max-w-xl mx-auto leading-relaxed">
+
+        <p className="text-[15px] text-[#777] mb-10 max-w-sm mx-auto leading-relaxed">
           Set up your AI receptionist in under 3 minutes. No credit card required.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href="/dashboard"
-            className="group flex items-center gap-2 px-8 py-4 text-base font-semibold bg-brand text-white hover:bg-brand-light transition-all duration-300 rounded-lg relative overflow-hidden shadow-[0_0_40px_rgba(255,107,0,0.3)] hover:shadow-[0_0_60px_rgba(255,107,0,0.5)] cursor-pointer hover:-translate-y-1"
+            className="flex items-center gap-2 px-7 py-3 text-[14px] bg-brand text-white hover:bg-brand-light transition-colors rounded-full"
           >
-            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out" />
-            <span className="relative z-10 flex items-center gap-2">
-              Set up in 3 minutes <ArrowRight className="h-5 w-5" />
-            </span>
+            Set up in 3 minutes <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+          <Link
+            href="/login"
+            className="text-[14px] text-[#888] hover:text-[#333] transition-colors"
+          >
+            Already have an account →
           </Link>
         </div>
       </div>
-      
-      {/* Footer Info Bar of CTA */}
-      <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-edge border-b border-edge text-center bg-black/20">
+
+      <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-[#E0E0DB] text-center">
         {["No credit card", "Cancel anytime", "Live in 3 minutes", "Free forever plan"].map((badge) => (
-          <div key={badge} className="py-4 px-2 text-[11px] text-white/70 font-mono font-medium uppercase tracking-widest flex items-center justify-center gap-1.5">
-             <span className="text-brand font-bold">✓</span> {badge}
+          <div key={badge} className="py-4 text-[11px] text-[#bbb] uppercase tracking-wider flex items-center justify-center gap-1.5">
+            <span className="text-brand/70">✓</span> {badge}
           </div>
         ))}
       </div>
