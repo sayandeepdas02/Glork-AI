@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
@@ -9,6 +10,7 @@ from fastapi import APIRouter, HTTPException, Request, status
 from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.db.session import AsyncSessionLocal
 from app.models.agent_config import AgentConfig
 from app.models.booking import Booking, BookingStatus
@@ -24,6 +26,48 @@ from app.tasks.celery_tasks import process_call_ended, send_sms_confirmation
 logger = structlog.get_logger()
 
 router = APIRouter(prefix="/retell", tags=["retell"])
+
+# ── Nonce TTL for webhook replay protection (seconds) ─────────────────────────
+_NONCE_TTL = 3600  # 1 hour
+
+
+async def _check_replay(call_id: str, event: str) -> bool:
+    """Return True if request is a replay (already seen). Store nonce in Redis."""
+    try:
+        import redis.asyncio as aioredis
+        r = aioredis.from_url(settings.REDIS_URL, socket_connect_timeout=2)
+        key = f"retell:nonce:{call_id}:{event}"
+        added = await r.set(key, "1", ex=_NONCE_TTL, nx=True)  # nx=True means only set if not exists
+        await r.aclose()
+        return added is None  # None means key already existed → replay
+    except Exception as exc:
+        # If Redis is unavailable, allow the request but log the warning
+        logger.warning("retell_nonce_redis_unavailable", error=str(exc))
+        return False
+
+
+async def _verify_tool_request(request: Request) -> bytes:
+    """Validate Retell HMAC signature on tool requests. Returns raw body."""
+    body = await request.body()
+    signature = request.headers.get("X-Retell-Signature", "")
+    if not retell_service.verify_webhook_signature(body, signature):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid signature",
+        )
+    return body
+
+
+def _require_metadata_doctor_id(metadata: dict) -> str:
+    """Extract doctor_id from trusted call metadata only. Never from AI-supplied args."""
+    doctor_id = metadata.get("doctor_id")
+    if not doctor_id:
+        raise ValueError("Authorization context missing — doctor_id not in call metadata")
+    try:
+        UUID(str(doctor_id))
+    except (ValueError, AttributeError):
+        raise ValueError("Invalid authorization context")
+    return str(doctor_id)
 
 
 def _ok(result: dict) -> dict:
@@ -80,6 +124,12 @@ async def retell_webhook(request: Request):
     retell_call_id = call_data.get("call_id")
     from_number = call_data.get("from_number")
     agent_id = call_data.get("agent_id")
+
+    # Replay protection: reject duplicate call_id+event combinations
+    if retell_call_id and event_type:
+        if await _check_replay(retell_call_id, event_type):
+            logger.warning("retell_webhook_replay_detected", call_id=retell_call_id, event=event_type)
+            return {"received": True}
 
     async with AsyncSessionLocal() as db:
         if event_type == "call_started":
@@ -182,7 +232,10 @@ async def retell_webhook(request: Request):
 @router.post("/tools/check-availability")
 async def tool_check_availability(request: Request):
     try:
-        data = await request.json()
+        body = await _verify_tool_request(request)
+        data = json.loads(body)
+    except HTTPException:
+        raise
     except Exception:
         return _err("Invalid request body")
 
@@ -190,12 +243,16 @@ async def tool_check_availability(request: Request):
     metadata = call_data.get("metadata", {}) or {}
     args = data.get("args", {}) or {}
 
-    doctor_id = metadata.get("doctor_id") or args.get("doctor_id")
+    try:
+        doctor_id = _require_metadata_doctor_id(metadata)
+    except ValueError as exc:
+        return _err(str(exc))
+
     date = args.get("date")
     preferred_time = args.get("preferred_time", "any")
 
-    if not doctor_id or not date:
-        return _err("doctor_id and date are required")
+    if not date:
+        return _err("date is required")
 
     try:
         async with AsyncSessionLocal() as db:
@@ -238,7 +295,10 @@ async def tool_check_availability(request: Request):
 @router.post("/tools/create-booking")
 async def tool_create_booking(request: Request):
     try:
-        data = await request.json()
+        body = await _verify_tool_request(request)
+        data = json.loads(body)
+    except HTTPException:
+        raise
     except Exception:
         return _err("Invalid request body")
 
@@ -246,7 +306,11 @@ async def tool_create_booking(request: Request):
     metadata = call_data.get("metadata", {}) or {}
     args = data.get("args", {}) or {}
 
-    doctor_id = metadata.get("doctor_id") or args.get("doctor_id")
+    try:
+        doctor_id = _require_metadata_doctor_id(metadata)
+    except ValueError as exc:
+        return _err(str(exc))
+
     retell_call_id = call_data.get("call_id")
     patient_name = args.get("patient_name")
     patient_phone = args.get("patient_phone")
@@ -343,7 +407,10 @@ async def tool_create_booking(request: Request):
 @router.post("/tools/get-patient-bookings")
 async def tool_get_patient_bookings(request: Request):
     try:
-        data = await request.json()
+        body = await _verify_tool_request(request)
+        data = json.loads(body)
+    except HTTPException:
+        raise
     except Exception:
         return _err("Invalid request body")
 
@@ -351,11 +418,15 @@ async def tool_get_patient_bookings(request: Request):
     metadata = call_data.get("metadata", {}) or {}
     args = data.get("args", {}) or {}
 
-    doctor_id = metadata.get("doctor_id") or args.get("doctor_id")
+    try:
+        doctor_id = _require_metadata_doctor_id(metadata)
+    except ValueError as exc:
+        return _err(str(exc))
+
     patient_phone = args.get("patient_phone")
 
-    if not doctor_id or not patient_phone:
-        return _err("doctor_id and patient_phone are required")
+    if not patient_phone:
+        return _err("patient_phone is required")
 
     try:
         async with AsyncSessionLocal() as db:
@@ -400,7 +471,10 @@ async def tool_get_patient_bookings(request: Request):
 @router.post("/tools/cancel-booking")
 async def tool_cancel_booking(request: Request):
     try:
-        data = await request.json()
+        body = await _verify_tool_request(request)
+        data = json.loads(body)
+    except HTTPException:
+        raise
     except Exception:
         return _err("Invalid request body")
 
@@ -408,7 +482,13 @@ async def tool_cancel_booking(request: Request):
     metadata = call_data.get("metadata", {}) or {}
     args = data.get("args", {}) or {}
 
-    doctor_id = metadata.get("doctor_id") or args.get("doctor_id")
+    # doctor_id MUST come from trusted call metadata only — never from AI-supplied args
+    try:
+        doctor_id = _require_metadata_doctor_id(metadata)
+        doctor_uid = UUID(doctor_id)
+    except ValueError as exc:
+        return _err(str(exc))
+
     booking_id_str = args.get("booking_id")
 
     if not booking_id_str:
@@ -426,13 +506,15 @@ async def tool_cancel_booking(request: Request):
             if not booking:
                 return _err("Booking not found")
 
-            if doctor_id:
-                try:
-                    uid = UUID(doctor_id)
-                    if booking.doctor_id != uid:
-                        return _err("Booking does not belong to this doctor")
-                except ValueError:
-                    pass
+            # Mandatory ownership check — no optional bypass
+            if booking.doctor_id != doctor_uid:
+                logger.warning(
+                    "retell_cancel_booking_ownership_violation",
+                    booking_id=booking_id_str,
+                    booking_doctor=str(booking.doctor_id),
+                    caller_doctor=doctor_id,
+                )
+                return _err("Booking does not belong to this doctor")
 
             cal_result = await db.execute(
                 select(CalendarIntegration).where(

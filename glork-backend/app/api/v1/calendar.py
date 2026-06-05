@@ -9,6 +9,7 @@ from fastapi.responses import RedirectResponse
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
@@ -109,19 +110,18 @@ async def calendar_callback(
     if token_expiry and token_expiry.tzinfo is None:
         token_expiry = token_expiry.replace(tzinfo=timezone.utc)
 
-    existing_result = await db.execute(
-        select(CalendarIntegration).where(CalendarIntegration.doctor_id == doctor_id)
-    )
-    integration = existing_result.scalar_one_or_none()
+    # Atomic upsert — prevents duplicate-insert race on concurrent OAuth callbacks
+    update_cols: dict = {
+        "access_token_encrypted": access_token_encrypted,
+        "token_expiry": token_expiry,
+        "is_connected": True,
+    }
+    if refresh_token_encrypted is not None:
+        update_cols["refresh_token_encrypted"] = refresh_token_encrypted
 
-    if integration:
-        integration.access_token_encrypted = access_token_encrypted
-        if refresh_token_encrypted:
-            integration.refresh_token_encrypted = refresh_token_encrypted
-        integration.token_expiry = token_expiry
-        integration.is_connected = True
-    else:
-        integration = CalendarIntegration(
+    stmt = (
+        pg_insert(CalendarIntegration)
+        .values(
             doctor_id=doctor_id,
             google_calendar_id="primary",
             access_token_encrypted=access_token_encrypted,
@@ -129,9 +129,14 @@ async def calendar_callback(
             token_expiry=token_expiry,
             is_connected=True,
         )
-        db.add(integration)
+        .on_conflict_do_update(
+            index_elements=["doctor_id"],
+            set_=update_cols,
+        )
+    )
 
     try:
+        await db.execute(stmt)
         await db.commit()
         logger.info("calendar_connected", doctor_id=str(doctor_id))
     except Exception as exc:

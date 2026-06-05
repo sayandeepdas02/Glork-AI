@@ -123,24 +123,31 @@ async def toggle_agent(
     doctor: Doctor = Depends(get_current_active_doctor),
     db: AsyncSession = Depends(get_db),
 ):
-    if not doctor.is_agent_active:
-        result = await db.execute(
-            select(CalendarIntegration).where(CalendarIntegration.doctor_id == doctor.id)
+    # Lock the row to prevent concurrent toggles producing inconsistent state
+    locked = await db.execute(
+        select(Doctor).where(Doctor.id == doctor.id).with_for_update()
+    )
+    locked_doctor = locked.scalar_one()
+
+    if not locked_doctor.is_agent_active:
+        cal_result = await db.execute(
+            select(CalendarIntegration).where(CalendarIntegration.doctor_id == locked_doctor.id)
         )
-        cal = result.scalar_one_or_none()
+        cal = cal_result.scalar_one_or_none()
         if not cal or not cal.is_connected:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Connect Google Calendar first",
             )
 
-    doctor.is_agent_active = not doctor.is_agent_active
-    new_state = doctor.is_agent_active
+    locked_doctor.is_agent_active = not locked_doctor.is_agent_active
+    new_state = locked_doctor.is_agent_active
 
     try:
         await db.commit()
     except Exception as exc:
         await db.rollback()
+        logger.error("agent_toggle_failed", doctor_id=str(doctor.id), error=str(exc))
         raise HTTPException(status_code=500, detail="Failed to toggle agent")
 
     msg = "AI agent activated" if new_state else "AI agent deactivated"

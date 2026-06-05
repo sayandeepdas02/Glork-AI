@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { StatusBadge } from "@/components/bookings/status-badge"
 import { useUpdateBooking } from "@/hooks/use-bookings"
+import { useClinicTimezone } from "@/hooks/use-agent-config"
 import { formatAppointmentDate, formatAppointmentTime } from "@/lib/utils"
 import { cn } from "@/lib/utils"
 import type { Booking } from "@/types"
@@ -49,7 +50,8 @@ export function BookingTableSkeleton() {
 
 export function BookingTable({ bookings, isLoading }: BookingTableProps) {
   const router = useRouter()
-  const { mutate: update } = useUpdateBooking()
+  const { mutate: update, isPending: isCancelPending } = useUpdateBooking()
+  const timezone = useClinicTimezone()
   const [cancelId, setCancelId] = useState<string | null>(null)
 
   if (isLoading) return <BookingTableSkeleton />
@@ -101,13 +103,13 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
                 </div>
               </div>
 
-              {/* Date & time */}
+              {/* Date & time — displayed in clinic's configured timezone */}
               <div className="hidden md:block">
                 <p className="text-sm font-medium text-[#111]">
-                  {formatAppointmentDate(booking.appointment_start)}
+                  {formatAppointmentDate(booking.appointment_start, timezone)}
                 </p>
                 <p className="text-[11px] text-[#888] font-mono mt-0.5">
-                  {formatAppointmentTime(booking.appointment_start)}
+                  {formatAppointmentTime(booking.appointment_start, timezone)}
                 </p>
               </div>
 
@@ -170,15 +172,16 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
           <AlertDialogFooter>
             <AlertDialogCancel className="bg-white border-[#D8D8D3] text-[#555] hover:bg-[#F5F5F2]">Keep booking</AlertDialogCancel>
             <AlertDialogAction
+              disabled={isCancelPending}
               onClick={() => {
                 if (cancelId) {
                   update({ id: cancelId, data: { status: "cancelled" } })
                   setCancelId(null)
                 }
               }}
-              className="bg-red-600 hover:bg-red-700 text-white"
+              className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-60"
             >
-              Cancel booking
+              {isCancelPending ? "Cancelling…" : "Cancel booking"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { useForm, type UseFormRegisterReturn } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -79,18 +79,20 @@ const AUTH_MESSAGES: Record<string, string> = {
 
 export function LoginForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { login } = useAuth()
   const [showPw, setShowPw] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [sessionMsg, setSessionMsg] = useState<string | null>(null)
 
   useEffect(() => {
-    const reason = sessionStorage.getItem("auth_error")
-    if (reason) {
-      sessionStorage.removeItem("auth_error")
-      setSessionMsg(AUTH_MESSAGES[reason] ?? AUTH_MESSAGES.auth_required)
+    // Read reason from URL query param (set by the axios interceptor).
+    // Using query params avoids sessionStorage which is accessible to XSS.
+    const reason = searchParams.get("reason")
+    if (reason && reason in AUTH_MESSAGES) {
+      setSessionMsg(AUTH_MESSAGES[reason as keyof typeof AUTH_MESSAGES])
     }
-  }, [])
+  }, [searchParams])
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),

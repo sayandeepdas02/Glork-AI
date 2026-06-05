@@ -72,9 +72,11 @@ async def login_doctor(email: str, password: str, db: AsyncSession) -> TokenResp
         )
 
     if not doctor.is_active:
+        # Log internally but return the same generic 401 to prevent email enumeration
+        logger.warning("inactive_account_login_attempt", doctor_id=str(doctor.id))
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Account is inactive",
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
         )
 
     logger.info("doctor_logged_in", doctor_id=str(doctor.id))
