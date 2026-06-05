@@ -83,7 +83,10 @@ api.interceptors.response.use(
         isRefreshing = false
         clearTokens()
         getAuthStore().clearAuth()
-        if (typeof window !== "undefined") window.location.href = "/login"
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("auth_error", "auth_required")
+          window.location.href = "/login"
+        }
         return Promise.reject(error)
       }
 
@@ -106,7 +109,15 @@ api.interceptors.response.use(
         processQueue(err, null)
         clearTokens()
         getAuthStore().clearAuth()
-        if (typeof window !== "undefined") window.location.href = "/login"
+        if (typeof window !== "undefined") {
+          // Differentiate: auth error (expired) vs network error
+          const reason =
+            axios.isAxiosError(err) && err.response?.status
+              ? "session_expired"
+              : "network_error"
+          sessionStorage.setItem("auth_error", reason)
+          window.location.href = "/login"
+        }
         return Promise.reject(err)
       } finally {
         isRefreshing = false

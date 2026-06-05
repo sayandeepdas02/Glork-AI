@@ -83,13 +83,29 @@ function StatCardSkeleton() {
   )
 }
 
-export function StatsCards() {
-  const { data: stats, isLoading } = useBookingStats()
+function StatCardError() {
+  return (
+    <div className="rounded-2xl bg-white border border-[#E8E8E3] p-5 flex items-center justify-center">
+      <p className="text-xs text-[#aaa]">Unavailable</p>
+    </div>
+  )
+}
 
-  if (isLoading || !stats) {
+export function StatsCards() {
+  const { data: stats, isLoading, isError } = useBookingStats()
+
+  if (isLoading) {
     return (
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => <StatCardSkeleton key={i} />)}
+      </div>
+    )
+  }
+
+  if (isError || !stats) {
+    return (
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => <StatCardError key={i} />)}
       </div>
     )
   }

@@ -1,13 +1,16 @@
 "use client"
 
 import Link from "next/link"
-import { Calendar, ChevronRight } from "lucide-react"
+import { AlertTriangle, Calendar, ChevronRight } from "lucide-react"
 import { StatusBadge } from "@/components/bookings/status-badge"
 import { useBookings } from "@/hooks/use-bookings"
 import { formatAppointmentDate, formatAppointmentTime } from "@/lib/utils"
+import type { BookingFilters } from "@/types"
+
+const UPCOMING_FILTERS: BookingFilters = { page: 1, limit: 5, status: "confirmed" }
 
 export function UpcomingBookings() {
-  const { data, isLoading } = useBookings({ page: 1, limit: 5, status: "confirmed" })
+  const { data, isLoading, isError } = useBookings(UPCOMING_FILTERS)
 
   return (
     <div className="rounded-2xl bg-white border border-[#E8E8E3] overflow-hidden h-full">
@@ -37,6 +40,14 @@ export function UpcomingBookings() {
               <div className="h-5 w-20 rounded-full bg-[#F0F0EC] animate-pulse" />
             </div>
           ))}
+        </div>
+      ) : isError ? (
+        <div className="flex flex-col items-center justify-center py-14 text-center px-4">
+          <div className="h-12 w-12 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center mb-3">
+            <AlertTriangle className="h-5 w-5 text-red-400" />
+          </div>
+          <p className="text-sm font-medium text-[#111]">Could not load bookings</p>
+          <p className="text-xs text-[#888] mt-1 font-mono">Check your connection and try again</p>
         </div>
       ) : !data?.items.length ? (
         <div className="flex flex-col items-center justify-center py-14 text-center px-4">

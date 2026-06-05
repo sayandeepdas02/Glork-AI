@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Plus, ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react"
 import { BookingTable } from "@/components/bookings/booking-table"
 import { BookingFilters } from "@/components/bookings/booking-filters"
 import { BookingForm } from "@/components/bookings/booking-form"
@@ -11,13 +11,50 @@ import { Button } from "@/components/ui/button"
 
 const PAGE_SIZE = 20
 
+function Pagination({
+  page,
+  limit,
+  total,
+  onPageChange,
+}: {
+  page: number
+  limit: number
+  total: number
+  onPageChange: (page: number) => void
+}) {
+  const totalPages = Math.ceil(total / limit)
+  if (totalPages <= 1) return null
+
+  return (
+    <div className="flex items-center justify-center gap-3 pt-2">
+      <button
+        onClick={() => onPageChange(page - 1)}
+        disabled={page === 1}
+        className="inline-flex items-center gap-1 rounded-xl border border-[#D8D8D3] bg-white px-3 py-2 text-xs font-semibold text-[#555] transition-all hover:bg-[#F5F5F2] disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        <ChevronLeft className="h-3.5 w-3.5" /> Previous
+      </button>
+      <span className="text-xs font-mono text-[#888] tabular-nums">
+        {page} / {totalPages}
+      </span>
+      <button
+        onClick={() => onPageChange(page + 1)}
+        disabled={page >= totalPages}
+        className="inline-flex items-center gap-1 rounded-xl border border-[#D8D8D3] bg-white px-3 py-2 text-xs font-semibold text-[#555] transition-all hover:bg-[#F5F5F2] disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        Next <ChevronRight className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  )
+}
+
 export default function BookingsPage() {
   const { bookingFilters, setBookingFilters } = useUIStore()
-  const currentPage = bookingFilters.page ?? 1
-  const { data, isLoading } = useBookings({ ...bookingFilters, page: currentPage, limit: PAGE_SIZE })
+  const { data, isLoading, isError } = useBookings(bookingFilters)
   const [createOpen, setCreateOpen] = useState(false)
 
-  const totalPages = data ? Math.ceil(data.total / PAGE_SIZE) : 1
+  const page = bookingFilters.page ?? 1
+  const limit = bookingFilters.limit ?? 20
 
   return (
     <div className="space-y-5">
@@ -45,39 +82,25 @@ export default function BookingsPage() {
       </div>
 
       <BookingFilters />
-      <BookingTable bookings={data?.items ?? []} isLoading={isLoading} />
 
-      {data && data.total > 0 && (
-        <div className="flex items-center justify-between pt-2">
-          <p className="text-[10px] font-mono uppercase tracking-widest text-[#bbb]">
-            {data.items.length > 0
-              ? `${(currentPage - 1) * PAGE_SIZE + 1}–${(currentPage - 1) * PAGE_SIZE + data.items.length} of ${data.total} bookings`
-              : `0 of ${data.total} bookings`}
-          </p>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 w-8 p-0 rounded-lg border-[#D8D8D3] text-[#555] hover:bg-[#F5F5F2] disabled:opacity-30"
-              disabled={currentPage <= 1}
-              onClick={() => setBookingFilters({ page: currentPage - 1 })}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <span className="text-xs text-[#888] min-w-[4rem] text-center">
-              {currentPage} / {totalPages}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 w-8 p-0 rounded-lg border-[#D8D8D3] text-[#555] hover:bg-[#F5F5F2] disabled:opacity-30"
-              disabled={currentPage >= totalPages}
-              onClick={() => setBookingFilters({ page: currentPage + 1 })}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
+      {isError ? (
+        <div className="rounded-2xl border border-red-100 bg-red-50 py-12 text-center">
+          <p className="text-sm font-medium text-red-600">Could not load bookings.</p>
+          <p className="text-xs text-red-400 mt-1">Check your connection and try again.</p>
         </div>
+      ) : (
+        <>
+          <BookingTable bookings={data?.items ?? []} isLoading={isLoading} />
+
+          {data && (
+            <Pagination
+              page={page}
+              limit={limit}
+              total={data.total}
+              onPageChange={(p) => setBookingFilters({ page: p })}
+            />
+          )}
+        </>
       )}
 
       <BookingForm open={createOpen} onOpenChange={setCreateOpen} />

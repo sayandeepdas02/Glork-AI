@@ -99,9 +99,10 @@ export function AgentStatusBanner() {
                 {agentConfig.glork_phone_number}
               </span>
               <button
-                onClick={() => {
-                  copyToClipboard(agentConfig.glork_phone_number!)
-                  toast.success("Copied to clipboard")
+                onClick={async () => {
+                  const ok = await copyToClipboard(agentConfig.glork_phone_number!)
+                  if (ok) toast.success("Copied to clipboard")
+                  else toast.error("Failed to copy — please copy manually")
                 }}
                 className="text-brand hover:text-brand-dark transition-colors"
               >
