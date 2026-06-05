@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { useForm } from "react-hook-form"
+import { useForm, type UseFormRegisterReturn } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import { isAxiosError } from "axios"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
@@ -34,7 +35,7 @@ function FloatingInput({
   type?: string
   placeholder?: string
   autoComplete?: string
-  register: any
+  register: UseFormRegisterReturn
   error?: string
   rightSlot?: React.ReactNode
   className?: string
@@ -54,7 +55,7 @@ function FloatingInput({
             "w-full rounded-xl border bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400",
             "transition-all duration-150 outline-none",
             "border-gray-200 hover:border-gray-300",
-            "focus:border-[#1d6b4a] focus:ring-2 focus:ring-[#1d6b4a]/10",
+            "focus:border-brand focus:ring-2 focus:ring-brand/10",
             rightSlot && "pr-11",
             error && "border-red-300 focus:border-red-400 focus:ring-red-100",
             className
@@ -100,8 +101,10 @@ export function LoginForm() {
     try {
       await login(values.email, values.password)
       router.push("/dashboard")
-    } catch (err: any) {
-      toast.error(err?.response?.data?.detail ?? "Invalid email or password")
+    } catch (err: unknown) {
+      toast.error(
+        isAxiosError(err) ? (err.response?.data?.detail ?? "Invalid email or password") : "Invalid email or password"
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -137,6 +140,7 @@ export function LoginForm() {
           <button
             type="button"
             onClick={() => setShowPw(!showPw)}
+            aria-label={showPw ? "Hide password" : "Show password"}
             className="text-gray-400 hover:text-gray-600 transition-colors"
             tabIndex={-1}
           >
@@ -150,7 +154,7 @@ export function LoginForm() {
         disabled={isSubmitting}
         className={cn(
           "w-full flex items-center justify-center gap-2 rounded-xl",
-          "bg-[#1d6b4a] hover:bg-[#155638] text-white font-semibold",
+          "bg-brand hover:bg-brand-dark text-white font-semibold",
           "py-3 text-sm transition-all duration-150",
           "shadow-glow hover:shadow-glow-lg hover:-translate-y-0.5",
           "disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
@@ -169,7 +173,7 @@ export function LoginForm() {
 
       <p className="text-center text-sm text-gray-500">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-semibold text-[#1d6b4a] hover:text-[#155638] transition-colors">
+        <Link href="/register" className="font-semibold text-brand hover:text-brand-dark transition-colors">
           Create one free
         </Link>
       </p>

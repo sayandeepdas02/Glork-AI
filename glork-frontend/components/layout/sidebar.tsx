@@ -9,7 +9,7 @@ import { useAuth } from "@/hooks/use-auth"
 import { useAuthStore } from "@/store/auth-store"
 
 const NAV_ITEMS = [
-  { href: "/dashboard", label: "Dashboard",  icon: LayoutDashboard },
+  { href: "/dashboard", label: "Dashboard",  icon: LayoutDashboard, exact: true },
   { href: "/bookings",  label: "Bookings",   icon: Calendar },
   { href: "/calls",     label: "Calls",      icon: Phone },
   { href: "/agent",     label: "AI Agent",   icon: Settings2 },
@@ -62,13 +62,16 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
         <p className="px-3 mb-3 text-[10px] font-mono font-semibold text-[#bbb] uppercase tracking-[0.2em]">
           Menu
         </p>
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href || (href !== "/dashboard" && pathname.startsWith(`${href}/`))
+        {NAV_ITEMS.map(({ href, label, icon: Icon, exact }) => {
+          const active = exact
+            ? pathname === href
+            : pathname === href || pathname.startsWith(`${href}/`)
           return (
             <Link
               key={href}
               href={href}
               onClick={onClose}
+              aria-current={active ? "page" : undefined}
               className={cn(
                 "sidebar-nav-item group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
                 active
@@ -93,6 +96,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       <div className="p-3 border-t border-[#EAEAE5]">
         <button
           onClick={() => { onClose?.(); logout() }}
+          aria-label="Sign out"
           className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[#777] hover:text-[#111] hover:bg-[#F5F5F2] transition-all duration-150"
         >
           <LogOut className="h-4 w-4 shrink-0 text-[#aaa]" />

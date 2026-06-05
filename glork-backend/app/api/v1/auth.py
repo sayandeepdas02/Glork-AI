@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.limiter import limiter
 from app.dependencies import get_db
 from app.schemas.auth import LoginRequest, RefreshRequest, RegisterRequest, TokenResponse
+from app.schemas.common import MessageResponse
 from app.services import auth_service as svc
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -29,6 +30,6 @@ async def refresh(request: Request, body: RefreshRequest, db: AsyncSession = Dep
     return await svc.refresh_access_token(body.refresh_token, db)
 
 
-@router.post("/logout")
+@router.post("/logout", response_model=MessageResponse)
 async def logout():
-    return {"message": "Logged out successfully"}
+    return MessageResponse(message="Logged out successfully")

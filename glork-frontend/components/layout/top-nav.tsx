@@ -40,6 +40,7 @@ export function TopNav() {
         {/* Mobile hamburger */}
         <button
           onClick={toggleSidebar}
+          aria-label="Open navigation menu"
           className="lg:hidden flex h-8 w-8 items-center justify-center rounded-lg text-[#999] hover:bg-[#F5F5F2] hover:text-[#111] transition-colors"
         >
           <Menu className="h-5 w-5" />
@@ -62,14 +63,21 @@ export function TopNav() {
         )}
 
         {/* Notifications */}
-        <button className="flex h-8 w-8 items-center justify-center rounded-lg text-[#999] hover:bg-[#F5F5F2] hover:text-[#555] transition-colors">
+        <button
+          aria-label="View notifications"
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-[#999] hover:bg-[#F5F5F2] hover:text-[#555] transition-colors"
+        >
           <Bell className="h-4 w-4" />
         </button>
 
         {/* Avatar dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#FF7733] to-[#CC3300] text-xs font-bold text-white hover:opacity-90 transition-opacity focus:outline-none">
+            <button
+              aria-label={`Account menu for ${doctor?.name ?? "account"}`}
+              aria-haspopup="menu"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#FF7733] to-[#CC3300] text-xs font-bold text-white hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+            >
               {doctor ? getInitials(doctor.name) : "DR"}
             </button>
           </DropdownMenuTrigger>

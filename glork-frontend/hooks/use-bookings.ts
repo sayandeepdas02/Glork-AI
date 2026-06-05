@@ -10,7 +10,7 @@ import {
   getBookingStats,
   updateBooking,
 } from "@/lib/api"
-import type { BookingFilters, CreateBookingData, UpdateBookingData } from "@/types"
+import type { Booking, BookingFilters, CreateBookingData, UpdateBookingData } from "@/types"
 
 export function useBookings(filters: BookingFilters = {}) {
   return useQuery({
@@ -51,18 +51,19 @@ export function useCreateBooking() {
   })
 }
 
+type UpdateBookingContext = { previous: Booking | undefined }
+
 export function useUpdateBooking() {
   const qc = useQueryClient()
-  return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateBookingData }) =>
-      updateBooking(id, data),
-    onMutate: async ({ id, data }) => {
+  return useMutation<Booking, Error, { id: string; data: UpdateBookingData }, UpdateBookingContext>({
+    mutationFn: ({ id, data }) => updateBooking(id, data),
+    onMutate: async ({ id, data }): Promise<UpdateBookingContext> => {
       await qc.cancelQueries({ queryKey: ["bookings", id] })
-      const previous = qc.getQueryData(["bookings", id])
-      qc.setQueryData(["bookings", id], (old: any) => ({ ...old, ...data }))
+      const previous = qc.getQueryData<Booking>(["bookings", id])
+      qc.setQueryData<Booking>(["bookings", id], (old) => old ? { ...old, ...data } : old)
       return { previous }
     },
-    onError: (err: Error, { id }, ctx: any) => {
+    onError: (err, { id }, ctx) => {
       qc.setQueryData(["bookings", id], ctx?.previous)
       toast.error(err.message || "Failed to update booking")
     },

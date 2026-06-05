@@ -12,6 +12,7 @@ from pydantic import ValidationError
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
+from sqlalchemy import text
 
 from app.api.v1.router import api_router
 from app.config import settings
@@ -73,14 +74,24 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+_allowed_origins = list({
+    settings.FRONTEND_URL,
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+})
+if settings.ALLOWED_ORIGINS:
+    _allowed_origins.extend(
+        o.strip() for o in settings.ALLOWED_ORIGINS.split(",") if o.strip()
+    )
+
 app.add_middleware(SlowAPIMiddleware)
 app.add_middleware(RequestLoggingMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.FRONTEND_URL, "http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=_allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "Accept"],
 )
 
 
@@ -135,7 +146,31 @@ async def generic_exception_handler(request: Request, exc: Exception) -> JSONRes
 
 @app.get("/health", tags=["health"])
 async def health_check():
-    return {"status": "ok", "version": "1.0.0"}
+    checks: dict[str, str] = {}
+
+    try:
+        async with engine.connect() as conn:
+            await conn.execute(text("SELECT 1"))
+        checks["database"] = "ok"
+    except Exception as exc:
+        logger.warning("health_check_db_failed", error=str(exc))
+        checks["database"] = "error"
+
+    try:
+        import redis.asyncio as aioredis
+        r = aioredis.from_url(settings.REDIS_URL, socket_connect_timeout=2)
+        await r.ping()
+        await r.aclose()
+        checks["redis"] = "ok"
+    except Exception as exc:
+        logger.warning("health_check_redis_failed", error=str(exc))
+        checks["redis"] = "error"
+
+    overall = "ok" if all(v == "ok" for v in checks.values()) else "degraded"
+    return JSONResponse(
+        content={"status": overall, "version": "1.0.0", "checks": checks},
+        status_code=status.HTTP_200_OK if overall == "ok" else status.HTTP_503_SERVICE_UNAVAILABLE,
+    )
 
 
 app.include_router(api_router, prefix="/api/v1")
