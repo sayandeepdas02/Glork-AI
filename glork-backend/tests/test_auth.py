@@ -151,6 +151,21 @@ async def test_protected_route_with_valid_token(async_client: AsyncClient, docto
 
 
 @pytest.mark.asyncio
+async def test_refresh_with_invalid_token_returns_401(async_client: AsyncClient):
+    resp = await async_client.post(
+        "/api/v1/auth/refresh",
+        json={"refresh_token": "this.is.invalid"},
+    )
+    assert resp.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_refresh_with_missing_token_returns_422(async_client: AsyncClient):
+    resp = await async_client.post("/api/v1/auth/refresh", json={})
+    assert resp.status_code == 422
+
+
+@pytest.mark.asyncio
 async def test_refresh_with_access_token_rejected(async_client: AsyncClient, doctor):
     from app.core.security import create_access_token
 

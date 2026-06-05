@@ -22,18 +22,24 @@ async def get_call_stats(
 ):
     week_start = datetime.now(timezone.utc) - timedelta(days=7)
 
-    all_result = await db.execute(
-        select(CallLog).where(CallLog.doctor_id == doctor.id)
+    agg_result = await db.execute(
+        select(
+            func.count(CallLog.id),
+            func.coalesce(func.sum(CallLog.duration_seconds), 0),
+            func.avg(CallLog.duration_seconds),
+        ).where(CallLog.doctor_id == doctor.id)
     )
-    all_calls = list(all_result.scalars().all())
+    total_calls, total_duration, avg_duration_raw = agg_result.one()
+    avg_duration = float(avg_duration_raw or 0)
 
-    total_duration = sum(c.duration_seconds or 0 for c in all_calls)
-    calls_with_duration = [c for c in all_calls if c.duration_seconds is not None]
-    avg_duration = total_duration / len(calls_with_duration) if calls_with_duration else 0.0
-
+    outcome_result = await db.execute(
+        select(CallLog.outcome, func.count(CallLog.id))
+        .where(CallLog.doctor_id == doctor.id)
+        .group_by(CallLog.outcome)
+    )
     by_outcome: dict[str, int] = {outcome.value: 0 for outcome in CallOutcome}
-    for call in all_calls:
-        by_outcome[call.outcome.value] += 1
+    for outcome, count in outcome_result:
+        by_outcome[outcome.value] = count
 
     week_result = await db.execute(
         select(func.count(CallLog.id)).where(
@@ -46,8 +52,8 @@ async def get_call_stats(
     calls_this_week = week_result.scalar_one()
 
     return CallStatsResponse(
-        total_calls=len(all_calls),
-        total_duration_seconds=total_duration,
+        total_calls=total_calls,
+        total_duration_seconds=int(total_duration),
         calls_by_outcome=by_outcome,
         avg_duration_seconds=round(avg_duration, 2),
         calls_this_week=calls_this_week,

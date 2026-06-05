@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import structlog
 from fastapi import APIRouter, HTTPException, Request, status
@@ -123,7 +124,12 @@ async def retell_webhook(request: Request):
                 logger.warning("call_ended_not_found", retell_call_id=retell_call_id)
                 return {"received": True}
 
-            call_log.duration_seconds = data.get("duration_ms", 0) // 1000 or data.get("duration_seconds")
+            duration_ms = data.get("duration_ms")
+            duration_sec = data.get("duration_seconds")
+            if duration_ms is not None:
+                call_log.duration_seconds = int(duration_ms) // 1000
+            elif duration_sec is not None:
+                call_log.duration_seconds = int(duration_sec)
             call_log.transcript = data.get("transcript")
             call_log.recording_url = data.get("recording_url")
 
@@ -212,13 +218,14 @@ async def tool_check_availability(request: Request):
                 preferred_time=preferred_time,
                 calendar_id=cal.google_calendar_id or "primary",
                 db=db,
+                doctor_timezone=config.timezone,
             )
 
             message = None if slots else "No slots available on this date. Please try another date."
             return _ok({
                 "slots": slots,
                 "date": date,
-                "timezone": "Asia/Kolkata",
+                "timezone": config.timezone,
                 "message": message,
             })
     except ValueError as exc:
@@ -310,8 +317,12 @@ async def tool_create_booking(request: Request):
 
             send_sms_confirmation.delay(str(booking.id))
 
-            local_dt = slot_dt.astimezone(timezone.utc)
-            readable_dt = local_dt.strftime("%B %-d at %-I:%M %p UTC")
+            try:
+                doctor_tz = ZoneInfo(config.timezone)
+            except (ZoneInfoNotFoundError, KeyError):
+                doctor_tz = ZoneInfo("UTC")
+            local_dt = slot_dt.astimezone(doctor_tz)
+            readable_dt = local_dt.strftime("%B %-d at %-I:%M %p")
 
             return _ok({
                 "booking_id": str(booking.id),

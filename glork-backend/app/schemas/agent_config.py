@@ -25,6 +25,7 @@ class AgentConfigUpdate(BaseModel):
     language: SupportedLanguage | None = None
     emergency_transfer_number: PhoneNumber | None = None
     max_advance_booking_days: MaxAdvanceBookingDays | None = None
+    timezone: str | None = None
 
 
 class AgentConfigResponse(BaseModel):
@@ -41,5 +42,6 @@ class AgentConfigResponse(BaseModel):
     language: str
     emergency_transfer_number: str | None = None
     max_advance_booking_days: int
+    timezone: str = "Asia/Kolkata"
     created_at: datetime
     updated_at: datetime | None = None

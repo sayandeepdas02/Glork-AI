@@ -7,6 +7,9 @@ import { BookingFilters } from "@/components/bookings/booking-filters"
 import { BookingForm } from "@/components/bookings/booking-form"
 import { useBookings } from "@/hooks/use-bookings"
 import { useUIStore } from "@/store/ui-store"
+import { Button } from "@/components/ui/button"
+
+const PAGE_SIZE = 20
 
 function Pagination({
   page,

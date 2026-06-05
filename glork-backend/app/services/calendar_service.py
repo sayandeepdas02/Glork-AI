@@ -4,6 +4,7 @@ import asyncio
 from datetime import datetime, timedelta, timezone
 from typing import Any
 from uuid import UUID
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import structlog
 from fastapi import HTTPException, status
@@ -81,6 +82,9 @@ class CalendarService:
                 await loop.run_in_executor(None, lambda: creds.refresh(Request()))
 
                 integration.access_token_encrypted = encrypt(creds.token)
+                # Persist rotated refresh token if Google issued a new one
+                if creds.refresh_token:
+                    integration.refresh_token_encrypted = encrypt(creds.refresh_token)
                 if creds.expiry:
                     expiry = creds.expiry
                     if expiry.tzinfo is None:
@@ -112,6 +116,7 @@ class CalendarService:
         preferred_time: str,
         calendar_id: str,
         db: AsyncSession,
+        doctor_timezone: str = "Asia/Kolkata",
     ) -> list[str]:
         try:
             creds = await self.get_credentials(doctor_id, db)
@@ -135,7 +140,13 @@ class CalendarService:
         except (KeyError, ValueError):
             return []
 
-        tz = timezone.utc
+        try:
+            tz = ZoneInfo(doctor_timezone)
+        except (ZoneInfoNotFoundError, KeyError):
+            logger.warning("unknown_timezone", timezone=doctor_timezone)
+            tz = ZoneInfo("UTC")
+
+        # Freebusy query covers full day in doctor's local timezone
         day_start = datetime(date_obj.year, date_obj.month, date_obj.day, 0, 0, 0, tzinfo=tz)
         day_end = datetime(date_obj.year, date_obj.month, date_obj.day, 23, 59, 59, tzinfo=tz)
 
@@ -164,6 +175,7 @@ class CalendarService:
             be = datetime.fromisoformat(period["end"].replace("Z", "+00:00"))
             busy_ranges.append((bs, be))
 
+        # Working hours expressed in doctor's local timezone
         work_start = datetime(
             date_obj.year, date_obj.month, date_obj.day,
             work_start_h, work_start_m, tzinfo=tz
