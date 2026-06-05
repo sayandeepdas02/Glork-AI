@@ -6,11 +6,12 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, EmailStr
 
 from app.schemas.agent_config import AgentConfigResponse
+from app.schemas.validators import ClinicName, PersonName
 
 
 class DoctorUpdate(BaseModel):
-    name: str | None = None
-    clinic_name: str | None = None
+    name: PersonName | None = None
+    clinic_name: ClinicName | None = None
     phone_number: str | None = None
     specialty: str | None = None
     clinic_address: str | None = None

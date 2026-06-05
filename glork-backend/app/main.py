@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 
 import structlog
 from fastapi import FastAPI, HTTPException, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
@@ -93,11 +94,29 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
     )
 
 
-@app.exception_handler(ValidationError)
-async def validation_exception_handler(request: Request, exc: ValidationError) -> JSONResponse:
+@app.exception_handler(RequestValidationError)
+async def request_validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+    details = []
+    for err in exc.errors():
+        loc = err.get("loc", ())
+        field = ".".join(str(p) for p in loc if p != "body") or "request"
+        details.append({"field": field, "message": err["msg"]})
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content={"error": "Validation failed", "details": exc.errors()},
+        content={"error": "Validation failed", "details": details},
+    )
+
+
+@app.exception_handler(ValidationError)
+async def validation_exception_handler(request: Request, exc: ValidationError) -> JSONResponse:
+    details = []
+    for err in exc.errors():
+        loc = err.get("loc", ())
+        field = ".".join(str(p) for p in loc) or "unknown"
+        details.append({"field": field, "message": err["msg"]})
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"error": "Validation failed", "details": details},
     )
 
 

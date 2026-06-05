@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Any
-from uuid import UUID
 
 from pydantic import BaseModel
+
+from app.schemas.validators import PersonName, PhoneNumber
 
 
 class RetellCallMetadata(BaseModel):
@@ -78,8 +79,8 @@ class CheckAvailabilityResponse(BaseModel):
 
 class CreateBookingRequest(BaseModel):
     doctor_id: str
-    patient_name: str
-    patient_phone: str
+    patient_name: PersonName
+    patient_phone: PhoneNumber
     slot_datetime: str
     reason: str | None = None
 
@@ -93,7 +94,7 @@ class CreateBookingResponse(BaseModel):
 
 class GetPatientBookingsRequest(BaseModel):
     doctor_id: str
-    patient_phone: str
+    patient_phone: PhoneNumber
 
 
 class SimpleBooking(BaseModel):
