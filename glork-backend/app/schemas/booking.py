@@ -3,15 +3,16 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 from app.models.booking import BookingStatus
+from app.schemas.validators import PersonName, PhoneNumber
 
 
 class BookingCreate(BaseModel):
-    patient_name: str
-    patient_phone: str
-    patient_email: str | None = None
+    patient_name: PersonName
+    patient_phone: PhoneNumber
+    patient_email: EmailStr | None = None
     appointment_start: datetime
     appointment_end: datetime
     reason: str | None = None

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pydantic import BaseModel, EmailStr, field_validator
 
+from app.schemas.validators import ClinicName, PersonName
+
 
 class LoginRequest(BaseModel):
     email: EmailStr
@@ -11,8 +13,8 @@ class LoginRequest(BaseModel):
 class RegisterRequest(BaseModel):
     email: EmailStr
     password: str
-    name: str
-    clinic_name: str
+    name: PersonName
+    clinic_name: ClinicName
     specialty: str | None = None
 
     @field_validator("password")
