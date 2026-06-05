@@ -28,14 +28,14 @@ export default function CallsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-white">Call History</h2>
+            <h2 className="text-xl font-bold text-[#111]">Call History</h2>
             {data && (
-              <span className="inline-flex items-center justify-center rounded-full bg-white/10 px-2.5 py-0.5 text-xs font-medium text-white border border-white/10">
+              <span className="inline-flex items-center justify-center rounded-full bg-[#F0F0EC] px-2.5 py-0.5 text-xs font-medium text-[#666] border border-[#E0E0DB]">
                 {data.total}
               </span>
             )}
           </div>
-          <p className="text-sm font-mono text-[#8A8480] mt-1">
+          <p className="text-sm font-mono text-[#888] mt-1">
             Review and audit AI interactions
           </p>
         </div>
@@ -44,12 +44,12 @@ export default function CallsPage() {
           value={callFilters.outcome ?? ""}
           onValueChange={(v) => setCallFilters({ outcome: (v || undefined) as CallOutcome | undefined })}
         >
-          <SelectTrigger className="w-full sm:w-44 h-9 rounded-xl bg-[#141210] border-white/10 text-sm text-white focus:ring-[#FF5500]">
+          <SelectTrigger className="w-full sm:w-44 h-9 rounded-xl bg-white border-[#D8D8D3] text-sm text-[#555] focus:ring-brand">
             <SelectValue placeholder="All outcomes" />
           </SelectTrigger>
-          <SelectContent className="bg-[#1C1916] border-white/10 text-white">
+          <SelectContent className="bg-white border-[#E8E8E3]">
             {OUTCOME_OPTIONS.map((o) => (
-              <SelectItem key={o.value} value={o.value} className="hover:bg-white/5 focus:bg-white/5 focus:text-white">
+              <SelectItem key={o.value} value={o.value} className="text-[#555] focus:bg-[#F5F5F2] focus:text-[#111]">
                 {o.label}
               </SelectItem>
             ))}
@@ -60,7 +60,7 @@ export default function CallsPage() {
       <CallLogTable calls={data?.items ?? []} isLoading={isLoading} />
 
       {data && data.total > (data.items?.length ?? 0) && (
-        <p className="text-center text-[11px] font-mono uppercase tracking-widest text-white/45 pt-2">
+        <p className="text-center text-[11px] font-mono uppercase tracking-widest text-[#bbb] pt-2">
           Showing {data.items?.length} of {data.total} calls
         </p>
       )}

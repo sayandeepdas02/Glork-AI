@@ -22,16 +22,16 @@ function getGreeting() {
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-xl border border-white/10 bg-[#1C1916] px-3.5 py-2.5 shadow-xl text-xs">
-      <p className="font-semibold text-white mb-2">{label}</p>
+    <div className="rounded-xl border border-[#E8E8E3] bg-white px-3.5 py-2.5 shadow-md text-xs">
+      <p className="font-semibold text-[#111] mb-2">{label}</p>
       <div className="space-y-1.5">
         {payload.map((p: any) => (
           <div key={p.name} className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full" style={{ background: p.fill }} />
-              <span className="text-[#8A8480]">{p.name}</span>
+              <span className="text-[#888]">{p.name}</span>
             </div>
-            <span className="font-semibold text-white tabular-nums">{p.value}</span>
+            <span className="font-semibold text-[#111] tabular-nums">{p.value}</span>
           </div>
         ))}
       </div>
@@ -68,38 +68,38 @@ function CallsChart() {
   }, [calls])
 
   if (isLoading) {
-    return <div className="h-52 animate-pulse rounded-xl bg-white/5" />
+    return <div className="h-52 animate-pulse rounded-xl bg-[#F0F0EC]" />
   }
 
   return (
     <div>
       <ResponsiveContainer width="100%" height={200}>
         <BarChart data={chartData} barGap={4} margin={{ top: 10, right: 0, left: -18, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
           <XAxis
             dataKey="date"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "rgba(255,255,255,0.50)", fontSize: 11, fontWeight: 500 }}
+            tick={{ fill: "#999", fontSize: 11, fontWeight: 500 }}
             dy={8}
           />
           <YAxis
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "rgba(255,255,255,0.50)", fontSize: 11 }}
+            tick={{ fill: "#999", fontSize: 11 }}
             allowDecimals={false}
             width={28}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255,255,255,0.03)", radius: 6 }} />
-          <Bar dataKey="other" name="Other" fill="#3A3430" radius={[4, 4, 0, 0]} maxBarSize={28} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.03)", radius: 6 }} />
+          <Bar dataKey="other" name="Other" fill="#D8D8D0" radius={[4, 4, 0, 0]} maxBarSize={28} />
           <Bar dataKey="booked" name="Booked" fill="var(--brand)" radius={[4, 4, 0, 0]} maxBarSize={28} />
         </BarChart>
       </ResponsiveContainer>
       <div className="flex items-center gap-4 mt-3 px-1">
-        <span className="flex items-center gap-1.5 text-[11px] text-white/55">
-          <span className="inline-block h-2 w-2 rounded-sm bg-[#3A3430]" /> Other
+        <span className="flex items-center gap-1.5 text-[11px] text-[#888]">
+          <span className="inline-block h-2 w-2 rounded-sm bg-[#D8D8D0]" /> Other
         </span>
-        <span className="flex items-center gap-1.5 text-[11px] text-white/55">
+        <span className="flex items-center gap-1.5 text-[11px] text-[#888]">
           <span className="inline-block h-2 w-2 rounded-sm bg-brand" /> Booked
         </span>
       </div>
@@ -114,8 +114,8 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-white">{getGreeting()} 👋</h2>
-          <p className="text-[13px] text-white/55 mt-0.5 font-mono">Here's what's happening with your clinic</p>
+          <h2 className="text-xl font-bold text-[#111]">{getGreeting()} 👋</h2>
+          <p className="text-[13px] text-[#888] mt-0.5 font-mono">Here's what's happening with your clinic</p>
         </div>
       </div>
 
@@ -124,18 +124,18 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
         {/* ── Chart ── */}
-        <div className="lg:col-span-3 rounded-2xl bg-[#141210] border border-white/6 p-5">
+        <div className="lg:col-span-3 rounded-2xl bg-white border border-[#E8E8E3] p-5">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h3 className="text-sm font-semibold text-white">Call volume</h3>
-              <p className="text-[11px] font-mono text-white/50 mt-0.5">Last 7 days</p>
+              <h3 className="text-sm font-semibold text-[#111]">Call volume</h3>
+              <p className="text-[11px] font-mono text-[#aaa] mt-0.5">Last 7 days</p>
             </div>
             {stats && (
               <div className="text-right">
-                <p className="text-lg font-bold text-white tabular-nums">
+                <p className="text-lg font-bold text-[#111] tabular-nums">
                   {stats.total_this_month}
                 </p>
-                <p className="text-[11px] font-mono text-white/50">bookings this month</p>
+                <p className="text-[11px] font-mono text-[#aaa]">bookings this month</p>
               </div>
             )}
           </div>

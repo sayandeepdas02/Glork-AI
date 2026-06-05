@@ -36,7 +36,7 @@ export default function HowItWorks() {
           <div
             key={step.n}
             className={[
-              "flex flex-col md:flex-row md:items-start gap-6 md:gap-12 px-8 lg:px-14 py-10 hover:bg-[#FAFAF8] transition-colors duration-150",
+              "flex flex-col md:flex-row md:items-start gap-6 md:gap-12 px-8 lg:px-14 py-8 hover:bg-[#FAFAF8] transition-colors duration-150",
               idx < steps.length - 1 ? "border-b border-[#EAEAE5]" : "",
             ].join(" ")}
           >

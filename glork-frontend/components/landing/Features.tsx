@@ -15,7 +15,7 @@ export default function Features() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
 
           {/* Large featured card — 2 cols, 2 rows */}
-          <article className="md:col-span-2 md:row-span-2 min-h-[380px] flex flex-col justify-between p-8 rounded-xl bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D0D0CA] transition-colors duration-200 group">
+          <article className="md:col-span-2 md:row-span-2 min-h-[300px] flex flex-col justify-between p-7 rounded-xl bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D0D0CA] transition-colors duration-200 group">
             <div>
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/8 mb-5">
                 <Phone className="h-4 w-4 text-brand" />

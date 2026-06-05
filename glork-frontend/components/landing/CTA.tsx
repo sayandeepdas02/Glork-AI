@@ -7,17 +7,17 @@ import { Panel } from "@/components/ui/panel"
 export default function CTA() {
   return (
     <Panel id="cta" className="border-t border-[#EAEAE5] bg-[#F7F6F3]">
-      <div className="flex flex-col items-center justify-center py-24 px-6 text-center border-b border-[#E0E0DB]">
+      <div className="flex flex-col items-center justify-center py-16 px-6 text-center border-b border-[#E0E0DB]">
 
-        <p className="text-[11px] text-[#aaa] uppercase tracking-[0.22em] mb-6">
+        <p className="text-[11px] text-[#aaa] uppercase tracking-[0.22em] mb-5">
           Stop missing calls
         </p>
 
-        <h2 className="text-[2.25rem] md:text-[3.25rem] font-light text-[#111] mb-5 leading-[1.1] tracking-tight max-w-2xl">
-          Every missed call is a<br className="hidden sm:block" /> missed appointment.
+        <h2 className="text-[1.75rem] md:text-[2.25rem] font-light text-[#111] mb-4 leading-[1.15] tracking-tight max-w-2xl">
+          Every missed call is a missed appointment.
         </h2>
 
-        <p className="text-[15px] text-[#777] mb-10 max-w-sm mx-auto leading-relaxed">
+        <p className="text-[14px] text-[#777] mb-8 max-w-sm mx-auto leading-relaxed">
           Set up your AI receptionist in under 3 minutes. No credit card required.
         </p>
 

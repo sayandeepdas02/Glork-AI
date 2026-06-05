@@ -76,7 +76,7 @@ export default function SettingsPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="flex items-center gap-4 mb-4">
                 <Avatar className="h-14 w-14">
-                  <AvatarFallback className="bg-[#1d6b4a] text-white text-lg">
+                  <AvatarFallback className="bg-gradient-to-br from-[#FF7733] to-[#CC3300] text-white text-lg">
                     {getInitials(doctor?.name ?? "")}
                   </AvatarFallback>
                 </Avatar>
@@ -111,7 +111,7 @@ export default function SettingsPage() {
                 <Button
                   type="submit"
                   disabled={!isDirty || isSubmitting}
-                  className="bg-[#1d6b4a] hover:bg-[#155638] text-white"
+                  className="bg-brand hover:bg-brand-light text-white"
                 >
                   {isSubmitting ? "Saving…" : "Save Changes"}
                 </Button>
