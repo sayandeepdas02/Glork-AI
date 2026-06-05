@@ -43,6 +43,7 @@ export interface AgentConfig {
   language: "en" | "hi" | "ta"
   emergency_transfer_number: string | null
   max_advance_booking_days: number
+  timezone: string
 }
 
 export type BookingStatus =

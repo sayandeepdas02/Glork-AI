@@ -103,6 +103,15 @@ async def list_bookings(
     doctor: Doctor = Depends(get_current_active_doctor),
     db: AsyncSession = Depends(get_db),
 ):
+    if date is not None:
+        try:
+            datetime.strptime(date, "%Y-%m-%d")
+        except ValueError:
+            raise HTTPException(
+                status_code=422,
+                detail="Invalid date format. Use YYYY-MM-DD.",
+            )
+
     bookings, total = await booking_service.get_bookings(
         doctor_id=doctor.id,
         date=date,

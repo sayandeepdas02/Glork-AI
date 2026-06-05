@@ -46,6 +46,7 @@ class AgentConfig(Base):
     language: Mapped[str] = mapped_column(String(10), default="en", nullable=False)
     emergency_transfer_number: Mapped[str | None] = mapped_column(String(20), nullable=True)
     max_advance_booking_days: Mapped[int] = mapped_column(Integer, default=30, nullable=False)
+    timezone: Mapped[str] = mapped_column(String(50), default="Asia/Kolkata", nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

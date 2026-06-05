@@ -7,6 +7,8 @@ import type { CallOutcome } from "@/types"
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
 const OUTCOME_OPTIONS = [
   { value: "", label: "All outcomes" },
@@ -19,9 +21,14 @@ const OUTCOME_OPTIONS = [
   { value: "unanswered", label: "Unanswered" },
 ]
 
+const PAGE_SIZE = 20
+
 export default function CallsPage() {
   const { callFilters, setCallFilters } = useUIStore()
-  const { data, isLoading } = useCalls(callFilters)
+  const currentPage = callFilters.page ?? 1
+  const { data, isLoading } = useCalls({ ...callFilters, page: currentPage, limit: PAGE_SIZE })
+
+  const totalPages = data ? Math.ceil(data.total / PAGE_SIZE) : 1
 
   return (
     <div className="space-y-5">
@@ -42,7 +49,7 @@ export default function CallsPage() {
 
         <Select
           value={callFilters.outcome ?? ""}
-          onValueChange={(v) => setCallFilters({ outcome: (v || undefined) as CallOutcome | undefined })}
+          onValueChange={(v) => setCallFilters({ outcome: (v || undefined) as CallOutcome | undefined, page: 1 })}
         >
           <SelectTrigger className="w-full sm:w-44 h-9 rounded-xl bg-white border-[#D8D8D3] text-sm text-[#555] focus:ring-brand">
             <SelectValue placeholder="All outcomes" />
@@ -59,10 +66,37 @@ export default function CallsPage() {
 
       <CallLogTable calls={data?.items ?? []} isLoading={isLoading} />
 
-      {data && data.total > (data.items?.length ?? 0) && (
-        <p className="text-center text-[11px] font-mono uppercase tracking-widest text-[#bbb] pt-2">
-          Showing {data.items?.length} of {data.total} calls
-        </p>
+      {data && data.total > 0 && (
+        <div className="flex items-center justify-between pt-2">
+          <p className="text-[11px] font-mono uppercase tracking-widest text-[#bbb]">
+            {data.items.length > 0
+              ? `${(currentPage - 1) * PAGE_SIZE + 1}–${(currentPage - 1) * PAGE_SIZE + data.items.length} of ${data.total}`
+              : `0 of ${data.total}`}
+          </p>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 w-8 p-0 rounded-lg border-[#D8D8D3] text-[#555] hover:bg-[#F5F5F2] disabled:opacity-30"
+              disabled={currentPage <= 1}
+              onClick={() => setCallFilters({ page: currentPage - 1 })}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-xs text-[#888] min-w-[4rem] text-center">
+              {currentPage} / {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 w-8 p-0 rounded-lg border-[#D8D8D3] text-[#555] hover:bg-[#F5F5F2] disabled:opacity-30"
+              disabled={currentPage >= totalPages}
+              onClick={() => setCallFilters({ page: currentPage + 1 })}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
       )}
     </div>
   )

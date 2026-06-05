@@ -18,10 +18,11 @@ import type {
   UpdateBookingData,
 } from "@/types"
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"
+export const API_BASE_URL = `${BASE_URL}/api/v1`
 
 export const api = axios.create({
-  baseURL: `${BASE_URL}/api/v1`,
+  baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
   timeout: 30000,
 })
@@ -41,7 +42,15 @@ let failedQueue: Array<{
 }> = []
 
 function processQueue(error: unknown, token: string | null) {
-  failedQueue.forEach((p) => (error ? p.reject(error) : p.resolve(token!)))
+  failedQueue.forEach((p) => {
+    if (error) {
+      p.reject(error)
+    } else if (token) {
+      p.resolve(token)
+    } else {
+      p.reject(new Error("Token refresh produced no token"))
+    }
+  })
   failedQueue = []
 }
 
@@ -80,7 +89,7 @@ api.interceptors.response.use(
 
       try {
         const resp = await axios.post<TokenResponse>(
-          `${BASE_URL}/api/v1/auth/refresh`,
+          `${API_BASE_URL}/auth/refresh`,
           { refresh_token: refreshToken }
         )
         const { access_token, refresh_token } = resp.data

@@ -1,17 +1,23 @@
 "use client"
 
 import { useState } from "react"
-import { Plus } from "lucide-react"
+import { Plus, ChevronLeft, ChevronRight } from "lucide-react"
 import { BookingTable } from "@/components/bookings/booking-table"
 import { BookingFilters } from "@/components/bookings/booking-filters"
 import { BookingForm } from "@/components/bookings/booking-form"
 import { useBookings } from "@/hooks/use-bookings"
 import { useUIStore } from "@/store/ui-store"
+import { Button } from "@/components/ui/button"
+
+const PAGE_SIZE = 20
 
 export default function BookingsPage() {
-  const { bookingFilters } = useUIStore()
-  const { data, isLoading } = useBookings(bookingFilters)
+  const { bookingFilters, setBookingFilters } = useUIStore()
+  const currentPage = bookingFilters.page ?? 1
+  const { data, isLoading } = useBookings({ ...bookingFilters, page: currentPage, limit: PAGE_SIZE })
   const [createOpen, setCreateOpen] = useState(false)
+
+  const totalPages = data ? Math.ceil(data.total / PAGE_SIZE) : 1
 
   return (
     <div className="space-y-5">
@@ -41,10 +47,37 @@ export default function BookingsPage() {
       <BookingFilters />
       <BookingTable bookings={data?.items ?? []} isLoading={isLoading} />
 
-      {data && data.total > (data.items?.length ?? 0) && (
-        <p className="text-center text-[10px] font-mono uppercase tracking-widest text-[#bbb] pt-2">
-          Showing {data.items?.length} of {data.total} bookings
-        </p>
+      {data && data.total > 0 && (
+        <div className="flex items-center justify-between pt-2">
+          <p className="text-[10px] font-mono uppercase tracking-widest text-[#bbb]">
+            {data.items.length > 0
+              ? `${(currentPage - 1) * PAGE_SIZE + 1}–${(currentPage - 1) * PAGE_SIZE + data.items.length} of ${data.total} bookings`
+              : `0 of ${data.total} bookings`}
+          </p>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 w-8 p-0 rounded-lg border-[#D8D8D3] text-[#555] hover:bg-[#F5F5F2] disabled:opacity-30"
+              disabled={currentPage <= 1}
+              onClick={() => setBookingFilters({ page: currentPage - 1 })}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-xs text-[#888] min-w-[4rem] text-center">
+              {currentPage} / {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 w-8 p-0 rounded-lg border-[#D8D8D3] text-[#555] hover:bg-[#F5F5F2] disabled:opacity-30"
+              disabled={currentPage >= totalPages}
+              onClick={() => setBookingFilters({ page: currentPage + 1 })}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
       )}
 
       <BookingForm open={createOpen} onOpenChange={setCreateOpen} />

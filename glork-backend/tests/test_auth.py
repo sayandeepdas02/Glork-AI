@@ -105,3 +105,37 @@ async def test_protected_route_with_token(async_client: AsyncClient, doctor, aut
     resp = await async_client.get("/api/v1/doctors/me", headers=auth_headers)
     assert resp.status_code == 200
     assert resp.json()["email"] == doctor.email
+
+
+@pytest.mark.asyncio
+async def test_refresh_returns_new_access_token(async_client: AsyncClient, doctor):
+    login_resp = await async_client.post(
+        "/api/v1/auth/login",
+        json={"email": doctor.email, "password": "testpassword123"},
+    )
+    tokens = login_resp.json()
+
+    refresh_resp = await async_client.post(
+        "/api/v1/auth/refresh",
+        json={"refresh_token": tokens["refresh_token"]},
+    )
+    assert refresh_resp.status_code == 200
+    new_tokens = refresh_resp.json()
+    assert "access_token" in new_tokens
+    assert "refresh_token" in new_tokens
+    assert len(new_tokens["access_token"]) > 20
+
+
+@pytest.mark.asyncio
+async def test_refresh_with_invalid_token_returns_401(async_client: AsyncClient):
+    resp = await async_client.post(
+        "/api/v1/auth/refresh",
+        json={"refresh_token": "this.is.invalid"},
+    )
+    assert resp.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_refresh_with_missing_token_returns_422(async_client: AsyncClient):
+    resp = await async_client.post("/api/v1/auth/refresh", json={})
+    assert resp.status_code == 422
