@@ -1,9 +1,14 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
+from app.schemas.validators import BufferMins, MaxAdvanceBookingDays, PhoneNumber, SlotDurationMins
+
+SupportedLanguage = Literal["en", "hi", "ta"]
 
 
 class WorkingHourDay(BaseModel):
@@ -14,12 +19,13 @@ class WorkingHourDay(BaseModel):
 
 class AgentConfigUpdate(BaseModel):
     working_hours: dict[str, WorkingHourDay] | None = None
-    slot_duration_mins: int | None = None
-    buffer_mins: int | None = None
-    greeting_message: str | None = None
-    language: str | None = None
-    emergency_transfer_number: str | None = None
-    max_advance_booking_days: int | None = None
+    slot_duration_mins: SlotDurationMins | None = None
+    buffer_mins: BufferMins | None = None
+    greeting_message: str | None = Field(None, max_length=500)
+    language: SupportedLanguage | None = None
+    emergency_transfer_number: PhoneNumber | None = None
+    max_advance_booking_days: MaxAdvanceBookingDays | None = None
+    timezone: str | None = None
 
 
 class AgentConfigResponse(BaseModel):
@@ -36,5 +42,6 @@ class AgentConfigResponse(BaseModel):
     language: str
     emergency_transfer_number: str | None = None
     max_advance_booking_days: int
+    timezone: str = "Asia/Kolkata"
     created_at: datetime
     updated_at: datetime | None = None

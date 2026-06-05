@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+from datetime import datetime, timedelta, timezone
+
 import pytest
 from httpx import AsyncClient
+from jose import jwt
+
+from app.config import settings
 
 
 @pytest.mark.asyncio
@@ -94,14 +99,79 @@ async def test_refresh_token(async_client: AsyncClient, doctor):
     assert "access_token" in resp.json()
 
 
+# ─── JWT Middleware / Auth Dependency Tests ──────────────────────────────────
+
 @pytest.mark.asyncio
 async def test_protected_route_without_token(async_client: AsyncClient):
     resp = await async_client.get("/api/v1/doctors/me")
-    assert resp.status_code == 403
+    assert resp.status_code == 403  # HTTPBearer returns 403 when no credentials
 
 
 @pytest.mark.asyncio
-async def test_protected_route_with_token(async_client: AsyncClient, doctor, auth_headers):
+async def test_protected_route_with_invalid_token(async_client: AsyncClient):
+    resp = await async_client.get(
+        "/api/v1/doctors/me",
+        headers={"Authorization": "Bearer this.is.not.a.valid.jwt"},
+    )
+    assert resp.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_protected_route_with_expired_token(async_client: AsyncClient, doctor):
+    expired_payload = {
+        "sub": str(doctor.id),
+        "type": "access",
+        "exp": datetime.now(timezone.utc) - timedelta(hours=1),
+    }
+    expired_token = jwt.encode(expired_payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    resp = await async_client.get(
+        "/api/v1/doctors/me",
+        headers={"Authorization": f"Bearer {expired_token}"},
+    )
+    assert resp.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_protected_route_with_refresh_token_as_access(async_client: AsyncClient, doctor):
+    from app.core.security import create_refresh_token
+
+    refresh_token = create_refresh_token({"sub": str(doctor.id)})
+    resp = await async_client.get(
+        "/api/v1/doctors/me",
+        headers={"Authorization": f"Bearer {refresh_token}"},
+    )
+    assert resp.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_protected_route_with_valid_token(async_client: AsyncClient, doctor, auth_headers):
     resp = await async_client.get("/api/v1/doctors/me", headers=auth_headers)
     assert resp.status_code == 200
     assert resp.json()["email"] == doctor.email
+
+
+@pytest.mark.asyncio
+async def test_refresh_with_invalid_token_returns_401(async_client: AsyncClient):
+    resp = await async_client.post(
+        "/api/v1/auth/refresh",
+        json={"refresh_token": "this.is.invalid"},
+    )
+    assert resp.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_refresh_with_missing_token_returns_422(async_client: AsyncClient):
+    resp = await async_client.post("/api/v1/auth/refresh", json={})
+    assert resp.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_refresh_with_access_token_rejected(async_client: AsyncClient, doctor):
+    from app.core.security import create_access_token
+
+    access_token = create_access_token({"sub": str(doctor.id)})
+    resp = await async_client.post(
+        "/api/v1/auth/refresh",
+        json={"refresh_token": access_token},
+    )
+    assert resp.status_code == 401

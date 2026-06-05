@@ -40,9 +40,11 @@ export function TranscriptViewer({ transcript }: TranscriptViewerProps) {
 
   const handleCopy = async () => {
     if (!transcript) return
-    await copyToClipboard(transcript)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    const ok = await copyToClipboard(transcript)
+    if (ok) {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
   }
 
   if (!transcript) {

@@ -5,7 +5,7 @@ from functools import lru_cache
 class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql+asyncpg://glork:glork@localhost:5432/glork"
     REDIS_URL: str = "redis://localhost:6379/0"
-    SECRET_KEY: str = "your-super-secret-jwt-key-change-in-production"
+    SECRET_KEY: str
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_SECRET: str = ""
     GOOGLE_REDIRECT_URI: str = "http://localhost:8000/api/v1/calendar/callback"
 
-    ENCRYPTION_KEY: str = ""
+    ENCRYPTION_KEY: str
 
     TWILIO_ACCOUNT_SID: str = ""
     TWILIO_AUTH_TOKEN: str = ""

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useForm, type UseFormRegisterReturn } from "react-hook-form"
@@ -71,11 +71,26 @@ function FloatingInput({
   )
 }
 
+const AUTH_MESSAGES: Record<string, string> = {
+  session_expired: "Your session has expired — please sign in again.",
+  auth_required: "Please sign in to continue.",
+  network_error: "A network error occurred. Please check your connection and sign in again.",
+}
+
 export function LoginForm() {
   const router = useRouter()
   const { login } = useAuth()
   const [showPw, setShowPw] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [sessionMsg, setSessionMsg] = useState<string | null>(null)
+
+  useEffect(() => {
+    const reason = sessionStorage.getItem("auth_error")
+    if (reason) {
+      sessionStorage.removeItem("auth_error")
+      setSessionMsg(AUTH_MESSAGES[reason] ?? AUTH_MESSAGES.auth_required)
+    }
+  }, [])
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -97,6 +112,12 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      {sessionMsg && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+          <p className="text-xs text-amber-800">{sessionMsg}</p>
+        </div>
+      )}
+
       <FloatingInput
         id="email"
         label="Email address"

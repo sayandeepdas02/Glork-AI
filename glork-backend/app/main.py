@@ -5,17 +5,18 @@ from contextlib import asynccontextmanager
 
 import structlog
 from fastapi import FastAPI, HTTPException, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
-from slowapi.util import get_remote_address
 from sqlalchemy import text
 
 from app.api.v1.router import api_router
 from app.config import settings
+from app.core.limiter import limiter
 from app.db.session import engine
 from app.middleware.auth_middleware import RequestLoggingMiddleware
 
@@ -45,8 +46,6 @@ else:
     )
 
 logger = structlog.get_logger()
-
-limiter = Limiter(key_func=get_remote_address)
 
 
 @asynccontextmanager
@@ -104,11 +103,29 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
     )
 
 
-@app.exception_handler(ValidationError)
-async def validation_exception_handler(request: Request, exc: ValidationError) -> JSONResponse:
+@app.exception_handler(RequestValidationError)
+async def request_validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+    details = []
+    for err in exc.errors():
+        loc = err.get("loc", ())
+        field = ".".join(str(p) for p in loc if p != "body") or "request"
+        details.append({"field": field, "message": err["msg"]})
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content={"error": "Validation failed", "details": exc.errors()},
+        content={"error": "Validation failed", "details": details},
+    )
+
+
+@app.exception_handler(ValidationError)
+async def validation_exception_handler(request: Request, exc: ValidationError) -> JSONResponse:
+    details = []
+    for err in exc.errors():
+        loc = err.get("loc", ())
+        field = ".".join(str(p) for p in loc) or "unknown"
+        details.append({"field": field, "message": err["msg"]})
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"error": "Validation failed", "details": details},
     )
 
 

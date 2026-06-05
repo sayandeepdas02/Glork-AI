@@ -93,8 +93,27 @@ export function formatDateShort(isoString: string): string {
   }
 }
 
-export function copyToClipboard(text: string): Promise<void> {
-  return navigator.clipboard.writeText(text)
+export async function copyToClipboard(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text)
+    return true
+  } catch {
+    // Fallback for environments where clipboard API is unavailable or denied
+    try {
+      const el = document.createElement("textarea")
+      el.value = text
+      el.style.position = "fixed"
+      el.style.opacity = "0"
+      document.body.appendChild(el)
+      el.focus()
+      el.select()
+      const ok = document.execCommand("copy")
+      document.body.removeChild(el)
+      return ok
+    } catch {
+      return false
+    }
+  }
 }
 
 export function getInitials(name: string): string {
