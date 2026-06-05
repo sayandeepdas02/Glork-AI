@@ -1,5 +1,6 @@
 "use client"
 
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { CallLogTable } from "@/components/calls/call-log-table"
 import { useCalls } from "@/hooks/use-calls"
 import { useUIStore } from "@/store/ui-store"
@@ -19,9 +20,49 @@ const OUTCOME_OPTIONS = [
   { value: "unanswered", label: "Unanswered" },
 ]
 
+function Pagination({
+  page,
+  limit,
+  total,
+  onPageChange,
+}: {
+  page: number
+  limit: number
+  total: number
+  onPageChange: (page: number) => void
+}) {
+  const totalPages = Math.ceil(total / limit)
+  if (totalPages <= 1) return null
+
+  return (
+    <div className="flex items-center justify-center gap-3 pt-2">
+      <button
+        onClick={() => onPageChange(page - 1)}
+        disabled={page === 1}
+        className="inline-flex items-center gap-1 rounded-xl border border-[#D8D8D3] bg-white px-3 py-2 text-xs font-semibold text-[#555] transition-all hover:bg-[#F5F5F2] disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        <ChevronLeft className="h-3.5 w-3.5" /> Previous
+      </button>
+      <span className="text-xs font-mono text-[#888] tabular-nums">
+        {page} / {totalPages}
+      </span>
+      <button
+        onClick={() => onPageChange(page + 1)}
+        disabled={page >= totalPages}
+        className="inline-flex items-center gap-1 rounded-xl border border-[#D8D8D3] bg-white px-3 py-2 text-xs font-semibold text-[#555] transition-all hover:bg-[#F5F5F2] disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        Next <ChevronRight className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  )
+}
+
 export default function CallsPage() {
   const { callFilters, setCallFilters } = useUIStore()
-  const { data, isLoading } = useCalls(callFilters)
+  const { data, isLoading, isError } = useCalls(callFilters)
+
+  const page = callFilters.page ?? 1
+  const limit = callFilters.limit ?? 20
 
   return (
     <div className="space-y-5">
@@ -42,7 +83,9 @@ export default function CallsPage() {
 
         <Select
           value={callFilters.outcome ?? ""}
-          onValueChange={(v) => setCallFilters({ outcome: (v || undefined) as CallOutcome | undefined })}
+          onValueChange={(v) =>
+            setCallFilters({ outcome: (v || undefined) as CallOutcome | undefined, page: 1 })
+          }
         >
           <SelectTrigger className="w-full sm:w-44 h-9 rounded-xl bg-white border-[#D8D8D3] text-sm text-[#555] focus:ring-brand">
             <SelectValue placeholder="All outcomes" />
@@ -57,12 +100,24 @@ export default function CallsPage() {
         </Select>
       </div>
 
-      <CallLogTable calls={data?.items ?? []} isLoading={isLoading} />
+      {isError ? (
+        <div className="rounded-2xl border border-red-100 bg-red-50 py-12 text-center">
+          <p className="text-sm font-medium text-red-600">Could not load call history.</p>
+          <p className="text-xs text-red-400 mt-1">Check your connection and try again.</p>
+        </div>
+      ) : (
+        <>
+          <CallLogTable calls={data?.items ?? []} isLoading={isLoading} />
 
-      {data && data.total > (data.items?.length ?? 0) && (
-        <p className="text-center text-[11px] font-mono uppercase tracking-widest text-[#bbb] pt-2">
-          Showing {data.items?.length} of {data.total} calls
-        </p>
+          {data && (
+            <Pagination
+              page={page}
+              limit={limit}
+              total={data.total}
+              onPageChange={(p) => setCallFilters({ page: p })}
+            />
+          )}
+        </>
       )}
     </div>
   )

@@ -3,14 +3,16 @@
 import { useMemo } from "react"
 import { format, subDays } from "date-fns"
 import {
-  Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis,
+  Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts"
+import { AlertTriangle } from "lucide-react"
 import { StatsCards } from "@/components/dashboard/stats-cards"
 import { UpcomingBookings } from "@/components/dashboard/upcoming-bookings"
 import { RecentCalls } from "@/components/dashboard/recent-calls"
 import { AgentStatusBanner } from "@/components/dashboard/agent-status-banner"
 import { useCalls } from "@/hooks/use-calls"
 import { useBookingStats } from "@/hooks/use-bookings"
+import type { CallFilters } from "@/types"
 
 function getGreeting() {
   const hour = new Date().getHours()
@@ -39,8 +41,17 @@ function CustomTooltip({ active, payload, label }: any) {
   )
 }
 
+// Stable filter constant — fetches only the last 7 days, capped at 50 calls
+function getChartFilters(): CallFilters {
+  return {
+    limit: 50,
+    date_from: format(subDays(new Date(), 6), "yyyy-MM-dd"),
+  }
+}
+
 function CallsChart() {
-  const { data: calls, isLoading } = useCalls({ limit: 300 })
+  const chartFilters = useMemo(getChartFilters, [])
+  const { data: calls, isLoading, isError } = useCalls(chartFilters)
 
   const chartData = useMemo(() => {
     const days = Array.from({ length: 7 }, (_, i) => {
@@ -69,6 +80,15 @@ function CallsChart() {
 
   if (isLoading) {
     return <div className="h-52 animate-pulse rounded-xl bg-[#F0F0EC]" />
+  }
+
+  if (isError) {
+    return (
+      <div className="h-52 flex flex-col items-center justify-center gap-2 rounded-xl bg-[#FAF5F5] border border-red-100">
+        <AlertTriangle className="h-5 w-5 text-red-300" />
+        <p className="text-xs text-[#aaa]">Could not load chart data</p>
+      </div>
+    )
   }
 
   return (
