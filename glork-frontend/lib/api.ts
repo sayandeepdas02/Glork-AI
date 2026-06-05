@@ -166,6 +166,11 @@ export async function logout(): Promise<void> {
   await api.post("/auth/logout")
 }
 
+export async function getGoogleAuthUrl(): Promise<{ auth_url: string }> {
+  const { data } = await api.get<{ auth_url: string }>("/auth/google")
+  return data
+}
+
 // Doctor
 export async function getMe(): Promise<Doctor> {
   const { data } = await api.get<Doctor>("/doctors/me")

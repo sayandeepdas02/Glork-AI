@@ -39,6 +39,7 @@ async def get_me(
     response.calendar_connected = (
         full.calendar_integration is not None and full.calendar_integration.is_connected
     )
+    response.has_password = full.password_hash is not None
     return response
 
 
@@ -65,6 +66,7 @@ async def update_me(
     response.calendar_connected = (
         full.calendar_integration is not None and full.calendar_integration.is_connected
     )
+    response.has_password = full.password_hash is not None
     return response
 
 
