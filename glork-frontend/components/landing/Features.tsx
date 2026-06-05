@@ -1,102 +1,82 @@
 "use client"
 
-import {
-  Calendar, Clock, Globe, Phone, Shield, Zap,
-} from "lucide-react"
-import { Panel, PanelHeader, PanelTitle, PanelTitleSup, PanelContent } from "@/components/ui/panel"
+import { Calendar, Clock, Globe, Phone, Shield, Zap } from "lucide-react"
+import { Panel, PanelHeader, PanelTitle, PanelContent } from "@/components/ui/panel"
 
 export default function Features() {
   return (
-    <Panel id="features">
-      <PanelHeader className="flex flex-col gap-1 items-start pt-14 pb-8 border-b border-[#EAEAE5]">
-        <span className="text-[12px] text-[#888] uppercase tracking-[0.25em] mb-2">
-          Features
-        </span>
-        <PanelTitle>
-          Everything your clinic needs
-          <PanelTitleSup>(06)</PanelTitleSup>
-        </PanelTitle>
+    <Panel id="features" className="border-t border-[#EAEAE5]">
+      <PanelHeader className="border-b border-[#EAEAE5]">
+        <p className="text-[11px] text-[#aaa] uppercase tracking-[0.22em] mb-3">Features</p>
+        <PanelTitle>Everything your clinic needs</PanelTitle>
       </PanelHeader>
 
       <PanelContent>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
 
-          {/* Large Featured Card */}
-          <article className="md:col-span-2 md:row-span-2 min-h-[400px] flex flex-col justify-between p-8 lg:p-10 rounded-xl bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D8D8D3] transition-all duration-300 relative overflow-hidden group">
-            <div className="max-w-md">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-brand/15 bg-brand/6 mb-6">
-                <Phone className="h-5 w-5 text-brand" />
+          {/* Large featured card — 2 cols, 2 rows */}
+          <article className="md:col-span-2 md:row-span-2 min-h-[380px] flex flex-col justify-between p-8 rounded-xl bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D0D0CA] transition-colors duration-200 group">
+            <div>
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/8 mb-5">
+                <Phone className="h-4 w-4 text-brand" />
               </div>
-              <h3 className="text-[22px] text-[#111] mb-3">24/7 AI Receptionist</h3>
-              <p className="text-[14px] text-[#666] leading-relaxed">
-                The AI picks up every call — after hours, weekends, public holidays. Never a busy signal, never voicemail. Your clinic is always open.
+              <h3 className="text-[18px] text-[#111] mb-2.5">24/7 AI Receptionist</h3>
+              <p className="text-[13.5px] text-[#777] leading-relaxed max-w-sm">
+                The AI picks up every call — after hours, weekends, public holidays.
+                Never a busy signal, never voicemail. Your clinic is always open.
               </p>
             </div>
 
-            <div className="mt-8 p-4 rounded-xl border border-[#E0E0DB] bg-white self-start w-full max-w-sm">
+            <div className="mt-8 p-4 rounded-lg border border-[#E0E0DB] bg-white">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-[11px] text-[#888] uppercase tracking-wider">Live Status</span>
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                  <span className="text-[11px] text-[#999] uppercase tracking-wider">Live</span>
                 </div>
-                <span className="text-[11px] text-brand">Handling 3 calls</span>
+                <span className="text-[11px] text-brand">3 active calls</span>
               </div>
               <div className="space-y-2">
-                <div className="h-1.5 w-full bg-[#F0F0EC] rounded-full overflow-hidden">
-                  <div className="h-full bg-brand w-[85%] rounded-full" />
-                </div>
-                <div className="flex justify-between text-[10px] text-[#bbb]">
-                  <span>Coverage</span>
-                  <span>100% uptime</span>
-                </div>
+                {["Dr. Sharma — slot 9:00 AM", "Dr. Sharma — slot 10:30 AM", "Routing emergency..."].map((line, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${i === 2 ? 'bg-amber-400' : 'bg-brand/40'}`} />
+                    <span className="text-[11.5px] text-[#888] truncate">{line}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </article>
 
-          {/* Medium Card 1 */}
-          <article className="flex flex-col p-6 lg:p-7 rounded-xl bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D8D8D3] hover:shadow-card transition-all duration-300">
-            <Calendar className="h-5 w-5 text-[#888] mb-4" />
-            <h3 className="text-[16px] text-[#111] mb-2">Smart Scheduling</h3>
-            <p className="text-[13px] text-[#666] leading-relaxed">
-              Checks live Calendar availability and slots new bookings instantly. Zero double-booking.
+          {/* Medium cards */}
+          <article className="flex flex-col p-6 rounded-xl bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D0D0CA] transition-colors duration-200">
+            <Calendar className="h-4 w-4 text-[#aaa] mb-4" />
+            <h3 className="text-[15px] text-[#111] mb-1.5">Smart Scheduling</h3>
+            <p className="text-[13px] text-[#888] leading-relaxed">
+              Checks live Calendar availability and books instantly. Zero double-booking.
             </p>
           </article>
 
-          {/* Medium Card 2 */}
-          <article className="flex flex-col p-6 lg:p-7 rounded-xl bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D8D8D3] hover:shadow-card transition-all duration-300">
-            <Zap className="h-5 w-5 text-[#888] mb-4" />
-            <h3 className="text-[16px] text-[#111] mb-2">Instant Confirmations</h3>
-            <p className="text-[13px] text-[#666] leading-relaxed">
-              SMS and email confirmations sent automatically the moment a booking is made.
+          <article className="flex flex-col p-6 rounded-xl bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D0D0CA] transition-colors duration-200">
+            <Zap className="h-4 w-4 text-[#aaa] mb-4" />
+            <h3 className="text-[15px] text-[#111] mb-1.5">Instant Confirmations</h3>
+            <p className="text-[13px] text-[#888] leading-relaxed">
+              SMS and email confirmations sent the moment a booking is made.
             </p>
           </article>
 
-          {/* Small Card 1 */}
-          <article className="flex items-start gap-4 p-6 rounded-xl bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D8D8D3] hover:shadow-card transition-all duration-300">
-            <Globe className="h-4 w-4 text-brand shrink-0 mt-0.5" />
-            <div>
-              <h3 className="text-[14px] text-[#111] mb-1">Multilingual</h3>
-              <p className="text-[12px] text-[#888]">English, Hindi, Tamil & more.</p>
-            </div>
-          </article>
-
-          {/* Small Card 2 */}
-          <article className="flex items-start gap-4 p-6 rounded-xl bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D8D8D3] hover:shadow-card transition-all duration-300">
-            <Shield className="h-4 w-4 text-brand shrink-0 mt-0.5" />
-            <div>
-              <h3 className="text-[14px] text-[#111] mb-1">Emergency Handling</h3>
-              <p className="text-[12px] text-[#888]">Routes urgent calls instantly.</p>
-            </div>
-          </article>
-
-          {/* Small Card 3 */}
-          <article className="flex items-start gap-4 p-6 rounded-xl bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D8D8D3] hover:shadow-card transition-all duration-300">
-            <Clock className="h-4 w-4 text-brand shrink-0 mt-0.5" />
-            <div>
-              <h3 className="text-[14px] text-[#111] mb-1">Custom Hours</h3>
-              <p className="text-[12px] text-[#888]">Books strictly within your schedule.</p>
-            </div>
-          </article>
+          {/* Small cards */}
+          {[
+            { Icon: Globe,  title: "Multilingual",        desc: "English, Hindi, Tamil & more." },
+            { Icon: Shield, title: "Emergency Handling",  desc: "Routes urgent calls instantly." },
+            { Icon: Clock,  title: "Custom Hours",        desc: "Books within your schedule only." },
+          ].map(({ Icon, title, desc }) => (
+            <article key={title} className="flex items-start gap-3.5 p-6 rounded-xl bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D0D0CA] transition-colors duration-200">
+              <Icon className="h-4 w-4 text-brand shrink-0 mt-0.5" />
+              <div>
+                <h3 className="text-[14px] text-[#111] mb-1">{title}</h3>
+                <p className="text-[12.5px] text-[#999]">{desc}</p>
+              </div>
+            </article>
+          ))}
 
         </div>
       </PanelContent>
