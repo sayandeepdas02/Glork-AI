@@ -8,6 +8,9 @@ export interface Doctor {
   clinic_address: string | null
   is_active: boolean
   is_agent_active: boolean
+  google_id?: string | null
+  has_google_auth?: boolean
+  has_password?: boolean
   calendar_connected?: boolean
   created_at: string
   updated_at?: string | null

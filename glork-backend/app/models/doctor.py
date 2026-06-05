@@ -22,7 +22,8 @@ class Doctor(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
-    password_hash: Mapped[str] = mapped_column(Text, nullable=False)
+    password_hash: Mapped[str | None] = mapped_column(Text, nullable=True)
+    google_id: Mapped[str | None] = mapped_column(String(255), unique=True, nullable=True, index=True)
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     clinic_name: Mapped[str] = mapped_column(String(200), nullable=False)
     phone_number: Mapped[str | None] = mapped_column(String(20), nullable=True)
