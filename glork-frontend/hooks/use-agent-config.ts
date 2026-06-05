@@ -14,11 +14,13 @@ export function useAgentConfig() {
   })
 }
 
+type AgentConfigContext = { prev: AgentConfig | undefined }
+
 export function useUpdateAgentConfig() {
   const qc = useQueryClient()
-  return useMutation({
-    mutationFn: (data: Partial<AgentConfig>) => updateAgentConfig(data),
-    onMutate: async (data) => {
+  return useMutation<AgentConfig, Error, Partial<AgentConfig>, AgentConfigContext>({
+    mutationFn: (data) => updateAgentConfig(data),
+    onMutate: async (data): Promise<AgentConfigContext> => {
       await qc.cancelQueries({ queryKey: ["agent-config"] })
       const prev = qc.getQueryData<AgentConfig>(["agent-config"])
       qc.setQueryData<AgentConfig>(["agent-config"], (old) =>
@@ -26,7 +28,7 @@ export function useUpdateAgentConfig() {
       )
       return { prev }
     },
-    onError: (err: Error, _, ctx: any) => {
+    onError: (err, _, ctx) => {
       qc.setQueryData(["agent-config"], ctx?.prev)
       toast.error(err.message || "Failed to update agent config")
     },

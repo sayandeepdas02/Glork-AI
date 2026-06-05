@@ -107,6 +107,7 @@ async def update_agent_config(
         await db.refresh(config)
     except Exception as exc:
         await db.rollback()
+        logger.error("agent_config_update_failed", doctor_id=str(doctor.id), error=str(exc))
         raise HTTPException(status_code=500, detail="Failed to update agent config")
 
     if config.retell_llm_id:

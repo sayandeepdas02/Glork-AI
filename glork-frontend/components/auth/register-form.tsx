@@ -3,9 +3,10 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { useForm } from "react-hook-form"
+import { useForm, type UseFormRegisterReturn } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import { isAxiosError } from "axios"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
@@ -14,6 +15,7 @@ import { useAuth } from "@/hooks/use-auth"
 const schema = z.object({
   name: z.string().min(2, "Full name is required"),
   clinic_name: z.string().min(2, "Clinic name is required"),
+  specialty: z.string().optional(),
   email: z.string().email("Enter a valid email"),
   password: z.string().min(8, "Must be at least 8 characters"),
   confirm_password: z.string(),
@@ -36,14 +38,14 @@ function passwordStrength(pw: string): { score: number; label: string; color: st
   if (s === 2) return { score: 40, label: "Fair", color: "bg-orange-400" }
   if (s === 3) return { score: 60, label: "Good", color: "bg-yellow-400" }
   if (s === 4) return { score: 80, label: "Strong", color: "bg-emerald-400" }
-  return { score: 100, label: "Very strong", color: "bg-[#1d6b4a]" }
+  return { score: 100, label: "Very strong", color: "bg-emerald-500" }
 }
 
 function Field({
   id, label, type = "text", placeholder, autoComplete, register, error, rightSlot, half,
 }: {
   id: string; label: string; type?: string; placeholder?: string; autoComplete?: string
-  register: any; error?: string; rightSlot?: React.ReactNode; half?: boolean
+  register: UseFormRegisterReturn; error?: string; rightSlot?: React.ReactNode; half?: boolean
 }) {
   return (
     <div className={cn("space-y-1.5", half && "")}>
@@ -54,7 +56,7 @@ function Field({
           className={cn(
             "w-full rounded-xl border bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400",
             "outline-none transition-all duration-150",
-            "border-gray-200 hover:border-gray-300 focus:border-[#1d6b4a] focus:ring-2 focus:ring-[#1d6b4a]/10",
+            "border-gray-200 hover:border-gray-300 focus:border-brand focus:ring-2 focus:ring-brand/10",
             rightSlot && "pr-11",
             error && "border-red-300 focus:border-red-400 focus:ring-red-100",
           )}
@@ -83,10 +85,18 @@ export function RegisterForm() {
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true)
     try {
-      await registerAccount({ name: values.name, clinic_name: values.clinic_name, email: values.email, password: values.password })
+      await registerAccount({
+        name: values.name,
+        clinic_name: values.clinic_name,
+        specialty: values.specialty,
+        email: values.email,
+        password: values.password,
+      })
       router.push("/onboarding")
-    } catch (err: any) {
-      toast.error(err?.response?.data?.detail ?? "Registration failed. Please try again.")
+    } catch (err: unknown) {
+      toast.error(
+        isAxiosError(err) ? (err.response?.data?.detail ?? "Registration failed. Please try again.") : "Registration failed. Please try again."
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -101,6 +111,9 @@ export function RegisterForm() {
           register={register("clinic_name")} error={errors.clinic_name?.message} />
       </div>
 
+      <Field id="specialty" label="Specialty (optional)" placeholder="e.g. General Practice"
+        register={register("specialty")} error={errors.specialty?.message} />
+
       <Field id="email" label="Email address" type="email" placeholder="you@clinic.com"
         autoComplete="email" register={register("email")} error={errors.email?.message} />
 
@@ -112,6 +125,7 @@ export function RegisterForm() {
           rightSlot={
             <button type="button" tabIndex={-1}
               onClick={() => setShowPw(!showPw)}
+              aria-label={showPw ? "Hide password" : "Show password"}
               className="text-gray-400 hover:text-gray-600 transition-colors">
               {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
@@ -142,7 +156,7 @@ export function RegisterForm() {
           disabled={isSubmitting}
           className={cn(
             "w-full flex items-center justify-center gap-2 rounded-xl",
-            "bg-[#1d6b4a] hover:bg-[#155638] text-white font-semibold",
+            "bg-brand hover:bg-brand-dark text-white font-semibold",
             "py-3 text-sm transition-all duration-150",
             "shadow-glow hover:shadow-glow-lg hover:-translate-y-0.5",
             "disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
@@ -156,7 +170,7 @@ export function RegisterForm() {
 
       <p className="text-center text-sm text-gray-500">
         Already have an account?{" "}
-        <Link href="/login" className="font-semibold text-[#1d6b4a] hover:text-[#155638] transition-colors">
+        <Link href="/login" className="font-semibold text-brand hover:text-brand-dark transition-colors">
           Sign in
         </Link>
       </p>

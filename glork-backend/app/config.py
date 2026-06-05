@@ -1,5 +1,4 @@
 from pydantic_settings import BaseSettings
-from pydantic import AnyUrl, EmailStr
 from functools import lru_cache
 
 
@@ -10,6 +9,13 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
+
+    # Database connection pool — tune via env vars for production
+    DB_POOL_SIZE: int = 10
+    DB_MAX_OVERFLOW: int = 20
+
+    # Comma-separated list of extra allowed CORS origins (in addition to FRONTEND_URL)
+    ALLOWED_ORIGINS: str = ""
 
     RETELL_API_KEY: str = ""
     RETELL_WEBHOOK_SECRET: str = ""

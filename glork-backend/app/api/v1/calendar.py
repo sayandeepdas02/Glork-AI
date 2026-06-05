@@ -21,8 +21,10 @@ from app.schemas.calendar import (
     CalendarAuthUrlResponse,
     CalendarListItem,
     CalendarSelectRequest,
+    CalendarSelectedResponse,
     CalendarStatusResponse,
 )
+from app.schemas.common import MessageResponse
 from app.services.calendar_service import calendar_service
 
 logger = structlog.get_logger()
@@ -172,7 +174,7 @@ async def list_calendars(
     return [CalendarListItem(**c) for c in calendars]
 
 
-@router.patch("/select")
+@router.patch("/select", response_model=CalendarSelectedResponse)
 async def select_calendar(
     payload: CalendarSelectRequest,
     doctor: Doctor = Depends(get_current_active_doctor),
@@ -190,12 +192,13 @@ async def select_calendar(
         await db.commit()
     except Exception as exc:
         await db.rollback()
+        logger.error("calendar_select_failed", doctor_id=str(doctor.id), error=str(exc))
         raise HTTPException(status_code=500, detail="Failed to update calendar selection")
 
-    return {"calendar_id": payload.calendar_id, "message": "Calendar updated successfully"}
+    return CalendarSelectedResponse(calendar_id=payload.calendar_id, message="Calendar updated successfully")
 
 
-@router.delete("")
+@router.delete("", response_model=MessageResponse)
 async def disconnect_calendar(
     doctor: Doctor = Depends(get_current_active_doctor),
     db: AsyncSession = Depends(get_db),
@@ -225,6 +228,7 @@ async def disconnect_calendar(
         await db.commit()
     except Exception as exc:
         await db.rollback()
+        logger.error("calendar_disconnect_failed", doctor_id=str(doctor.id), error=str(exc))
         raise HTTPException(status_code=500, detail="Failed to disconnect calendar")
 
-    return {"message": "Calendar disconnected successfully"}
+    return MessageResponse(message="Calendar disconnected successfully")

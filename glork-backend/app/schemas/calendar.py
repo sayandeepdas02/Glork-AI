@@ -21,3 +21,8 @@ class CalendarListItem(BaseModel):
 
 class CalendarSelectRequest(BaseModel):
     calendar_id: str
+
+
+class CalendarSelectedResponse(BaseModel):
+    calendar_id: str
+    message: str
