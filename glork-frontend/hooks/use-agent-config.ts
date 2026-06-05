@@ -14,6 +14,12 @@ export function useAgentConfig() {
   })
 }
 
+/** Returns the clinic's configured IANA timezone string (e.g. "Asia/Kolkata"). */
+export function useClinicTimezone(): string {
+  const { data } = useAgentConfig()
+  return data?.timezone ?? "UTC"
+}
+
 type AgentConfigContext = { prev: AgentConfig | undefined }
 
 export function useUpdateAgentConfig() {

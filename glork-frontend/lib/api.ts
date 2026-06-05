@@ -25,9 +25,12 @@ export const api = axios.create({
   baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
   timeout: 30000,
+  withCredentials: true, // Send httpOnly cookies (access + refresh) with every request
 })
 
 api.interceptors.request.use((config) => {
+  // Prefer in-memory token for Authorization header (backward compat with Bearer scheme).
+  // httpOnly cookie is also sent automatically via withCredentials.
   const token = getAccessToken()
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
@@ -77,28 +80,19 @@ api.interceptors.response.use(
       originalRequest._retry = true
       isRefreshing = true
 
-      const refreshToken = getRefreshToken()
-      if (!refreshToken) {
-        processQueue(error, null)
-        isRefreshing = false
-        clearTokens()
-        getAuthStore().clearAuth()
-        if (typeof window !== "undefined") {
-          sessionStorage.setItem("auth_error", "auth_required")
-          window.location.href = "/login"
-        }
-        return Promise.reject(error)
-      }
-
       try {
+        // Send refresh request — httpOnly refresh cookie is included automatically via withCredentials.
+        // Also include body token for backward compat with non-cookie clients.
+        const refreshToken = getRefreshToken()
         const resp = await axios.post<TokenResponse>(
           `${API_BASE_URL}/auth/refresh`,
-          { refresh_token: refreshToken }
+          refreshToken ? { refresh_token: refreshToken } : {},
+          { withCredentials: true }
         )
         const { access_token, refresh_token } = resp.data
         const { doctor } = getAuthStore()
         if (doctor) {
-          getAuthStore().setAuth(doctor, access_token, refresh_token)
+          getAuthStore().setAuth(doctor, access_token, refresh_token ?? "")
         }
         processQueue(null, access_token)
         if (originalRequest.headers) {
@@ -110,13 +104,12 @@ api.interceptors.response.use(
         clearTokens()
         getAuthStore().clearAuth()
         if (typeof window !== "undefined") {
-          // Differentiate: auth error (expired) vs network error
           const reason =
             axios.isAxiosError(err) && err.response?.status
               ? "session_expired"
               : "network_error"
-          sessionStorage.setItem("auth_error", reason)
-          window.location.href = "/login"
+          // Use query param instead of sessionStorage to avoid XSS-readable state
+          window.location.href = `/login?reason=${reason}`
         }
         return Promise.reject(err)
       } finally {
@@ -128,16 +121,26 @@ api.interceptors.response.use(
   }
 )
 
-function extractError(error: unknown): string {
-  if (axios.isAxiosError(error)) {
-    return (
-      error.response?.data?.error ||
-      error.response?.data?.detail ||
-      error.message ||
-      "Request failed"
-    )
+/**
+ * Map HTTP errors to safe, user-friendly messages.
+ * Never expose raw backend details (stack traces, column names, internal paths).
+ */
+export function extractError(error: unknown): string {
+  if (!axios.isAxiosError(error)) return "An unexpected error occurred"
+  const status = error.response?.status
+  // 400 / 422: pass through explicit validation messages (designed to be user-safe)
+  if (status === 400 || status === 422) {
+    const msg = error.response?.data?.error || error.response?.data?.detail
+    if (typeof msg === "string" && msg.length < 200) return msg
+    return "Invalid request. Please check your input."
   }
-  return "An unexpected error occurred"
+  if (status === 401) return "Session expired. Please sign in again."
+  if (status === 403) return "You don't have permission to perform this action."
+  if (status === 404) return "The requested resource was not found."
+  if (status === 409) return "This action conflicts with another change. Please refresh and try again."
+  if (status === 429) return "Too many requests. Please wait a moment and try again."
+  if (status && status >= 500) return "Server error. Please try again later."
+  return "Request failed. Please try again."
 }
 
 // Auth
@@ -151,8 +154,11 @@ export async function register(payload: RegisterData): Promise<TokenResponse> {
   return data
 }
 
-export async function refreshTokens(refresh_token: string): Promise<TokenResponse> {
-  const { data } = await api.post<TokenResponse>("/auth/refresh", { refresh_token })
+export async function refreshTokens(refresh_token?: string): Promise<TokenResponse> {
+  const { data } = await api.post<TokenResponse>(
+    "/auth/refresh",
+    refresh_token ? { refresh_token } : {},
+  )
   return data
 }
 

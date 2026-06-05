@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useCreateBooking } from "@/hooks/use-bookings"
 import { useAgentConfig } from "@/hooks/use-agent-config"
+import { useCalendarStatus } from "@/hooks/use-calendar"
 
 const schema = z.object({
   patient_name: z.string().min(2, "Name must be at least 2 characters"),
@@ -35,7 +36,9 @@ interface BookingFormProps {
 export function BookingForm({ open, onOpenChange }: BookingFormProps) {
   const { mutate: create, isPending } = useCreateBooking()
   const { data: agentConfig } = useAgentConfig()
+  const { data: calendarStatus } = useCalendarStatus()
   const slotDuration = agentConfig?.slot_duration_mins ?? 30
+  const calendarConnected = calendarStatus?.is_connected ?? false
 
   const {
     register,
@@ -125,6 +128,11 @@ export function BookingForm({ open, onOpenChange }: BookingFormProps) {
               />
             </div>
           </div>
+          {!calendarConnected && (
+            <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+              Google Calendar is not connected. Booking will be saved but no calendar event will be created.
+            </p>
+          )}
           <p className="text-xs text-gray-500">
             Appointment duration: {slotDuration} minutes
           </p>

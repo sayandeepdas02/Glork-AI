@@ -4,7 +4,7 @@ from typing import AsyncGenerator
 from uuid import UUID
 
 import structlog
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,7 +15,10 @@ from app.models.doctor import Doctor
 
 logger = structlog.get_logger()
 
-bearer_scheme = HTTPBearer(auto_error=True)
+# auto_error=False so we can fall back to cookie without a 403
+_bearer_scheme = HTTPBearer(auto_error=False)
+
+_COOKIE_ACCESS = "glork-token"
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
@@ -30,10 +33,21 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def get_current_doctor(
-    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    request: Request,
     db: AsyncSession = Depends(get_db),
+    credentials: HTTPAuthorizationCredentials | None = Depends(_bearer_scheme),
 ) -> Doctor:
-    token = credentials.credentials
+    # Prefer httpOnly cookie; fall back to Authorization: Bearer header
+    token: str | None = request.cookies.get(_COOKIE_ACCESS)
+    if not token and credentials:
+        token = credentials.credentials
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     payload = decode_token(token)
 
     if payload.get("type") != "access":
