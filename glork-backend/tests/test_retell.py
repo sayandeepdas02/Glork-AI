@@ -4,7 +4,7 @@ import hashlib
 import hmac
 import json
 from datetime import datetime, timedelta, timezone
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 from uuid import uuid4
 
 import pytest
@@ -195,3 +195,159 @@ async def test_tool_cancel_booking_not_found(async_client: AsyncClient, doctor: 
     )
     assert resp.status_code == 200
     assert "error" in resp.json()["result"]
+
+
+# ─── C-1: Authorization Bypass Tests ─────────────────────────────────────────
+
+@pytest.mark.asyncio
+async def test_cancel_booking_without_doctor_id_is_rejected(async_client: AsyncClient):
+    """Cancellation without doctor_id in metadata must be rejected — no bypass allowed."""
+    resp = await async_client.post(
+        "/api/v1/retell/tools/cancel-booking",
+        json={
+            "call": {"metadata": {}},  # No doctor_id
+            "args": {"booking_id": str(uuid4())},
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.json()["result"]
+    assert "error" in data
+    assert "Authorization context missing" in data["error"] or "missing" in data["error"].lower()
+
+
+@pytest.mark.asyncio
+async def test_cancel_booking_doctor_id_from_args_is_rejected(async_client: AsyncClient, doctor: Doctor):
+    """doctor_id supplied in AI args (not metadata) must NOT be used for authorization."""
+    resp = await async_client.post(
+        "/api/v1/retell/tools/cancel-booking",
+        json={
+            "call": {"metadata": {}},  # No doctor_id in trusted metadata
+            "args": {
+                "booking_id": str(uuid4()),
+                "doctor_id": str(doctor.id),  # Attacker-controlled
+            },
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.json()["result"]
+    assert "error" in data  # Must be rejected, not processed
+
+
+@pytest.mark.asyncio
+async def test_cancel_booking_cross_doctor_ownership_rejected(async_client: AsyncClient, db):
+    """A doctor cannot cancel a booking that belongs to a different doctor."""
+    import copy
+    from app.models.agent_config import AgentConfig, DEFAULT_WORKING_HOURS
+    from app.models.booking import Booking, BookingStatus
+    from app.core.security import hash_password
+    from datetime import datetime, timezone, timedelta
+
+    # Create two doctors
+    doctor_a = Doctor(
+        email=f"docA_{uuid4().hex[:8]}@test.com",
+        password_hash=hash_password("pw"),
+        name="Dr. A",
+        clinic_name="Clinic A",
+    )
+    doctor_b = Doctor(
+        email=f"docB_{uuid4().hex[:8]}@test.com",
+        password_hash=hash_password("pw"),
+        name="Dr. B",
+        clinic_name="Clinic B",
+    )
+    db.add_all([doctor_a, doctor_b])
+    await db.flush()
+    db.add(AgentConfig(doctor_id=doctor_a.id, working_hours=copy.deepcopy(DEFAULT_WORKING_HOURS)))
+    db.add(AgentConfig(doctor_id=doctor_b.id, working_hours=copy.deepcopy(DEFAULT_WORKING_HOURS)))
+    await db.flush()
+
+    # Booking belongs to doctor_a
+    now = datetime.now(timezone.utc)
+    booking = Booking(
+        doctor_id=doctor_a.id,
+        patient_name="Test Patient",
+        patient_phone="+910000000001",
+        appointment_start=now + timedelta(hours=1),
+        appointment_end=now + timedelta(hours=2),
+        status=BookingStatus.confirmed,
+    )
+    db.add(booking)
+    await db.commit()
+
+    # doctor_b tries to cancel doctor_a's booking
+    resp = await async_client.post(
+        "/api/v1/retell/tools/cancel-booking",
+        json={
+            "call": {"metadata": {"doctor_id": str(doctor_b.id)}},
+            "args": {"booking_id": str(booking.id)},
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.json()["result"]
+    assert "error" in data
+    assert "does not belong" in data["error"].lower() or "error" in data
+
+
+@pytest.mark.asyncio
+async def test_cancel_booking_valid_ownership_succeeds(async_client: AsyncClient, db):
+    """A doctor can cancel their own booking."""
+    import copy
+    from app.models.agent_config import AgentConfig, DEFAULT_WORKING_HOURS
+    from app.models.booking import Booking, BookingStatus
+    from app.core.security import hash_password
+    from datetime import datetime, timezone, timedelta
+
+    doctor = Doctor(
+        email=f"own_{uuid4().hex[:8]}@test.com",
+        password_hash=hash_password("pw"),
+        name="Dr. Owner",
+        clinic_name="Owner Clinic",
+    )
+    db.add(doctor)
+    await db.flush()
+    db.add(AgentConfig(doctor_id=doctor.id, working_hours=copy.deepcopy(DEFAULT_WORKING_HOURS)))
+    await db.flush()
+
+    now = datetime.now(timezone.utc)
+    booking = Booking(
+        doctor_id=doctor.id,
+        patient_name="Patient",
+        patient_phone="+910000000002",
+        appointment_start=now + timedelta(hours=1),
+        appointment_end=now + timedelta(hours=2),
+        status=BookingStatus.confirmed,
+    )
+    db.add(booking)
+    await db.commit()
+
+    with patch("app.services.calendar_service.calendar_service.delete_event", return_value=None):
+        resp = await async_client.post(
+            "/api/v1/retell/tools/cancel-booking",
+            json={
+                "call": {"metadata": {"doctor_id": str(doctor.id)}},
+                "args": {"booking_id": str(booking.id)},
+            },
+        )
+    assert resp.status_code == 200
+    data = resp.json()["result"]
+    assert data.get("success") is True
+
+
+# ─── H-5: Signature Validation on Tool Endpoints ─────────────────────────────
+
+@pytest.mark.asyncio
+async def test_tool_endpoints_reject_invalid_signature(async_client: AsyncClient):
+    """All tool endpoints must reject requests with invalid Retell signatures."""
+    endpoints = [
+        "/api/v1/retell/tools/check-availability",
+        "/api/v1/retell/tools/create-booking",
+        "/api/v1/retell/tools/get-patient-bookings",
+        "/api/v1/retell/tools/cancel-booking",
+    ]
+    for endpoint in endpoints:
+        resp = await async_client.post(
+            endpoint,
+            json={"call": {"metadata": {}}, "args": {}},
+            headers={"X-Retell-Signature": "invalidsignature"},
+        )
+        assert resp.status_code == 401, f"{endpoint} did not reject invalid signature"

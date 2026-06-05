@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+from uuid import uuid4
 
 import pytest
 from httpx import AsyncClient
 from jose import jwt
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
+from app.models.doctor import Doctor
 
 
 @pytest.mark.asyncio
@@ -175,3 +178,97 @@ async def test_refresh_with_access_token_rejected(async_client: AsyncClient, doc
         json={"refresh_token": access_token},
     )
     assert resp.status_code == 401
+
+
+# ─── H-5: Email Enumeration Prevention ───────────────────────────────────────
+
+@pytest.mark.asyncio
+async def test_login_inactive_account_returns_401_not_403(async_client: AsyncClient, db):
+    """Inactive accounts must return 401 (not 403) to prevent email enumeration."""
+    from app.core.security import hash_password
+
+    inactive_doc = Doctor(
+        email=f"inactive_{uuid4().hex[:8]}@test.com",
+        password_hash=hash_password("testpassword123"),
+        name="Dr. Inactive",
+        clinic_name="Inactive Clinic",
+        is_active=False,
+    )
+    db.add(inactive_doc)
+    await db.commit()
+
+    resp = await async_client.post(
+        "/api/v1/auth/login",
+        json={"email": inactive_doc.email, "password": "testpassword123"},
+    )
+    assert resp.status_code == 401, "Inactive account must return 401, not 403"
+
+
+@pytest.mark.asyncio
+async def test_login_inactive_account_same_message_as_wrong_password(async_client: AsyncClient, db):
+    """Inactive account login message must be identical to wrong-password message (no oracle)."""
+    from app.core.security import hash_password
+
+    inactive_doc = Doctor(
+        email=f"inactive2_{uuid4().hex[:8]}@test.com",
+        password_hash=hash_password("testpassword123"),
+        name="Dr. Inactive2",
+        clinic_name="Inactive Clinic2",
+        is_active=False,
+    )
+    db.add(inactive_doc)
+    await db.commit()
+
+    inactive_resp = await async_client.post(
+        "/api/v1/auth/login",
+        json={"email": inactive_doc.email, "password": "testpassword123"},
+    )
+    wrong_pw_resp = await async_client.post(
+        "/api/v1/auth/login",
+        json={"email": "nobody@nowhere.example", "password": "wrongpassword"},
+    )
+
+    assert inactive_resp.json().get("error") == wrong_pw_resp.json().get("error"), (
+        "Different error messages leak account existence"
+    )
+
+
+# ─── C-2: httpOnly Cookie Tests ───────────────────────────────────────────────
+
+@pytest.mark.asyncio
+async def test_login_sets_httponly_access_cookie(async_client: AsyncClient, doctor):
+    """Login response must set an httpOnly access token cookie."""
+    resp = await async_client.post(
+        "/api/v1/auth/login",
+        json={"email": doctor.email, "password": "testpassword123"},
+    )
+    assert resp.status_code == 200
+    assert "glork-token" in resp.cookies
+    # httponly attribute presence in Set-Cookie header
+    set_cookie = resp.headers.get("set-cookie", "")
+    assert "httponly" in set_cookie.lower(), "Access token cookie must be HttpOnly"
+
+
+@pytest.mark.asyncio
+async def test_logout_clears_cookies(async_client: AsyncClient, doctor):
+    """Logout must clear both auth cookies."""
+    resp = await async_client.post("/api/v1/auth/logout")
+    assert resp.status_code == 200
+    # After logout the cookie should be deleted (max-age=0 or expires in past)
+    set_cookie = resp.headers.get("set-cookie", "")
+    assert "glork-token" in set_cookie or "glork-refresh" in set_cookie
+
+
+@pytest.mark.asyncio
+async def test_refresh_via_cookie(async_client: AsyncClient, doctor):
+    """Refresh endpoint must accept refresh token from httpOnly cookie."""
+    # First login to get the cookie
+    login_resp = await async_client.post(
+        "/api/v1/auth/login",
+        json={"email": doctor.email, "password": "testpassword123"},
+    )
+    assert login_resp.status_code == 200
+    # The refresh cookie should have been set; httpx carries cookies automatically
+    resp = await async_client.post("/api/v1/auth/refresh")
+    assert resp.status_code == 200
+    assert "access_token" in resp.json()

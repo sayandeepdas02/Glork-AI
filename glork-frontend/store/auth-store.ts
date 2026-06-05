@@ -20,25 +20,21 @@ export const useAuthStore = create<AuthStore>()(
       refreshToken: null,
       isAuthenticated: false,
       setAuth: (doctor, accessToken, refreshToken) => {
-        if (typeof document !== "undefined") {
-          document.cookie = `glork-token=${accessToken}; path=/; max-age=3600; SameSite=Lax`
-        }
+        // Tokens are NOT written to localStorage — they live in memory only.
+        // The backend sets httpOnly cookies for session continuity across reloads.
         set({ doctor, accessToken, refreshToken, isAuthenticated: true })
       },
       setDoctor: (doctor) => set({ doctor }),
       clearAuth: () => {
-        if (typeof document !== "undefined") {
-          document.cookie = "glork-token=; path=/; max-age=0"
-        }
+        // Backend logout endpoint clears httpOnly cookies via Set-Cookie header.
         set({ doctor: null, accessToken: null, refreshToken: null, isAuthenticated: false })
       },
     }),
     {
       name: "glork-auth",
+      // Only persist non-sensitive session indicators — never persist tokens
       partialize: (state) => ({
         doctor: state.doctor,
-        accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
       }),
     }

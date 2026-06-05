@@ -47,6 +47,7 @@ def _run_async(coro):
         return loop.run_until_complete(coro)
     finally:
         loop.close()
+        asyncio.set_event_loop(None)  # Clear thread-local state to prevent closed-loop reuse
 
 
 @celery_app.task(bind=True, max_retries=3, default_retry_delay=60, name="app.tasks.celery_tasks.send_sms_confirmation")
@@ -114,8 +115,8 @@ def send_sms_reminder(self, booking_id: str):
         raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))
 
 
-@celery_app.task(name="app.tasks.celery_tasks.schedule_reminders")
-def schedule_reminders():
+@celery_app.task(bind=True, max_retries=3, default_retry_delay=300, name="app.tasks.celery_tasks.schedule_reminders")
+def schedule_reminders(self):
     async def _inner():
         from sqlalchemy import and_, select
         from app.db.session import AsyncSessionLocal
@@ -141,11 +142,15 @@ def schedule_reminders():
                 send_sms_reminder.delay(str(booking.id))
                 logger.info("reminder_scheduled", booking_id=str(booking.id))
 
-    _run_async(_inner())
+    try:
+        _run_async(_inner())
+    except Exception as exc:
+        logger.error("schedule_reminders_failed", error=str(exc))
+        raise self.retry(exc=exc, countdown=300 * (2 ** self.request.retries))
 
 
-@celery_app.task(name="app.tasks.celery_tasks.process_call_ended")
-def process_call_ended(call_log_id: str):
+@celery_app.task(bind=True, max_retries=3, default_retry_delay=60, name="app.tasks.celery_tasks.process_call_ended")
+def process_call_ended(self, call_log_id: str):
     async def _inner():
         from sqlalchemy import select
         from app.db.session import AsyncSessionLocal
@@ -156,6 +161,7 @@ def process_call_ended(call_log_id: str):
             result = await db.execute(select(CallLog).where(CallLog.id == call_log_id))
             call_log = result.scalar_one_or_none()
             if not call_log:
+                logger.warning("process_call_ended_not_found", call_log_id=call_log_id)
                 return
 
             if call_log.outcome == CallOutcome.booked:
@@ -170,11 +176,15 @@ def process_call_ended(call_log_id: str):
                         booking_id=str(booking.id),
                     )
 
-    _run_async(_inner())
+    try:
+        _run_async(_inner())
+    except Exception as exc:
+        logger.error("process_call_ended_failed", call_log_id=call_log_id, error=str(exc))
+        raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))
 
 
-@celery_app.task(name="app.tasks.celery_tasks.refresh_calendar_tokens")
-def refresh_calendar_tokens():
+@celery_app.task(bind=True, max_retries=3, default_retry_delay=300, name="app.tasks.celery_tasks.refresh_calendar_tokens")
+def refresh_calendar_tokens(self):
     async def _inner():
         from sqlalchemy import and_, select
         from app.db.session import AsyncSessionLocal
@@ -205,4 +215,8 @@ def refresh_calendar_tokens():
                         error=str(exc),
                     )
 
-    _run_async(_inner())
+    try:
+        _run_async(_inner())
+    except Exception as exc:
+        logger.error("refresh_calendar_tokens_failed", error=str(exc))
+        raise self.retry(exc=exc, countdown=300 * (2 ** self.request.retries))

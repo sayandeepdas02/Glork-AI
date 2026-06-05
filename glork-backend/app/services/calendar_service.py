@@ -77,29 +77,47 @@ class CalendarService:
             creds.expiry = expiry
 
         if creds.expired or not creds.valid:
-            try:
-                loop = asyncio.get_event_loop()
-                await loop.run_in_executor(None, lambda: creds.refresh(Request()))
+            # Re-fetch with row lock to prevent concurrent refreshes from overwriting each other
+            locked = await db.execute(
+                select(CalendarIntegration)
+                .where(CalendarIntegration.doctor_id == doctor_id)
+                .with_for_update()
+            )
+            integration = locked.scalar_one_or_none()
+            if not integration:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Calendar not connected")
 
-                integration.access_token_encrypted = encrypt(creds.token)
-                # Persist rotated refresh token if Google issued a new one
-                if creds.refresh_token:
-                    integration.refresh_token_encrypted = encrypt(creds.refresh_token)
-                if creds.expiry:
-                    expiry = creds.expiry
-                    if expiry.tzinfo is None:
-                        expiry = expiry.replace(tzinfo=timezone.utc)
-                    integration.token_expiry = expiry
-                await db.commit()
-                await db.refresh(integration)
-            except Exception as exc:
-                logger.error("calendar_token_refresh_failed", doctor_id=str(doctor_id), error=str(exc))
-                integration.is_connected = False
-                await db.commit()
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Failed to refresh Google Calendar token. Please reconnect.",
-                )
+            # Re-check expiry after acquiring lock — another worker may have already refreshed
+            if integration.token_expiry:
+                fresh_expiry = integration.token_expiry
+                if fresh_expiry.tzinfo is None:
+                    fresh_expiry = fresh_expiry.replace(tzinfo=timezone.utc)
+                creds.expiry = fresh_expiry
+
+            if creds.expired or not creds.valid:
+                try:
+                    loop = asyncio.get_event_loop()
+                    await loop.run_in_executor(None, lambda: creds.refresh(Request()))
+
+                    integration.access_token_encrypted = encrypt(creds.token)
+                    # Persist rotated refresh token if Google issued a new one
+                    if creds.refresh_token:
+                        integration.refresh_token_encrypted = encrypt(creds.refresh_token)
+                    if creds.expiry:
+                        expiry = creds.expiry
+                        if expiry.tzinfo is None:
+                            expiry = expiry.replace(tzinfo=timezone.utc)
+                        integration.token_expiry = expiry
+                    await db.commit()
+                    await db.refresh(integration)
+                except Exception as exc:
+                    logger.error("calendar_token_refresh_failed", doctor_id=str(doctor_id), error=str(exc))
+                    integration.is_connected = False
+                    await db.commit()
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="Failed to refresh Google Calendar token. Please reconnect.",
+                    )
 
         return creds
 

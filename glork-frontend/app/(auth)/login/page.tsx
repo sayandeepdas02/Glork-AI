@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import type { Metadata } from "next"
 import { LoginForm } from "@/components/auth/login-form"
 
@@ -10,7 +11,10 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Welcome back</h1>
         <p className="text-sm text-gray-500 mt-1.5">Sign in to your Glork dashboard</p>
       </div>
-      <LoginForm />
+      {/* Suspense required: LoginForm uses useSearchParams() for auth redirect reason */}
+      <Suspense>
+        <LoginForm />
+      </Suspense>
     </div>
   )
 }

@@ -11,9 +11,25 @@ import { useCalendarStatus } from "@/hooks/use-calendar"
 
 export function AgentStatusBanner() {
   const doctor = useAuthStore((s) => s.doctor)
-  const { data: agentConfig } = useAgentConfig()
-  const { data: calendarStatus } = useCalendarStatus()
+  const { data: agentConfig, isError: isConfigError, isLoading: isConfigLoading } = useAgentConfig()
+  const { data: calendarStatus, isError: isCalendarError, isLoading: isCalendarLoading } = useCalendarStatus()
   const { mutate: toggle, isPending } = useToggleAgent()
+
+  // Show loading state while queries are in-flight to avoid flicker
+  if (isConfigLoading || isCalendarLoading) {
+    return (
+      <div className="h-[68px] rounded-2xl border border-[#E8E8E3] bg-[#FAFAF8] animate-pulse" />
+    )
+  }
+
+  // If queries fail we cannot determine real agent state — show degraded banner
+  if (isConfigError || isCalendarError) {
+    return (
+      <div className="rounded-2xl border border-[#E8E8E3] bg-white px-5 py-4">
+        <p className="text-sm text-[#888]">Agent status unavailable — could not load configuration.</p>
+      </div>
+    )
+  }
 
   const isActive = doctor?.is_agent_active
   const calendarConnected = calendarStatus?.is_connected
@@ -99,6 +115,7 @@ export function AgentStatusBanner() {
                 {agentConfig.glork_phone_number}
               </span>
               <button
+                aria-label="Copy agent phone number"
                 onClick={async () => {
                   const ok = await copyToClipboard(agentConfig.glork_phone_number!)
                   if (ok) toast.success("Copied to clipboard")

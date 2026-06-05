@@ -12,28 +12,59 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatAppointmentDate(isoString: string): string {
+/**
+ * Format an ISO timestamp in the clinic's configured timezone.
+ * Falls back to UTC if the timezone string is invalid.
+ * Always pass the clinic timezone (agentConfig.timezone) to avoid browser-TZ drift.
+ */
+function _intlFormat(
+  isoString: string,
+  timezone: string,
+  options: Intl.DateTimeFormatOptions
+): string {
   try {
-    return format(parseISO(isoString), "EEEE, MMMM d, yyyy")
+    const date = parseISO(isoString)
+    return new Intl.DateTimeFormat("en-US", { timeZone: timezone, ...options }).format(date)
   } catch {
+    // Fallback to raw string if timezone or date is invalid
     return isoString
   }
 }
 
-export function formatAppointmentTime(isoString: string): string {
-  try {
-    return format(parseISO(isoString), "h:mm a")
-  } catch {
-    return isoString
-  }
+export function formatAppointmentDate(isoString: string, timezone = "UTC"): string {
+  return _intlFormat(isoString, timezone, {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })
 }
 
-export function formatAppointmentDateTime(isoString: string): string {
-  try {
-    return format(parseISO(isoString), "EEE MMM d · h:mm a")
-  } catch {
-    return isoString
-  }
+export function formatAppointmentTime(isoString: string, timezone = "UTC"): string {
+  return _intlFormat(isoString, timezone, {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  })
+}
+
+export function formatAppointmentDateTime(isoString: string, timezone = "UTC"): string {
+  return _intlFormat(isoString, timezone, {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  })
+}
+
+export function formatDateShort(isoString: string, timezone = "UTC"): string {
+  return _intlFormat(isoString, timezone, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  })
 }
 
 export function formatDuration(seconds: number | null | undefined): string {
@@ -85,13 +116,6 @@ export function getDayName(date: Date | string): string {
   }
 }
 
-export function formatDateShort(isoString: string): string {
-  try {
-    return format(parseISO(isoString), "MMM d, yyyy")
-  } catch {
-    return isoString
-  }
-}
 
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
