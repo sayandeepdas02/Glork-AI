@@ -1,13 +1,16 @@
 "use client"
 
 import Link from "next/link"
-import { ChevronRight, Phone } from "lucide-react"
+import { AlertTriangle, ChevronRight, Phone } from "lucide-react"
 import { OutcomeBadge } from "@/components/calls/outcome-badge"
 import { useCalls } from "@/hooks/use-calls"
 import { formatPhone, formatRelativeTime, formatDuration } from "@/lib/utils"
+import type { CallFilters } from "@/types"
+
+const RECENT_FILTERS: CallFilters = { page: 1, limit: 5 }
 
 export function RecentCalls() {
-  const { data, isLoading } = useCalls({ page: 1, limit: 5 })
+  const { data, isLoading, isError } = useCalls(RECENT_FILTERS)
 
   return (
     <div className="rounded-2xl bg-white border border-[#E8E8E3] overflow-hidden">
@@ -37,6 +40,14 @@ export function RecentCalls() {
               <div className="h-5 w-16 rounded-full bg-[#F0F0EC] animate-pulse" />
             </div>
           ))}
+        </div>
+      ) : isError ? (
+        <div className="flex flex-col items-center justify-center py-14 text-center px-4">
+          <div className="h-12 w-12 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center mb-3">
+            <AlertTriangle className="h-5 w-5 text-red-400" />
+          </div>
+          <p className="text-sm font-medium text-[#111]">Could not load calls</p>
+          <p className="text-xs text-[#888] mt-1 font-mono">Check your connection and try again</p>
         </div>
       ) : !data?.items.length ? (
         <div className="flex flex-col items-center justify-center py-14 text-center px-4">

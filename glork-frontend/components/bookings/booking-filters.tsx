@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useRef, useState } from "react"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import {
@@ -10,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useUIStore } from "@/store/ui-store"
+import { useDebounce } from "@/hooks/use-debounce"
 import type { BookingStatus } from "@/types"
 
 const STATUS_OPTIONS: { value: BookingStatus | "all"; label: string }[] = [
@@ -24,6 +26,19 @@ const STATUS_OPTIONS: { value: BookingStatus | "all"; label: string }[] = [
 export function BookingFilters() {
   const { bookingFilters, setBookingFilters } = useUIStore()
 
+  // Local state for search so the input doesn't lag, debounced before committing to store
+  const [searchInput, setSearchInput] = useState(bookingFilters.search ?? "")
+  const debouncedSearch = useDebounce(searchInput, 350)
+  const mounted = useRef(false)
+
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true
+      return
+    }
+    setBookingFilters({ search: debouncedSearch || undefined, page: 1 })
+  }, [debouncedSearch, setBookingFilters])
+
   return (
     <div className="flex flex-wrap items-center gap-3">
       <div className="relative">
@@ -31,10 +46,8 @@ export function BookingFilters() {
         <Input
           placeholder="Search patient name or phone…"
           className="pl-9 w-60"
-          value={bookingFilters.search ?? ""}
-          onChange={(e) =>
-            setBookingFilters({ search: e.target.value || undefined, page: 1 })
-          }
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
         />
       </div>
 
