@@ -17,22 +17,18 @@ const config: Config = {
     },
     extend: {
       colors: {
-        /* ── Brand ── */
         brand: {
           DEFAULT:  "#FF6B00",
-          light:    "#FF8533",
+          light:    "#FF8C3A",
           dark:     "#CC5500",
-          dim:      "rgba(255,107,0,0.12)",
-          border:   "rgba(255,107,0,0.25)",
-          glow:     "rgba(255,107,0,0.20)",
+          dim:      "rgba(255,107,0,0.07)",
+          border:   "rgba(255,107,0,0.18)",
         },
-        /* ── Surface ── */
         surface: {
-          base:    "#0C0A09",
-          DEFAULT: "#141210",
-          2:       "#1C1916",
+          base:    "#FFFFFF",
+          DEFAULT: "#FAFAF8",
+          2:       "#F3F3EF",
         },
-        /* ── Shadcn-compat ── */
         border:        "hsl(var(--border))",
         input:         "hsl(var(--input))",
         ring:          "hsl(var(--ring))",
@@ -69,9 +65,22 @@ const config: Config = {
       },
 
       fontFamily: {
-        sans:  ["var(--font-inter)",      "system-ui", "sans-serif"],
-        serif: ["var(--font-sansation)",   "Georgia",   "serif"],
-        mono:  ["var(--font-inter)",       "Menlo",     "monospace"],
+        sans: [
+          "ui-sans-serif",
+          "system-ui",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "Helvetica",
+          "Arial",
+          "sans-serif",
+        ],
+        mono: [
+          "ui-monospace",
+          "SFMono-Regular",
+          "Menlo",
+          "monospace",
+        ],
       },
 
       borderRadius: {
@@ -79,17 +88,6 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
-
-      backgroundImage: {
-        "gradient-radial":  "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-brand":   "linear-gradient(135deg, #FF5500 0%, #FF9966 100%)",
-        "gradient-brand-v": "linear-gradient(180deg, #FF5500 0%, #CC3300 100%)",
-        "grid-pattern":
-          "linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px)," +
-          "linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px)",
-      },
-
-      backgroundSize: { grid: "32px 32px" },
 
       keyframes: {
         "accordion-down": {
@@ -108,14 +106,11 @@ const config: Config = {
       },
 
       boxShadow: {
-        /* Brand glows */
-        "glow-sm":   "0 0 20px rgba(255,85,0,0.20)",
-        "glow":      "0 0 40px rgba(255,85,0,0.25)",
-        "glow-lg":   "0 0 80px rgba(255,85,0,0.35)",
-        /* Dark surface shadows */
-        "card":      "0 1px 3px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.20)",
-        "card-hover":"0 8px 32px rgba(0,0,0,0.40)",
-        "dark-card": "0 4px 24px rgba(0,0,0,0.50)",
+        "glow-sm":   "0 0 20px rgba(255,107,0,0.12)",
+        "glow":      "0 0 40px rgba(255,107,0,0.18)",
+        "card":      "0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.04)",
+        "card-hover":"0 8px 24px rgba(0,0,0,0.09)",
+        "panel":     "0 4px 32px rgba(0,0,0,0.06)",
       },
     },
   },

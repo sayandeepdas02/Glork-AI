@@ -1,6 +1,5 @@
 "use client"
 
-import { Star } from "lucide-react"
 import { Panel, PanelHeader, PanelTitle, PanelTitleSup } from "@/components/ui/panel"
 
 const testimonials = [
@@ -36,8 +35,8 @@ const testimonials = [
 export default function Testimonials() {
   return (
     <Panel id="testimonials">
-      <PanelHeader className="flex flex-col gap-1 items-start pt-12 pb-6 border-b border-edge">
-        <span className="text-[13px] font-mono font-bold text-brand uppercase tracking-[0.3em] mb-2">
+      <PanelHeader className="flex flex-col gap-1 items-start pt-14 pb-8 border-b border-[#EAEAE5]">
+        <span className="text-[12px] text-[#888] uppercase tracking-[0.25em] mb-2">
           Testimonials
         </span>
         <PanelTitle>
@@ -46,42 +45,35 @@ export default function Testimonials() {
         </PanelTitle>
       </PanelHeader>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 lg:p-10">
-        {testimonials.map((t, i) => (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-6 lg:p-10">
+        {testimonials.map((t) => (
           <article
             key={t.name}
-            className="flex flex-col p-8 lg:p-10 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] transition-all duration-300 relative overflow-hidden group"
+            className="flex flex-col p-7 lg:p-8 rounded-xl bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D8D8D3] hover:shadow-card transition-all duration-300"
           >
-            {/* Subtle Top Glow */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brand/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-            {/* Author Top */}
-            <div className="flex items-center gap-4 mb-6">
-              <div className="h-12 w-12 shrink-0 rounded-full bg-brand/10 border border-brand/30 flex items-center justify-center text-[13px] font-mono font-bold text-brand uppercase shadow-[0_0_15px_rgba(255,107,0,0.1)]">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-10 w-10 shrink-0 rounded-full bg-brand/8 border border-brand/15 flex items-center justify-center text-[12px] text-brand">
                 {t.avatar}
               </div>
               <div>
-                <p className="text-base font-semibold text-white">{t.name}</p>
-                <p className="text-[12px] text-white/50 font-mono mt-0.5">{t.specialty}</p>
+                <p className="text-[14px] text-[#111]">{t.name}</p>
+                <p className="text-[12px] text-[#aaa] mt-0.5">{t.specialty}</p>
               </div>
             </div>
 
-            {/* Outcome Highlight */}
-            <div className="mb-5 inline-flex self-start">
-              <span className="text-[12px] font-mono font-bold text-white uppercase tracking-widest bg-white/10 px-3 py-1.5 rounded-md border border-white/10">
+            <div className="mb-4 inline-flex self-start">
+              <span className="text-[11px] text-[#555] uppercase tracking-wider bg-[#F0F0EC] px-2.5 py-1 rounded border border-[#E0E0DB]">
                 {t.outcome}
               </span>
             </div>
 
-            {/* Quote */}
-            <blockquote className="text-[15px] lg:text-[16px] text-white/80 leading-[1.7] flex-1 mb-8">
+            <blockquote className="text-[14px] lg:text-[15px] text-[#555] leading-[1.7] flex-1 mb-6">
               &ldquo;{t.quote}&rdquo;
             </blockquote>
 
-            {/* Footer Metadata */}
-            <div className="flex items-center justify-between pt-5 border-t border-white/[0.06]">
-              <span className="text-[11px] text-white/40 font-mono uppercase tracking-wider">{t.clinicSize}</span>
-              <span className="text-[11px] text-white/40 font-mono uppercase tracking-wider">{t.location}</span>
+            <div className="flex items-center justify-between pt-4 border-t border-[#EAEAE5]">
+              <span className="text-[11px] text-[#bbb] uppercase tracking-wider">{t.clinicSize}</span>
+              <span className="text-[11px] text-[#bbb] uppercase tracking-wider">{t.location}</span>
             </div>
           </article>
         ))}

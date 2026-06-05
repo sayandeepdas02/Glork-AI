@@ -1,17 +1,12 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
-/**
- * Panel — The core layout primitive for the landing page.
- * Uses max-w-[1200px] for a proper SaaS landing page width.
- * Screen-lines extend full viewport width for the blueprint grid effect.
- */
 function Panel({ className, ...props }: React.ComponentProps<"section">) {
     return (
         <section
             data-slot="panel"
             className={cn(
-                "screen-line-before screen-line-after border-x border-white/6 max-w-[1400px] mx-auto",
+                "screen-line-before screen-line-after border-x border-[#EAEAE5] max-w-[1200px] mx-auto",
                 className
             )}
             {...props}
@@ -29,15 +24,12 @@ function PanelHeader({ className, ...props }: React.ComponentProps<"header">) {
     );
 }
 
-function PanelTitle({
-    className,
-    ...props
-}: React.ComponentProps<"h2">) {
+function PanelTitle({ className, ...props }: React.ComponentProps<"h2">) {
     return (
         <h2
             data-slot="panel-title"
             className={cn(
-                "text-5xl md:text-[3.5rem] leading-[1.1] font-serif font-normal italic tracking-tight text-white/95 pb-2",
+                "text-4xl md:text-5xl leading-[1.1] font-normal tracking-tight text-[#111] pb-2",
                 className
             )}
             {...props}
@@ -49,7 +41,7 @@ function PanelTitleSup({ className, ...props }: React.ComponentProps<"sup">) {
     return (
         <sup
             className={cn(
-                "-top-[0.75em] ml-1.5 text-xs font-mono font-medium text-white/40 uppercase tracking-widest select-none",
+                "-top-[0.75em] ml-1.5 text-xs font-normal text-[#bbb] select-none",
                 className
             )}
             {...props}
