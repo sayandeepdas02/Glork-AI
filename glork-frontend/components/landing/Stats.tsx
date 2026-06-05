@@ -26,8 +26,8 @@ export default function Stats() {
             key={item.label}
             className={`flex flex-col px-8 lg:px-14 py-10 hover:bg-[#FAFAF8] transition-colors duration-150 ${borders[i]}`}
           >
-            <p className="text-[10px] text-[#bbb] uppercase tracking-widest mb-3">{item.label}</p>
-            <p className="text-[3.25rem] font-light text-[#111] leading-none mb-2.5 tracking-tight">{item.value}</p>
+            <p className="text-[10px] text-[#bbb] uppercase tracking-widest mb-2">{item.label}</p>
+            <p className="text-[2.75rem] font-light text-[#111] leading-none mb-2 tracking-tight">{item.value}</p>
             <p className="text-[12.5px] text-[#aaa]">{item.sub}</p>
           </div>
         ))}

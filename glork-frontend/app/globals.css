@@ -175,11 +175,11 @@
 
 .scrollbar-sidebar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(0,0,0,0.08) transparent;
+  scrollbar-color: rgba(0,0,0,0.10) transparent;
 }
 .scrollbar-sidebar::-webkit-scrollbar { width: 3px; }
 .scrollbar-sidebar::-webkit-scrollbar-track { background: transparent; }
-.scrollbar-sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 3px; }
+.scrollbar-sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.10); border-radius: 3px; }
 
 @media print {
   .no-print { display: none !important; }

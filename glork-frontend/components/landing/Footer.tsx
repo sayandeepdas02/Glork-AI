@@ -14,7 +14,7 @@ const footerLinks = {
 export default function Footer() {
   return (
     <Panel className="border-t border-[#EAEAE5] bg-[#FAFAF8]">
-      <div className="px-8 lg:px-14 py-14 grid grid-cols-1 md:grid-cols-5 gap-10 lg:gap-14 border-b border-[#EAEAE5]">
+      <div className="px-8 lg:px-14 py-10 grid grid-cols-1 md:grid-cols-5 gap-10 lg:gap-12 border-b border-[#EAEAE5]">
 
         <div className="md:col-span-2 flex flex-col items-start">
           <Link href="/" className="flex items-center gap-2 mb-5">
