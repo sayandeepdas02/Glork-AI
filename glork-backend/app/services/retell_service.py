@@ -289,7 +289,7 @@ IMPORTANT RULES:
 
     def verify_webhook_signature(self, payload: bytes, signature: str) -> bool:
         if not settings.RETELL_WEBHOOK_SECRET:
-            return True
+            return False
         secret = settings.RETELL_WEBHOOK_SECRET.encode()
         computed = hmac.HMAC(secret, payload, hashlib.sha256).hexdigest()
         return hmac.compare_digest(computed, signature)
