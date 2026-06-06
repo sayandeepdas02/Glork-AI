@@ -6,7 +6,7 @@ import { AgentConfigForm } from "@/components/agent/agent-config-form"
 import { WorkingHoursEditor } from "@/components/agent/working-hours-editor"
 import { GoogleCalendarConnect } from "@/components/calendar/google-calendar-connect"
 
-export const metadata: Metadata = { title: "AI Agent · Glork" }
+export const metadata: Metadata = { title: "AI Agent · Hyperglork" }
 
 export default function AgentPage() {
   return (

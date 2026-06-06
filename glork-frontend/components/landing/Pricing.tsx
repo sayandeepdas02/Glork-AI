@@ -39,6 +39,14 @@ const plans = [
   },
 ]
 
+function SectionLabel({ text }: { text: string }) {
+  return (
+    <span className="inline-flex items-center px-3.5 py-1 rounded-full border border-[#E0E0DB] bg-[#FAFAF8] text-[10.5px] font-semibold uppercase tracking-[0.14em] text-[#888]">
+      {text}
+    </span>
+  )
+}
+
 export default function Pricing() {
   const [annual, setAnnual] = useState(false)
 
@@ -47,17 +55,17 @@ export default function Pricing() {
       <PanelHeader className="border-b border-[#EAEAE5]">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
           <div>
-            <p className="text-[11px] text-[#aaa] uppercase tracking-[0.22em] mb-3">Pricing</p>
-            <PanelTitle>Simple, transparent pricing</PanelTitle>
+            <SectionLabel text="Pricing" />
+            <PanelTitle className="mt-4">Simple, transparent pricing</PanelTitle>
           </div>
 
           <div className="flex items-center gap-3 pb-1">
-            <span className={cn("text-[12px] transition-colors", !annual ? "text-[#333]" : "text-[#bbb]")}>Monthly</span>
+            <span className={cn("text-[12px] transition-colors font-medium", !annual ? "text-[#222]" : "text-[#bbb]")}>Monthly</span>
             <button
               onClick={() => setAnnual(!annual)}
               className={cn(
                 "relative h-5 w-9 rounded-full border transition-colors duration-200",
-                annual ? "bg-brand border-brand" : "bg-[#F0F0EC] border-[#D8D8D3]"
+                annual ? "bg-[#0A0A0A] border-[#0A0A0A]" : "bg-[#F0F0EC] border-[#D8D8D3]"
               )}
             >
               <span className={cn(
@@ -65,9 +73,11 @@ export default function Pricing() {
                 annual ? "translate-x-[18px]" : "translate-x-[1px]"
               )} />
             </button>
-            <span className={cn("text-[12px] transition-colors", annual ? "text-[#333]" : "text-[#bbb]")}>Annual</span>
+            <span className={cn("text-[12px] transition-colors font-medium", annual ? "text-[#222]" : "text-[#bbb]")}>Annual</span>
             {annual && (
-              <span className="text-[10px] text-brand border border-brand/20 bg-brand/5 px-2 py-0.5 rounded-full">Save 30%</span>
+              <span className="text-[10px] text-[#0A0A0A] border border-[#0A0A0A]/20 bg-[#F5E542] px-2 py-0.5 rounded-full font-bold">
+                Save 30%
+              </span>
             )}
           </div>
         </div>
@@ -81,39 +91,50 @@ export default function Pricing() {
               <article
                 key={plan.name}
                 className={cn(
-                  "relative flex flex-col p-6 rounded-xl transition-all duration-200",
+                  "relative flex flex-col p-6 rounded-2xl transition-all duration-200",
                   plan.highlight
-                    ? "bg-white border border-brand/25 shadow-[0_4px_24px_rgba(255,107,0,0.08)]"
+                    ? "bg-[#0A0A0A]"
                     : "bg-[#FAFAF8] border border-[#E8E8E3] hover:border-[#D0D0CA]"
                 )}
+                style={plan.highlight ? {
+                  boxShadow: "0 0 0 1px rgba(245,229,66,0.15), 0 24px 60px rgba(10,10,10,0.35)",
+                } : undefined}
               >
-                {/* Accent stripe for featured plan */}
+                {/* Yellow top stripe for featured plan */}
                 {plan.highlight && (
-                  <div className="absolute inset-x-0 top-0 h-[2px] bg-brand rounded-t-xl" />
+                  <div className="absolute inset-x-0 top-0 h-[2.5px] bg-[#F5E542] rounded-t-2xl" />
                 )}
 
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-[11px] text-[#999] uppercase tracking-wider">{plan.name}</p>
+                <div className="flex items-center justify-between mb-5">
+                  <p className={cn(
+                    "text-[11px] uppercase tracking-wider font-semibold",
+                    plan.highlight ? "text-white/50" : "text-[#999]"
+                  )}>{plan.name}</p>
                   {plan.highlight && (
-                    <span className="text-[10px] text-brand border border-brand/20 bg-brand/5 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-bold text-[#0A0A0A] bg-[#F5E542] px-2 py-0.5 rounded-full">
                       Most popular
                     </span>
                   )}
                 </div>
 
-                <div className="mb-5">
+                <div className="mb-6">
                   <div className="flex items-end gap-1 mb-1">
-                    <span className="text-[2.75rem] font-light text-[#111] leading-none tracking-tight">${price}</span>
-                    <span className="text-[12px] text-[#bbb] mb-1">/ mo</span>
+                    <span className={cn(
+                      "text-[2.875rem] font-light leading-none tracking-tight",
+                      plan.highlight ? "text-white" : "text-[#111]"
+                    )}>${price}</span>
+                    <span className={cn("text-[12px] mb-1", plan.highlight ? "text-white/35" : "text-[#bbb]")}>/ mo</span>
                   </div>
-                  <p className="text-[13px] text-[#999]">{plan.description}</p>
+                  <p className={cn("text-[13px]", plan.highlight ? "text-white/40" : "text-[#999]")}>
+                    {plan.description}
+                  </p>
                 </div>
 
-                <ul className="space-y-2.5 flex-1 mb-6">
+                <ul className="space-y-2.5 flex-1 mb-7">
                   {plan.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2.5 text-[13px] text-[#555]">
-                      <Check className="h-3.5 w-3.5 shrink-0 text-brand" />
-                      {f}
+                    <li key={f} className="flex items-center gap-2.5 text-[13px]">
+                      <Check className={cn("h-3.5 w-3.5 shrink-0", plan.highlight ? "text-[#F5E542]" : "text-[#0A0A0A]")} />
+                      <span className={plan.highlight ? "text-white/75" : "text-[#555]"}>{f}</span>
                     </li>
                   ))}
                 </ul>
@@ -121,10 +142,10 @@ export default function Pricing() {
                 <Link
                   href={plan.href}
                   className={cn(
-                    "block text-center rounded-xl px-5 py-2.5 text-[13px] font-medium transition-all duration-150 border",
+                    "block text-center rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all duration-150 border",
                     plan.highlight
-                      ? "bg-brand text-white border-brand hover:bg-brand-light"
-                      : "bg-white text-[#555] border-[#DEDED9] hover:border-[#C0C0BB] hover:text-[#111]"
+                      ? "bg-[#F5E542] text-[#0A0A0A] border-[#F5E542] hover:bg-[#F9EE6E]"
+                      : "bg-white text-[#333] border-[#DEDED9] hover:border-[#B8B8B3] hover:text-[#111]"
                   )}
                 >
                   {plan.cta}

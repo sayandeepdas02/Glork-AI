@@ -77,7 +77,7 @@ export function AgentStatusBanner() {
           <button
             onClick={() => toggle()}
             disabled={isPending}
-            className="shrink-0 inline-flex items-center gap-1.5 rounded-xl bg-brand hover:bg-brand-light px-4 py-2 text-xs font-semibold text-white transition-all duration-150 disabled:opacity-60"
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-xl bg-brand hover:bg-brand-light px-4 py-2 text-xs font-semibold text-[#0A0A0A] transition-all duration-150 disabled:opacity-60"
           >
             <Power className="h-3.5 w-3.5" />
             {isPending ? "Activating…" : "Activate"}

@@ -26,7 +26,7 @@ export function ErrorFallback({
       </p>
       <button
         onClick={reset}
-        className="inline-flex items-center gap-1.5 rounded-xl bg-brand hover:bg-brand-light px-4 py-2 text-sm font-semibold text-white transition-all duration-150"
+        className="inline-flex items-center gap-1.5 rounded-xl bg-brand hover:bg-brand-light px-4 py-2 text-sm font-semibold text-[#0A0A0A] transition-all duration-150"
       >
         <RefreshCw className="h-3.5 w-3.5" />
         Try again

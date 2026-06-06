@@ -48,7 +48,7 @@ export default function OnboardingPage() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1d6b4a]">
             <Phone className="h-4 w-4 text-white" />
           </div>
-          <span className="font-bold text-gray-900">Glork</span>
+          <span className="font-bold text-gray-900">Hyperglork</span>
           <span className="text-gray-400 text-sm ml-auto">Setup</span>
         </div>
       </header>

@@ -8,8 +8,8 @@ export default function LoginPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Welcome back</h1>
-        <p className="text-sm text-gray-500 mt-1.5">Sign in to your Glork dashboard</p>
+        <h1 className="text-2xl font-semibold text-[#0A0A0A] tracking-tight">Welcome back</h1>
+        <p className="text-[13.5px] text-[#888] mt-1.5">Sign in to your Hyperglork dashboard</p>
       </div>
       {/* Suspense required: LoginForm uses useSearchParams() for auth redirect reason */}
       <Suspense>

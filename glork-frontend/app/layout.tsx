@@ -4,11 +4,11 @@ import { Providers } from "@/providers/providers"
 
 export const metadata: Metadata = {
   title: {
-    default: "Glork — AI Receptionist for Doctors",
-    template: "%s | Glork",
+    default: "Hyperglork — AI Receptionist for Doctors",
+    template: "%s | Hyperglork",
   },
   description:
-    "Glork's AI voice receptionist answers every patient call 24/7, books appointments into Google Calendar, and sends instant confirmations — so you can focus on medicine, not admin.",
+    "Hyperglork's AI voice receptionist answers every patient call 24/7, books appointments into Google Calendar, and sends instant confirmations — so you can focus on medicine, not admin.",
   keywords: [
     "AI receptionist",
     "medical AI",
@@ -17,20 +17,20 @@ export const metadata: Metadata = {
     "AI voice assistant healthcare",
     "patient call management",
     "google calendar booking",
-    "Glork",
+    "Hyperglork",
   ],
-  authors: [{ name: "Glork" }],
-  creator: "Glork",
+  authors: [{ name: "Hyperglork" }],
+  creator: "Hyperglork",
   openGraph: {
-    title: "Glork — AI Receptionist for Doctors",
+    title: "Hyperglork — AI Receptionist for Doctors",
     description:
-      "Never miss a patient call again. Glork's AI answers 24/7, books appointments, and sends confirmations automatically.",
+      "Never miss a patient call again. Hyperglork's AI answers 24/7, books appointments, and sends confirmations automatically.",
     type: "website",
     locale: "en_IN",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Glork — AI Receptionist for Doctors",
+    title: "Hyperglork — AI Receptionist for Doctors",
     description:
       "AI-powered voice receptionist that books appointments, answers patient calls, and manages your calendar automatically.",
   },

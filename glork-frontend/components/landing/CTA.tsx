@@ -2,48 +2,67 @@
 
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
-import { Panel } from "@/components/ui/panel"
 
 export default function CTA() {
   return (
-    <Panel id="cta" className="border-t border-[#EAEAE5] bg-[#F7F6F3]">
-      <div className="flex flex-col items-center justify-center py-20 px-6 text-center border-b border-[#E0E0DB]">
+    <section id="cta" className="bg-[#F7F6F3] border-t border-[#E0E0DB] py-20 px-6">
+      <div className="max-w-[960px] mx-auto">
+        <div
+          className="relative overflow-hidden rounded-[32px] px-8 md:px-16 py-20 text-center"
+          style={{
+            background: "#0A0A0A",
+            boxShadow: "0 0 0 1px rgba(245,229,66,0.10), 0 40px 100px rgba(10,10,10,0.25)",
+          }}
+        >
+          {/* Yellow glow top center */}
+          <div
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[200px] pointer-events-none"
+            style={{
+              background: "radial-gradient(ellipse at center top, rgba(245,229,66,0.20), transparent 70%)",
+              filter: "blur(20px)",
+            }}
+          />
 
-        <p className="text-[11px] text-[#aaa] uppercase tracking-[0.22em] mb-4">
-          Stop missing calls
-        </p>
+          <div className="relative z-10 max-w-lg mx-auto">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/35 mb-5">
+              Get Started
+            </p>
 
-        <h2 className="text-[1.75rem] md:text-[2.25rem] font-light text-[#111] mb-4 leading-[1.15] tracking-tight max-w-xl">
-          Every missed call is a missed appointment.
-        </h2>
+            <h2 className="text-[2.25rem] md:text-[3rem] font-light text-white leading-[1.06] tracking-tight mb-4">
+              Every missed call is<br />
+              a missed appointment.
+            </h2>
 
-        <p className="text-[14px] text-[#777] mb-8 max-w-[360px] mx-auto leading-relaxed">
-          Set up your AI receptionist in under 3 minutes. No credit card required.
-        </p>
+            <p className="text-[15px] font-light text-white/45 leading-relaxed mb-9 max-w-[360px] mx-auto">
+              Set up your AI receptionist in under 3 minutes.
+              No credit card required.
+            </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-2 px-6 py-2.5 text-[13px] bg-brand text-white hover:bg-brand-light transition-colors rounded-full"
-          >
-            Set up in 3 minutes <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-          <Link
-            href="/login"
-            className="flex items-center gap-2 px-6 py-2.5 text-[13px] text-[#666] hover:text-[#111] border border-[#D8D8D3] hover:border-[#B8B8B3] transition-all rounded-full bg-white"
-          >
-            Sign in to your account
-          </Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-2 px-7 py-3 text-[14px] font-semibold bg-[#F5E542] text-[#0A0A0A] hover:bg-[#F9EE6E] transition-all rounded-full w-full sm:w-auto justify-center"
+              >
+                Set up in 3 minutes <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+              <Link
+                href="/login"
+                className="flex items-center gap-2 px-7 py-3 text-[14px] font-medium text-white/70 hover:text-white border border-white/15 hover:border-white/30 transition-all rounded-full bg-white/6 w-full sm:w-auto justify-center"
+              >
+                Sign in to your account
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-0 grid grid-cols-2 md:grid-cols-4 divide-x divide-[#E0E0DB] border-x border-b border-[#E0E0DB] rounded-b-2xl overflow-hidden">
+          {["No credit card", "Cancel anytime", "Live in 3 minutes", "Free forever plan"].map((badge) => (
+            <div key={badge} className="py-4 text-[11px] text-[#bbb] uppercase tracking-wider flex items-center justify-center gap-1.5 bg-white/80">
+              <span className="text-[#0A0A0A]/60">✓</span> {badge}
+            </div>
+          ))}
         </div>
       </div>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-[#E0E0DB] text-center">
-        {["No credit card", "Cancel anytime", "Live in 3 minutes", "Free forever plan"].map((badge) => (
-          <div key={badge} className="py-4 text-[11px] text-[#bbb] uppercase tracking-wider flex items-center justify-center gap-1.5">
-            <span className="text-brand/70">✓</span> {badge}
-          </div>
-        ))}
-      </div>
-    </Panel>
+    </section>
   )
 }

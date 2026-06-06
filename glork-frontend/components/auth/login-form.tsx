@@ -56,7 +56,7 @@ function FloatingInput({
             "w-full rounded-xl border bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400",
             "transition-all duration-150 outline-none",
             "border-gray-200 hover:border-gray-300",
-            "focus:border-brand focus:ring-2 focus:ring-brand/10",
+            "focus:border-[#0A0A0A] focus:ring-2 focus:ring-[#0A0A0A]/8",
             rightSlot && "pr-11",
             error && "border-red-300 focus:border-red-400 focus:ring-red-100",
             className
@@ -180,7 +180,7 @@ export function LoginForm() {
         disabled={isSubmitting || isGoogleLoading}
         className={cn(
           "w-full flex items-center justify-center gap-2 rounded-xl",
-          "bg-brand hover:bg-brand-dark text-white font-semibold",
+          "bg-[#F5E542] hover:bg-[#F9EE6E] text-[#0A0A0A] font-semibold",
           "py-3 text-sm transition-all duration-150",
           "shadow-glow hover:shadow-glow-lg hover:-translate-y-0.5",
           "disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
@@ -216,7 +216,7 @@ export function LoginForm() {
 
       <p className="text-center text-sm text-gray-500">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-semibold text-brand hover:text-brand-dark transition-colors">
+        <Link href="/register" className="font-semibold text-[#0A0A0A] underline underline-offset-2 hover:text-[#333] transition-colors">
           Create one free
         </Link>
       </p>

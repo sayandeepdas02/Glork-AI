@@ -18,11 +18,19 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          DEFAULT:  "#FF6B00",
-          light:    "#FF8C3A",
-          dark:     "#CC5500",
-          dim:      "rgba(255,107,0,0.07)",
-          border:   "rgba(255,107,0,0.18)",
+          DEFAULT:  "#F5E542",
+          light:    "#F9EE6E",
+          dark:     "#D4C420",
+          dim:      "rgba(245,229,66,0.10)",
+          border:   "rgba(245,229,66,0.22)",
+        },
+        ink: {
+          DEFAULT: "#0A0A0A",
+          2:       "#1A1A1A",
+          3:       "#333333",
+          4:       "#555555",
+          5:       "#888888",
+          6:       "#BBBBBB",
         },
         surface: {
           base:    "#FFFFFF",
@@ -106,8 +114,8 @@ const config: Config = {
       },
 
       boxShadow: {
-        "glow-sm":   "0 0 20px rgba(255,107,0,0.12)",
-        "glow":      "0 0 40px rgba(255,107,0,0.18)",
+        "glow-sm":   "0 0 20px rgba(245,229,66,0.15)",
+        "glow":      "0 0 40px rgba(245,229,66,0.22)",
         "card":      "0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.04)",
         "card-hover":"0 8px 24px rgba(0,0,0,0.09)",
         "panel":     "0 4px 32px rgba(0,0,0,0.06)",

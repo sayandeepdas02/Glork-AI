@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import SettingsClient from "./SettingsClient"
 
-export const metadata: Metadata = { title: "Settings · Glork" }
+export const metadata: Metadata = { title: "Settings · Hyperglork" }
 
 export default function SettingsPage() {
   return <SettingsClient />

@@ -24,7 +24,7 @@ function getPageMeta(pathname: string) {
   for (const [prefix, meta] of Object.entries(PAGE_TITLES)) {
     if (pathname === prefix || pathname.startsWith(`${prefix}/`)) return meta
   }
-  return { title: "Glork", sub: "" }
+  return { title: "Hyperglork", sub: "" }
 }
 
 export function TopNav() {
@@ -56,7 +56,7 @@ export function TopNav() {
         {/* New booking shortcut */}
         {pathname === "/bookings" && (
           <Link href="/bookings">
-            <button className="hidden sm:inline-flex items-center gap-1.5 rounded-lg bg-brand hover:bg-brand-light px-3 py-1.5 text-xs font-semibold text-white transition-colors">
+            <button className="hidden sm:inline-flex items-center gap-1.5 rounded-lg bg-[#F5E542] hover:bg-[#F9EE6E] px-3 py-1.5 text-xs font-semibold text-[#0A0A0A] transition-colors">
               <Plus className="h-3.5 w-3.5" /> New Booking
             </button>
           </Link>
@@ -76,7 +76,7 @@ export function TopNav() {
             <button
               aria-label={`Account menu for ${doctor?.name ?? "account"}`}
               aria-haspopup="menu"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#FF7733] to-[#CC3300] text-xs font-bold text-white hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0A0A0A] text-xs font-bold text-[#F5E542] hover:opacity-85 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F5E542] focus-visible:ring-offset-2"
             >
               {doctor ? getInitials(doctor.name) : "DR"}
             </button>
