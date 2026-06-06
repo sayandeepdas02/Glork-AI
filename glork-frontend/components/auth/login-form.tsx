@@ -180,9 +180,9 @@ export function LoginForm() {
         disabled={isSubmitting || isGoogleLoading}
         className={cn(
           "w-full flex items-center justify-center gap-2 rounded-xl",
-          "bg-brand hover:bg-brand-dark text-white font-semibold",
+          "bg-brand hover:bg-brand-light text-[#0F0F0F] font-semibold",
           "py-3 text-sm transition-all duration-150",
-          "shadow-glow hover:shadow-glow-lg hover:-translate-y-0.5",
+          "hover:-translate-y-0.5",
           "disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
         )}
       >

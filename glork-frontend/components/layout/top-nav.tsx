@@ -56,7 +56,7 @@ export function TopNav() {
         {/* New booking shortcut */}
         {pathname === "/bookings" && (
           <Link href="/bookings">
-            <button className="hidden sm:inline-flex items-center gap-1.5 rounded-lg bg-brand hover:bg-brand-light px-3 py-1.5 text-xs font-semibold text-white transition-colors">
+            <button className="hidden sm:inline-flex items-center gap-1.5 rounded-lg bg-[#F5E040] hover:bg-[#F8EC70] px-3 py-1.5 text-xs font-semibold text-[#0F0F0F] transition-colors">
               <Plus className="h-3.5 w-3.5" /> New Booking
             </button>
           </Link>
@@ -76,7 +76,7 @@ export function TopNav() {
             <button
               aria-label={`Account menu for ${doctor?.name ?? "account"}`}
               aria-haspopup="menu"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#FF7733] to-[#CC3300] text-xs font-bold text-white hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F5E040] text-xs font-bold text-[#0F0F0F] hover:bg-[#F8EC70] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F5E040] focus-visible:ring-offset-2"
             >
               {doctor ? getInitials(doctor.name) : "DR"}
             </button>

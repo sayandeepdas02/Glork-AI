@@ -1,7 +1,13 @@
 import type { Metadata } from "next"
-import { Instrument_Serif } from "next/font/google"
+import { Inter, Instrument_Serif } from "next/font/google"
 import "./globals.css"
 import { Providers } from "@/providers/providers"
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+})
 
 const instrumentSerif = Instrument_Serif({
   weight: "400",
@@ -46,7 +52,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={instrumentSerif.variable}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${instrumentSerif.variable}`}>
       <body className="antialiased font-sans">
         <Providers>{children}</Providers>
       </body>

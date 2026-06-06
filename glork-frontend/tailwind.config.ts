@@ -18,16 +18,25 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          DEFAULT:  "#FF6B00",
-          light:    "#FF8C3A",
-          dark:     "#CC5500",
-          dim:      "rgba(255,107,0,0.07)",
-          border:   "rgba(255,107,0,0.18)",
+          DEFAULT:  "#F5E040",
+          light:    "#F8EC70",
+          dark:     "#D4C01A",
+          dim:      "rgba(245,224,64,0.08)",
+          border:   "rgba(245,224,64,0.22)",
+        },
+        ink: {
+          DEFAULT: "#0F0F0F",
+          2:       "#1A1A1A",
+          3:       "#4A4A4A",
+          4:       "#6B6B6B",
+          5:       "#9B9B9B",
+          6:       "#C8C8C2",
         },
         surface: {
           base:    "#FFFFFF",
-          DEFAULT: "#FAFAF8",
-          2:       "#F3F3EF",
+          DEFAULT: "#F9F9F7",
+          2:       "#F2F2EE",
+          dark:    "#0F0F0F",
         },
         border:        "hsl(var(--border))",
         input:         "hsl(var(--input))",
@@ -66,13 +75,10 @@ const config: Config = {
 
       fontFamily: {
         sans: [
-          "ui-sans-serif",
+          "var(--font-inter)",
+          "Inter",
           "system-ui",
           "-apple-system",
-          "BlinkMacSystemFont",
-          "Segoe UI",
-          "Helvetica",
-          "Arial",
           "sans-serif",
         ],
         serif: [
@@ -112,12 +118,12 @@ const config: Config = {
       },
 
       boxShadow: {
-        "glow-sm":   "0 0 20px rgba(255,107,0,0.12)",
-        "glow":      "0 0 40px rgba(255,107,0,0.18)",
-        "glow-lg":   "0 0 60px rgba(255,107,0,0.25)",
-        "card":      "0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.04)",
-        "card-hover":"0 8px 24px rgba(0,0,0,0.09)",
-        "panel":     "0 4px 32px rgba(0,0,0,0.06)",
+        "glow-sm":    "0 0 20px rgba(245,224,64,0.15)",
+        "glow":       "0 0 40px rgba(245,224,64,0.22)",
+        "glow-lg":    "0 0 60px rgba(245,224,64,0.30)",
+        "card":       "0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.04)",
+        "card-hover": "0 8px 24px rgba(0,0,0,0.09)",
+        "panel":      "0 4px 32px rgba(0,0,0,0.06)",
       },
     },
   },
