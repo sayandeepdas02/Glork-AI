@@ -27,7 +27,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       {/* ── Logo ── */}
       <div className="flex items-center gap-2.5 px-5 pt-6 pb-5 border-b border-[#EAEAE5]">
         <Logo className="w-8 h-8 rounded-lg transition-transform hover:scale-105" />
-        <span className="text-base font-semibold text-[#111] tracking-tight">Glork</span>
+        <span className="text-base font-semibold text-[#111] tracking-tight">Hyperglork</span>
         <span className="ml-auto rounded-full border border-brand/20 bg-brand/5 px-1.5 py-0.5 text-[9px] font-bold text-brand uppercase tracking-widest">
           beta
         </span>

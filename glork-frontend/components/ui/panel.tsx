@@ -29,7 +29,7 @@ function PanelTitle({ className, ...props }: React.ComponentProps<"h2">) {
         <h2
             data-slot="panel-title"
             className={cn(
-                "text-[1.5rem] md:text-[1.875rem] leading-[1.15] font-light tracking-tight text-[#111]",
+                "font-serif text-[1.75rem] md:text-[2.25rem] leading-[1.12] font-normal tracking-tight text-[#111]",
                 className
             )}
             {...props}

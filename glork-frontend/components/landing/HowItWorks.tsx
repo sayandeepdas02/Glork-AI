@@ -6,13 +6,13 @@ const steps = [
   {
     n: "01",
     title: "Set up in 3 minutes",
-    description: "Create your account, connect Google Calendar, and configure your greeting. No technical knowledge needed — if you can send an email, you can set up Glork.",
+    description: "Create your account, connect Google Calendar, and configure your greeting. No technical knowledge needed — if you can send an email, you can set up Hyperglork.",
     detail: "Avg. setup: 2 min 47 sec",
   },
   {
     n: "02",
     title: "Forward your clinic number",
-    description: "Forward your existing clinic phone to your unique Glork number. Patients call the same number they always have — nothing changes for them.",
+    description: "Forward your existing clinic phone to your unique Hyperglork number. Patients call the same number they always have — nothing changes for them.",
     detail: "Works with any phone provider",
   },
   {

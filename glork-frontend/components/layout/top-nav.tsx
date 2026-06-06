@@ -24,7 +24,7 @@ function getPageMeta(pathname: string) {
   for (const [prefix, meta] of Object.entries(PAGE_TITLES)) {
     if (pathname === prefix || pathname.startsWith(`${prefix}/`)) return meta
   }
-  return { title: "Glork", sub: "" }
+  return { title: "Hyperglork", sub: "" }
 }
 
 export function TopNav() {

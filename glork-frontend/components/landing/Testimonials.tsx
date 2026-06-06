@@ -5,7 +5,7 @@ import { Panel, PanelHeader, PanelTitle, PanelContent } from "@/components/ui/pa
 const testimonials = [
   {
     outcome: "Reduced missed calls by 85%",
-    quote: "Glork has completely transformed how we handle calls. We used to miss 20–30% of calls during busy hours. Now? Zero missed calls and our booking rate is up significantly.",
+    quote: "Hyperglork has completely transformed how we handle calls. We used to miss 20–30% of calls during busy hours. Now? Zero missed calls and our booking rate is up significantly.",
     name: "Dr. Priya Sharma",
     specialty: "Dermatologist · Bengaluru",
     avatar: "PS",
@@ -19,7 +19,7 @@ const testimonials = [
   },
   {
     outcome: "Cut reception costs by 60%",
-    quote: "As a solo practitioner, I couldn't afford a full-time receptionist. Glork is like having a 24/7 front desk at a fraction of the cost.",
+    quote: "As a solo practitioner, I couldn't afford a full-time receptionist. Hyperglork is like having a 24/7 front desk at a fraction of the cost.",
     name: "Dr. Ananya Bose",
     specialty: "Pediatrician · Kolkata",
     avatar: "AB",

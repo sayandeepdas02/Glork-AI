@@ -20,11 +20,9 @@ export default function Navbar() {
       <div className="max-w-[1200px] mx-auto px-6 pt-3">
         <div className="flex items-center justify-between h-14 px-5 bg-white/90 backdrop-blur-md border border-[#E8E8E3] rounded-2xl shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
 
-          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg">
-              <Logo className="w-full h-full rounded-lg" />
-            </div>
-            <span className="text-[15px] text-[#111]">Glork</span>
+          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
+            <Logo className="w-8 h-8 rounded-lg" />
+            <span className="text-[15px] font-semibold text-[#111] tracking-tight">Hyperglork</span>
             <span className="ml-0.5 rounded border border-brand/20 bg-brand/5 px-1.5 py-0.5 text-[9px] text-brand uppercase tracking-widest">
               Beta
             </span>
@@ -51,7 +49,7 @@ export default function Navbar() {
             </Link>
             <Link
               href="/dashboard"
-              className="flex items-center gap-1.5 px-4 py-2 text-[13px] bg-brand text-white hover:bg-brand-light transition-colors rounded-xl"
+              className="flex items-center gap-1.5 px-4 py-2 text-[13px] bg-[#111] text-white hover:bg-[#333] transition-colors rounded-xl"
             >
               Get started →
             </Link>
@@ -92,7 +90,7 @@ export default function Navbar() {
               <Link
                 href="/dashboard"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center gap-2 px-4 py-2.5 text-[14px] bg-brand text-white rounded-xl hover:bg-brand-light transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-2.5 text-[14px] bg-[#111] text-white rounded-xl hover:bg-[#333] transition-colors"
               >
                 Get started →
               </Link>

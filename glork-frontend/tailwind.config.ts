@@ -75,6 +75,12 @@ const config: Config = {
           "Arial",
           "sans-serif",
         ],
+        serif: [
+          "var(--font-serif)",
+          "Georgia",
+          "ui-serif",
+          "serif",
+        ],
         mono: [
           "ui-monospace",
           "SFMono-Regular",
@@ -108,6 +114,7 @@ const config: Config = {
       boxShadow: {
         "glow-sm":   "0 0 20px rgba(255,107,0,0.12)",
         "glow":      "0 0 40px rgba(255,107,0,0.18)",
+        "glow-lg":   "0 0 60px rgba(255,107,0,0.25)",
         "card":      "0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.04)",
         "card-hover":"0 8px 24px rgba(0,0,0,0.09)",
         "panel":     "0 4px 32px rgba(0,0,0,0.06)",
