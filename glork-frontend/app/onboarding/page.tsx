@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import confetti from "canvas-confetti"
-import { Phone } from "lucide-react"
+import { Logo } from "@/components/ui/logo"
 import { StepIndicator } from "@/components/onboarding/step-indicator"
 import { StepProfile } from "@/components/onboarding/step-profile"
 import { StepCalendar } from "@/components/onboarding/step-calendar"
@@ -45,10 +45,8 @@ export default function OnboardingPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center gap-2.5 max-w-xl mx-auto">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1d6b4a]">
-            <Phone className="h-4 w-4 text-white" />
-          </div>
-          <span className="font-bold text-gray-900">Glork</span>
+          <Logo className="w-8 h-8 rounded-lg" />
+          <span className="font-semibold text-[#111] tracking-tight">Hyperglork</span>
           <span className="text-gray-400 text-sm ml-auto">Setup</span>
         </div>
       </header>

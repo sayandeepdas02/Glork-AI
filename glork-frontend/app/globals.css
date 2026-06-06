@@ -4,44 +4,45 @@
 
 :root {
   --bg-base:       #FFFFFF;
-  --bg-surface:    #FAFAF8;
-  --bg-surface-2:  #F3F3EF;
+  --bg-surface:    #F9F9F7;
+  --bg-surface-2:  #F2F2EE;
+  --bg-dark:       #0F0F0F;
 
-  --brand:         #FF6B00;
-  --brand-light:   #FF8C3A;
-  --brand-dark:    #CC5500;
-  --brand-dim:     rgba(255, 107, 0, 0.07);
-  --brand-border:  rgba(255, 107, 0, 0.18);
+  --brand:         #F5E040;
+  --brand-light:   #F8EC70;
+  --brand-dark:    #D4C01A;
+  --brand-dim:     rgba(245, 224, 64, 0.08);
+  --brand-border:  rgba(245, 224, 64, 0.22);
 
-  --edge:          #EAEAE5;
-  --edge-strong:   #D0D0CA;
-  --edge-card:     #E8E8E3;
+  --edge:          #E5E5E0;
+  --edge-strong:   #C8C8C2;
+  --edge-card:     #EAEAE5;
 
-  --text-primary:  #111111;
-  --text-muted:    #666666;
-  --text-faint:    #999999;
+  --text-primary:  #0F0F0F;
+  --text-muted:    #6B6B6B;
+  --text-faint:    #9B9B9B;
 
   --radius: 0.5rem;
 
   --background:    0 0% 100%;
-  --foreground:    0 0% 7%;
-  --primary:       16 100% 50%;
-  --primary-foreground: 0 0% 100%;
+  --foreground:    0 0% 6%;
+  --primary:       51 90% 58%;
+  --primary-foreground: 0 0% 6%;
   --secondary:     40 8% 96%;
   --secondary-foreground: 0 0% 30%;
   --muted:         40 6% 95%;
-  --muted-foreground: 0 0% 55%;
+  --muted-foreground: 0 0% 43%;
   --accent:        40 6% 93%;
   --accent-foreground: 0 0% 15%;
   --destructive:   0 84% 60%;
   --destructive-foreground: 0 0% 100%;
   --border:        40 6% 90%;
   --input:         40 6% 90%;
-  --ring:          16 100% 50%;
+  --ring:          51 90% 58%;
   --card:          0 0% 100%;
-  --card-foreground: 0 0% 7%;
+  --card-foreground: 0 0% 6%;
   --popover:       0 0% 100%;
-  --popover-foreground: 0 0% 7%;
+  --popover-foreground: 0 0% 6%;
 }
 
 @layer base {
@@ -52,7 +53,7 @@
   body {
     background-color: var(--bg-base);
     color: var(--text-primary);
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings: "rlig" 1, "calt" 1, "cv11" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
@@ -70,7 +71,7 @@
 
   ::selection {
     background-color: var(--brand);
-    color: #fff;
+    color: #0F0F0F;
   }
 
   ::-webkit-scrollbar { width: 4px; }
@@ -105,7 +106,7 @@
   }
 
   .gradient-text {
-    background: linear-gradient(135deg, #FF6B00 0%, #FF9966 100%);
+    background: linear-gradient(135deg, #F5E040 0%, #F8EC70 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

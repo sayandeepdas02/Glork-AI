@@ -1,18 +1,16 @@
 "use client"
 
-import { Panel, PanelHeader, PanelTitle } from "@/components/ui/panel"
-
 const steps = [
   {
     n: "01",
     title: "Set up in 3 minutes",
-    description: "Create your account, connect Google Calendar, and configure your greeting. No technical knowledge needed — if you can send an email, you can set up Glork.",
+    description: "Create your account, connect Google Calendar, and configure your greeting. No technical knowledge needed — if you can send an email, you can set up Hyperglork.",
     detail: "Avg. setup: 2 min 47 sec",
   },
   {
     n: "02",
     title: "Forward your clinic number",
-    description: "Forward your existing clinic phone to your unique Glork number. Patients call the same number they always have — nothing changes for them.",
+    description: "Forward your existing clinic phone to your unique Hyperglork number. Patients call the same number they always have — nothing changes for them.",
     detail: "Works with any phone provider",
   },
   {
@@ -25,35 +23,44 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <Panel id="how-it-works" className="border-t border-[#EAEAE5]">
-      <PanelHeader className="border-b border-[#EAEAE5]">
-        <p className="text-[11px] text-[#aaa] uppercase tracking-[0.22em] mb-3">How it works</p>
-        <PanelTitle>Up and running in minutes</PanelTitle>
-      </PanelHeader>
+    <section id="how-it-works" className="bg-[#0F0F0F] border-t border-white/8">
+      <div className="max-w-[1200px] mx-auto px-6 lg:px-14 py-24">
 
-      <div>
-        {steps.map((step, idx) => (
-          <div
-            key={step.n}
-            className={[
-              "flex flex-col md:flex-row md:items-start gap-5 md:gap-8 px-8 lg:px-14 py-8 hover:bg-[#FAFAF8] transition-colors duration-150",
-              idx < steps.length - 1 ? "border-b border-[#EAEAE5]" : "",
-            ].join(" ")}
-          >
-            <span className="text-[1.875rem] font-light text-[#D8D8D3] leading-none select-none shrink-0 w-10 tabular-nums">
-              {step.n}
-            </span>
+        {/* Header */}
+        <div className="mb-16">
+          <span className="inline-flex items-center px-3.5 py-1.5 rounded-full border border-white/10 bg-[#F5E040]/10 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#F5E040]">
+            How it works
+          </span>
+          <h2 className="font-serif text-[2rem] md:text-[2.75rem] leading-[1.1] font-normal tracking-tight text-white mt-5">
+            Up and running in minutes
+          </h2>
+        </div>
 
-            <div className="flex-1">
-              <h3 className="text-[17px] text-[#111] mb-2">{step.title}</h3>
-              <p className="text-[14px] text-[#777] leading-[1.65] max-w-xl mb-4">
+        {/* Steps — 3 col on desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+          {steps.map((step) => (
+            <div key={step.n} className="flex flex-col">
+
+              {/* Step number */}
+              <p className="text-[4rem] font-serif font-normal text-white/8 leading-none mb-6 select-none">
+                {step.n}
+              </p>
+
+              {/* Yellow divider */}
+              <div className="w-8 h-[2px] bg-[#F5E040] mb-6" />
+
+              <h3 className="text-[17px] font-semibold text-white mb-3 tracking-tight">{step.title}</h3>
+              <p className="text-[14px] text-white/45 leading-[1.7] mb-5 flex-1">
                 {step.description}
               </p>
-              <span className="text-[12px] text-[#aaa]">→ {step.detail}</span>
+
+              <span className="inline-flex items-center gap-1.5 text-[12px] text-[#F5E040]/70 font-medium">
+                <span className="text-[#F5E040]">→</span> {step.detail}
+              </span>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </Panel>
+    </section>
   )
 }

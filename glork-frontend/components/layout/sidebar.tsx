@@ -27,7 +27,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       {/* ── Logo ── */}
       <div className="flex items-center gap-2.5 px-5 pt-6 pb-5 border-b border-[#EAEAE5]">
         <Logo className="w-8 h-8 rounded-lg transition-transform hover:scale-105" />
-        <span className="text-base font-semibold text-[#111] tracking-tight">Glork</span>
+        <span className="text-base font-semibold text-[#111] tracking-tight">Hyperglork</span>
         <span className="ml-auto rounded-full border border-brand/20 bg-brand/5 px-1.5 py-0.5 text-[9px] font-bold text-brand uppercase tracking-widest">
           beta
         </span>
@@ -37,7 +37,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       {doctor && (
         <div className="mx-3 mt-4 rounded-xl bg-[#FAFAF8] border border-[#EAEAE5] px-3.5 py-3">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#FF7733] to-[#CC3300] text-xs font-bold text-white">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F5E040] text-xs font-bold text-[#0F0F0F]">
               {doctor.name?.slice(0, 2).toUpperCase() ?? "DR"}
             </div>
             <div className="flex-1 min-w-0">
@@ -47,10 +47,10 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
             <div className="relative shrink-0">
               <div className={cn(
                 "h-2 w-2 rounded-full",
-                doctor.is_agent_active ? "bg-brand" : "bg-[#ccc]"
+                doctor.is_agent_active ? "bg-[#22c55e]" : "bg-[#C8C8C2]"
               )} />
               {doctor.is_agent_active && (
-                <div className="absolute inset-0 h-2 w-2 rounded-full bg-brand animate-ping opacity-60" />
+                <div className="absolute inset-0 h-2 w-2 rounded-full bg-[#22c55e] animate-ping opacity-60" />
               )}
             </div>
           </div>
@@ -75,17 +75,17 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
               className={cn(
                 "sidebar-nav-item group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
                 active
-                  ? "active bg-brand/8 text-[#111] border border-brand/20"
-                  : "text-[#666] hover:bg-[#F5F5F2] hover:text-[#111] border border-transparent"
+                  ? "active bg-[#F5E040]/10 text-[#0F0F0F] border border-[#F5E040]/25"
+                  : "text-[#6B6B6B] hover:bg-[#F9F9F7] hover:text-[#0F0F0F] border border-transparent"
               )}
             >
               <Icon className={cn(
                 "h-4 w-4 shrink-0 transition-colors",
-                active ? "text-brand" : "text-[#aaa] group-hover:text-[#555]"
+                active ? "text-[#0F0F0F]" : "text-[#9B9B9B] group-hover:text-[#4A4A4A]"
               )} />
               {label}
               {active && (
-                <div className="ml-auto h-1.5 w-1.5 rounded-full bg-brand" />
+                <div className="ml-auto h-1.5 w-1.5 rounded-full bg-[#F5E040]" />
               )}
             </Link>
           )
