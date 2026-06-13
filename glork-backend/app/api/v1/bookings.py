@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from uuid import UUID
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dependencies import get_current_active_doctor, get_db
+from app.models.agent_config import AgentConfig
 from app.models.booking import Booking, BookingStatus
 from app.models.call_log import CallLog
 from app.models.doctor import Doctor
@@ -29,8 +31,18 @@ async def get_booking_stats(
     doctor: Doctor = Depends(get_current_active_doctor),
     db: AsyncSession = Depends(get_db),
 ):
-    now = datetime.now(timezone.utc)
-    month_start = datetime(now.year, now.month, 1, tzinfo=timezone.utc)
+    cfg_result = await db.execute(
+        select(AgentConfig.timezone).where(AgentConfig.doctor_id == doctor.id)
+    )
+    tz_name = cfg_result.scalar_one_or_none() or "UTC"
+    try:
+        clinic_tz = ZoneInfo(tz_name)
+    except (ZoneInfoNotFoundError, KeyError):
+        clinic_tz = ZoneInfo("UTC")
+
+    now_local = datetime.now(clinic_tz)
+    month_start_local = now_local.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    month_start = month_start_local.astimezone(timezone.utc)
 
     base = select(func.count(Booking.id)).where(
         and_(

@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dependencies import get_current_active_doctor, get_db
+from app.models.agent_config import AgentConfig
 from app.models.call_log import CallLog, CallOutcome
 from app.models.doctor import Doctor
 from app.schemas.call_log import CallLogListResponse, CallLogResponse, CallStatsResponse
@@ -20,7 +22,21 @@ async def get_call_stats(
     doctor: Doctor = Depends(get_current_active_doctor),
     db: AsyncSession = Depends(get_db),
 ):
-    week_start = datetime.now(timezone.utc) - timedelta(days=7)
+    cfg_result = await db.execute(
+        select(AgentConfig.timezone).where(AgentConfig.doctor_id == doctor.id)
+    )
+    tz_name = cfg_result.scalar_one_or_none() or "UTC"
+    try:
+        clinic_tz = ZoneInfo(tz_name)
+    except (ZoneInfoNotFoundError, KeyError):
+        clinic_tz = ZoneInfo("UTC")
+
+    now_local = datetime.now(clinic_tz)
+    days_since_monday = now_local.weekday()  # 0=Mon … 6=Sun
+    week_start_local = (now_local - timedelta(days=days_since_monday)).replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )
+    week_start = week_start_local.astimezone(timezone.utc)
 
     agg_result = await db.execute(
         select(

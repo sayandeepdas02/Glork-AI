@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import base64
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-import pytz
 import structlog
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import (
@@ -22,14 +22,12 @@ from app.models.doctor import Doctor
 
 logger = structlog.get_logger()
 
-IST = pytz.timezone("Asia/Kolkata")
 
-
-def format_appointment_datetime(dt: datetime, tz_name: str = "Asia/Kolkata") -> str:
+def format_appointment_datetime(dt: datetime, tz_name: str = "UTC") -> str:
     try:
-        tz = pytz.timezone(tz_name)
-    except Exception:
-        tz = IST
+        tz = ZoneInfo(tz_name)
+    except (ZoneInfoNotFoundError, KeyError):
+        tz = ZoneInfo("UTC")
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=timezone.utc)
     local_dt = dt.astimezone(tz)
@@ -69,11 +67,11 @@ class NotificationService:
     def _get_sendgrid(self) -> SendGridAPIClient:
         return SendGridAPIClient(settings.SENDGRID_API_KEY)
 
-    async def send_sms_confirmation(self, booking: Booking, doctor: Doctor) -> bool:
+    async def send_sms_confirmation(self, booking: Booking, doctor: Doctor, clinic_timezone: str = "UTC") -> bool:
         if not settings.TWILIO_ACCOUNT_SID or not booking.patient_phone:
             return False
 
-        dt_str = format_appointment_datetime(booking.appointment_start)
+        dt_str = format_appointment_datetime(booking.appointment_start, clinic_timezone)
         address = doctor.clinic_address or "our clinic"
         cancel_contact = doctor.phone_number or "us"
 
@@ -100,11 +98,11 @@ class NotificationService:
             )
             return False
 
-    async def send_sms_reminder(self, booking: Booking, doctor: Doctor) -> bool:
+    async def send_sms_reminder(self, booking: Booking, doctor: Doctor, clinic_timezone: str = "UTC") -> bool:
         if not settings.TWILIO_ACCOUNT_SID or not booking.patient_phone:
             return False
 
-        dt_str = format_appointment_datetime(booking.appointment_start)
+        dt_str = format_appointment_datetime(booking.appointment_start, clinic_timezone)
         message_body = (
             f"Reminder: Your appointment with {doctor.clinic_name} is tomorrow at "
             f"{dt_str.split(' at ')[-1]}. Reply CANCEL to cancel."
@@ -127,11 +125,11 @@ class NotificationService:
             )
             return False
 
-    async def send_email_confirmation(self, booking: Booking, doctor: Doctor) -> bool:
+    async def send_email_confirmation(self, booking: Booking, doctor: Doctor, clinic_timezone: str = "UTC") -> bool:
         if not booking.patient_email or not settings.SENDGRID_API_KEY:
             return False
 
-        dt_str = format_appointment_datetime(booking.appointment_start)
+        dt_str = format_appointment_datetime(booking.appointment_start, clinic_timezone)
         html_content = f"""
         <html><body>
         <h2>Appointment Confirmed</h2>
