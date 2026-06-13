@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import copy
+from datetime import datetime, timezone
 
 import httpx
 import structlog
@@ -21,6 +22,7 @@ from app.core.security import (
 )
 from app.models.agent_config import AgentConfig, DEFAULT_WORKING_HOURS
 from app.models.doctor import Doctor
+from app.models.refresh_token import RevokedToken
 from app.schemas.auth import RegisterRequest, TokenResponse
 
 logger = structlog.get_logger()
@@ -132,6 +134,20 @@ async def refresh_access_token(refresh_token: str, db: AsyncSession) -> TokenRes
             detail="Invalid token type",
         )
 
+    jti = payload.get("jti")
+    if not jti:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token format",
+        )
+
+    result = await db.execute(select(RevokedToken).where(RevokedToken.jti == jti))
+    if result.scalar_one_or_none():
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh token has been revoked",
+        )
+
     doctor_id = payload.get("sub")
     result = await db.execute(select(Doctor).where(Doctor.id == doctor_id))
     doctor = result.scalar_one_or_none()
@@ -142,7 +158,35 @@ async def refresh_access_token(refresh_token: str, db: AsyncSession) -> TokenRes
             detail="Doctor not found or inactive",
         )
 
+    # Rotate: revoke the consumed token so it cannot be replayed
+    expires_at = datetime.fromtimestamp(payload["exp"], tz=timezone.utc)
+    db.add(RevokedToken(jti=jti, expires_at=expires_at))
+    await db.commit()
+
     return _build_token_response(doctor)
+
+
+async def revoke_refresh_token(refresh_token: str, db: AsyncSession) -> None:
+    """Add the refresh token's jti to the denylist. Safe to call with an invalid token."""
+    try:
+        payload = decode_token(refresh_token)
+    except HTTPException:
+        return
+
+    if payload.get("type") != "refresh":
+        return
+
+    jti = payload.get("jti")
+    if not jti:
+        return
+
+    result = await db.execute(select(RevokedToken).where(RevokedToken.jti == jti))
+    if result.scalar_one_or_none():
+        return
+
+    expires_at = datetime.fromtimestamp(payload["exp"], tz=timezone.utc)
+    db.add(RevokedToken(jti=jti, expires_at=expires_at))
+    await db.commit()
 
 
 async def get_google_signin_url() -> str:
@@ -205,9 +249,13 @@ async def handle_google_signin_callback(
     google_id = user_info.get("id")
     email = user_info.get("email")
     name = user_info.get("name") or ""
+    verified_email = user_info.get("verified_email", False)
 
     if not google_id or not email:
         raise HTTPException(status_code=400, detail="Google did not return required user info")
+
+    if not verified_email:
+        raise HTTPException(status_code=400, detail="Google account email is not verified")
 
     # Find existing account by google_id first, then by email
     result = await db.execute(select(Doctor).where(Doctor.google_id == google_id))
@@ -219,7 +267,23 @@ async def handle_google_signin_callback(
         doctor = result.scalar_one_or_none()
 
         if doctor:
-            # Link Google account to existing email/password doctor
+            # An account with this email already exists.
+            # If it has a password hash it was created via email/password — block silent linking
+            # to prevent account takeover. The user must prove ownership by logging in with
+            # their password first, then linking Google from account settings.
+            if doctor.password_hash:
+                logger.warning(
+                    "google_link_blocked_existing_password_account",
+                    email=email,
+                )
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail=(
+                        "An account with this email already exists. "
+                        "Please sign in with your email and password."
+                    ),
+                )
+            # Account exists with Google ID missing (edge case); safe to link
             doctor.google_id = google_id
             try:
                 await db.commit()

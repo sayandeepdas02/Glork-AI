@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import uuid
 from datetime import datetime, timedelta, timezone
 
 from fastapi import HTTPException, status
@@ -29,7 +30,7 @@ def create_access_token(data: dict) -> str:
 def create_refresh_token(data: dict) -> str:
     payload = data.copy()
     expire = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
-    payload.update({"exp": expire, "type": "refresh"})
+    payload.update({"exp": expire, "type": "refresh", "jti": str(uuid.uuid4())})
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 

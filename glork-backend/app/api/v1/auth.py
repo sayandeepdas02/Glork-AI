@@ -104,7 +104,14 @@ async def refresh(
 
 
 @router.post("/logout", response_model=MessageResponse)
-async def logout(response: Response):
+async def logout(
+    request: Request,
+    response: Response,
+    db: AsyncSession = Depends(get_db),
+):
+    refresh_token = request.cookies.get(_COOKIE_REFRESH)
+    if refresh_token:
+        await svc.revoke_refresh_token(refresh_token, db)
     _clear_auth_cookies(response)
     return MessageResponse(message="Logged out successfully")
 
