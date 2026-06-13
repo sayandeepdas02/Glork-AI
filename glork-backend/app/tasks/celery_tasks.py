@@ -55,6 +55,7 @@ def send_sms_confirmation(self, booking_id: str):
     async def _inner():
         from sqlalchemy import select
         from app.db.session import AsyncSessionLocal
+        from app.models.agent_config import AgentConfig
         from app.models.booking import Booking
         from app.models.doctor import Doctor
         from app.services.notification_service import notification_service
@@ -71,7 +72,13 @@ def send_sms_confirmation(self, booking_id: str):
             if not doctor:
                 return
 
-            sent = await notification_service.send_sms_confirmation(booking, doctor)
+            cfg_result = await db.execute(
+                select(AgentConfig).where(AgentConfig.doctor_id == booking.doctor_id)
+            )
+            config = cfg_result.scalar_one_or_none()
+            clinic_timezone = config.timezone if config else "UTC"
+
+            sent = await notification_service.send_sms_confirmation(booking, doctor, clinic_timezone)
             if sent:
                 booking.sms_sent = True
                 await db.commit()
@@ -88,6 +95,7 @@ def send_sms_reminder(self, booking_id: str):
     async def _inner():
         from sqlalchemy import select
         from app.db.session import AsyncSessionLocal
+        from app.models.agent_config import AgentConfig
         from app.models.booking import Booking, BookingStatus
         from app.models.doctor import Doctor
         from app.services.notification_service import notification_service
@@ -103,7 +111,13 @@ def send_sms_reminder(self, booking_id: str):
             if not doctor:
                 return
 
-            sent = await notification_service.send_sms_reminder(booking, doctor)
+            cfg_result = await db.execute(
+                select(AgentConfig).where(AgentConfig.doctor_id == booking.doctor_id)
+            )
+            config = cfg_result.scalar_one_or_none()
+            clinic_timezone = config.timezone if config else "UTC"
+
+            sent = await notification_service.send_sms_reminder(booking, doctor, clinic_timezone)
             if sent:
                 booking.reminder_sent = True
                 await db.commit()

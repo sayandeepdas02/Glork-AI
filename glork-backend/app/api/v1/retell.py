@@ -260,13 +260,13 @@ async def tool_check_availability(request: Request):
 
     try:
         async with AsyncSessionLocal() as db:
-            doctor, config, _ = await _get_doctor_and_config(doctor_id, db)
+            doctor, config, cal = await _get_doctor_and_config(doctor_id, db)
 
             if not cal or not cal.is_connected:
                 return _ok({
                     "slots": [],
                     "date": date,
-                    "timezone": "Asia/Kolkata",
+                    "timezone": config.timezone,
                     "message": "Calendar not connected",
                 })
 

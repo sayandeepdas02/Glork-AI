@@ -295,18 +295,31 @@ class BookingService:
 
         if date:
             date_obj = datetime.strptime(date, "%Y-%m-%d").date()
-            day_start = datetime(date_obj.year, date_obj.month, date_obj.day, tzinfo=timezone.utc)
-            day_end = datetime(date_obj.year, date_obj.month, date_obj.day, 23, 59, 59, tzinfo=timezone.utc)
+
+            tz_result = await db.execute(
+                select(AgentConfig.timezone).where(AgentConfig.doctor_id == doctor_id)
+            )
+            tz_name = tz_result.scalar_one_or_none() or "UTC"
+            try:
+                tz = ZoneInfo(tz_name)
+            except (ZoneInfoNotFoundError, KeyError):
+                tz = ZoneInfo("UTC")
+
+            day_start_local = datetime(date_obj.year, date_obj.month, date_obj.day, tzinfo=tz)
+            day_end_local = day_start_local + timedelta(days=1)
+            day_start = day_start_local.astimezone(timezone.utc)
+            day_end = day_end_local.astimezone(timezone.utc)
+
             query = query.where(
                 and_(
                     Booking.appointment_start >= day_start,
-                    Booking.appointment_start <= day_end,
+                    Booking.appointment_start < day_end,
                 )
             )
             count_query = count_query.where(
                 and_(
                     Booking.appointment_start >= day_start,
-                    Booking.appointment_start <= day_end,
+                    Booking.appointment_start < day_end,
                 )
             )
 

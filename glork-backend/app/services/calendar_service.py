@@ -134,7 +134,7 @@ class CalendarService:
         preferred_time: str,
         calendar_id: str,
         db: AsyncSession,
-        doctor_timezone: str = "Asia/Kolkata",
+        doctor_timezone: str = "UTC",
     ) -> list[str]:
         try:
             creds = await self.get_credentials(doctor_id, db)
