@@ -1,7 +1,7 @@
 """add google_id and make password_hash nullable
 
-Revision ID: 0002
-Revises: 0001
+Revision ID: 0002b
+Revises: 0002
 Create Date: 2026-06-05 00:00:00.000000
 
 """

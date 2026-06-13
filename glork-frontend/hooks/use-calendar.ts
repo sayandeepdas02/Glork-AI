@@ -16,7 +16,8 @@ export function useCalendarStatus() {
 export function useConnectCalendar() {
   return useMutation({
     mutationFn: async () => {
-      const { auth_url } = await getCalendarAuthUrl()
+      const returnTo = typeof window !== "undefined" ? window.location.pathname : "/onboarding"
+      const { auth_url } = await getCalendarAuthUrl(returnTo)
       window.location.href = auth_url
     },
     onError: (err: Error) => toast.error(err.message || "Failed to get auth URL"),

@@ -55,7 +55,7 @@ async def get_booking_stats(
     total = total_result.scalar_one()
 
     confirmed_result = await db.execute(
-        base.where(Booking.status == BookingStatus.confirmed)
+        base.where(Booking.status.in_([BookingStatus.confirmed, BookingStatus.rescheduled]))
     )
     confirmed = confirmed_result.scalar_one()
 
@@ -181,9 +181,9 @@ async def update_booking(
     if not booking:
         raise HTTPException(status_code=404, detail="Booking not found")
 
-    is_rescheduling = (
-        payload.appointment_start is not None or payload.appointment_end is not None
-    )
+    has_new_start = payload.appointment_start is not None
+    has_new_end = payload.appointment_end is not None
+    is_rescheduling = has_new_start or has_new_end
     is_cancelling = payload.status == BookingStatus.cancelled
 
     if is_rescheduling and is_cancelling:
@@ -192,9 +192,15 @@ async def update_booking(
             detail="Rescheduling and cancelling the same booking in one request is not supported",
         )
 
+    if is_rescheduling and not (has_new_start and has_new_end):
+        raise HTTPException(
+            status_code=422,
+            detail="Both appointment_start and appointment_end must be provided together when rescheduling",
+        )
+
     if is_rescheduling:
-        new_start = payload.appointment_start or booking.appointment_start
-        new_end = payload.appointment_end or booking.appointment_end
+        new_start = payload.appointment_start
+        new_end = payload.appointment_end
         booking = await booking_service.reschedule_booking(
             booking_id=booking_id,
             new_start=new_start,

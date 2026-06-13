@@ -16,6 +16,7 @@ from app.config import settings
 from app.core.encryption import decrypt, encrypt
 from app.core.security import create_access_token, decode_token
 from app.dependencies import get_current_active_doctor, get_db
+from app.models.agent_config import AgentConfig
 from app.models.calendar_integration import CalendarIntegration
 from app.models.doctor import Doctor
 from app.schemas.calendar import (
@@ -27,6 +28,7 @@ from app.schemas.calendar import (
 )
 from app.schemas.common import MessageResponse
 from app.services.calendar_service import calendar_service
+from app.services.retell_service import retell_service
 
 logger = structlog.get_logger()
 
@@ -56,7 +58,10 @@ def _build_flow() -> Flow:
 
 
 @router.get("/auth-url", response_model=CalendarAuthUrlResponse)
-async def get_auth_url(doctor: Doctor = Depends(get_current_active_doctor)):
+async def get_auth_url(
+    doctor: Doctor = Depends(get_current_active_doctor),
+    return_to: str = Query("/onboarding"),
+):
     if not settings.GOOGLE_CLIENT_ID:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -64,7 +69,11 @@ async def get_auth_url(doctor: Doctor = Depends(get_current_active_doctor)):
         )
 
     flow = _build_flow()
-    state_token = create_access_token({"sub": str(doctor.id), "purpose": "calendar_oauth"})
+    state_token = create_access_token({
+        "sub": str(doctor.id),
+        "purpose": "calendar_oauth",
+        "return_to": return_to,
+    })
 
     auth_url, _ = flow.authorization_url(
         access_type="offline",
@@ -86,13 +95,18 @@ async def calendar_callback(
         if payload.get("purpose") != "calendar_oauth":
             raise HTTPException(status_code=400, detail="Invalid state token")
         doctor_id = payload.get("sub")
+        return_to = payload.get("return_to", "/onboarding")
     except HTTPException:
         return RedirectResponse(f"{settings.FRONTEND_URL}/onboarding?calendar=error&reason=invalid_state")
+
+    # Safety: only allow relative paths as return_to to prevent open-redirect
+    if not return_to.startswith("/"):
+        return_to = "/onboarding"
 
     result = await db.execute(select(Doctor).where(Doctor.id == doctor_id))
     doctor = result.scalar_one_or_none()
     if not doctor:
-        return RedirectResponse(f"{settings.FRONTEND_URL}/onboarding?calendar=error&reason=doctor_not_found")
+        return RedirectResponse(f"{settings.FRONTEND_URL}{return_to}?calendar=error&reason=doctor_not_found")
 
     try:
         flow = _build_flow()
@@ -101,7 +115,7 @@ async def calendar_callback(
         creds: Credentials = flow.credentials
     except Exception as exc:
         logger.error("calendar_oauth_exchange_failed", doctor_id=doctor_id, error=str(exc))
-        return RedirectResponse(f"{settings.FRONTEND_URL}/onboarding?calendar=error&reason=token_exchange")
+        return RedirectResponse(f"{settings.FRONTEND_URL}{return_to}?calendar=error&reason=token_exchange")
 
     access_token_encrypted = encrypt(creds.token)
     refresh_token_encrypted = encrypt(creds.refresh_token) if creds.refresh_token else None
@@ -142,9 +156,9 @@ async def calendar_callback(
     except Exception as exc:
         await db.rollback()
         logger.error("calendar_save_failed", doctor_id=str(doctor_id), error=str(exc))
-        return RedirectResponse(f"{settings.FRONTEND_URL}/onboarding?calendar=error&reason=save_failed")
+        return RedirectResponse(f"{settings.FRONTEND_URL}{return_to}?calendar=error&reason=save_failed")
 
-    return RedirectResponse(f"{settings.FRONTEND_URL}/onboarding?calendar=connected")
+    return RedirectResponse(f"{settings.FRONTEND_URL}{return_to}?calendar=connected")
 
 
 @router.get("/status", response_model=CalendarStatusResponse)
@@ -215,17 +229,45 @@ async def disconnect_calendar(
     if not integration:
         raise HTTPException(status_code=404, detail="No calendar integration found")
 
+    # Revoke the refresh token so Google terminates long-term access.
+    # Revoking the refresh token also invalidates any outstanding access tokens.
     try:
-        if integration.access_token_encrypted:
-            token = decrypt(integration.access_token_encrypted)
+        revoke_token = None
+        if integration.refresh_token_encrypted:
+            revoke_token = decrypt(integration.refresh_token_encrypted)
+        elif integration.access_token_encrypted:
+            revoke_token = decrypt(integration.access_token_encrypted)
+
+        if revoke_token:
             import httpx
             async with httpx.AsyncClient() as client:
                 await client.post(
                     "https://oauth2.googleapis.com/revoke",
-                    params={"token": token},
+                    params={"token": revoke_token},
                 )
     except Exception as exc:
         logger.warning("calendar_revoke_failed", doctor_id=str(doctor.id), error=str(exc))
+
+    # Unbind the Retell phone so it stops routing calls to the agent while the
+    # calendar is disconnected (the agent cannot book without calendar access).
+    if doctor.is_agent_active:
+        config_result = await db.execute(
+            select(AgentConfig).where(AgentConfig.doctor_id == doctor.id)
+        )
+        config = config_result.scalar_one_or_none()
+        if config and config.glork_phone_number and settings.RETELL_API_KEY:
+            try:
+                await retell_service.update_phone_number(
+                    config.glork_phone_number,
+                    [],
+                    nickname=f"Glork - {doctor.clinic_name}",
+                )
+            except Exception as exc:
+                logger.warning(
+                    "calendar_disconnect_retell_unbind_failed",
+                    doctor_id=str(doctor.id),
+                    error=str(exc),
+                )
 
     await db.delete(integration)
     doctor.is_agent_active = False

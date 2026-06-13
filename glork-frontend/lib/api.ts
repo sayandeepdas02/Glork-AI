@@ -260,8 +260,10 @@ export async function getCallStats(): Promise<CallStats> {
 }
 
 // Calendar
-export async function getCalendarAuthUrl(): Promise<{ auth_url: string }> {
-  const { data } = await api.get<{ auth_url: string }>("/calendar/auth-url")
+export async function getCalendarAuthUrl(returnTo = "/onboarding"): Promise<{ auth_url: string }> {
+  const { data } = await api.get<{ auth_url: string }>("/calendar/auth-url", {
+    params: { return_to: returnTo },
+  })
   return data
 }
 

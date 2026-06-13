@@ -158,7 +158,7 @@ class BookingService:
         old_end = booking.appointment_end
         booking.appointment_start = start_utc
         booking.appointment_end = end_utc
-        booking.status = BookingStatus.confirmed
+        booking.status = BookingStatus.rescheduled
 
         remote_synced = False
 

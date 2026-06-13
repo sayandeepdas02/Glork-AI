@@ -103,7 +103,7 @@ def send_sms_reminder(self, booking_id: str):
         async with AsyncSessionLocal() as db:
             result = await db.execute(select(Booking).where(Booking.id == booking_id))
             booking = result.scalar_one_or_none()
-            if not booking or booking.status != BookingStatus.confirmed:
+            if not booking or booking.status not in (BookingStatus.confirmed, BookingStatus.rescheduled):
                 return
 
             doc_result = await db.execute(select(Doctor).where(Doctor.id == booking.doctor_id))
@@ -144,7 +144,7 @@ def schedule_reminders(self):
             result = await db.execute(
                 select(Booking).where(
                     and_(
-                        Booking.status == BookingStatus.confirmed,
+                        Booking.status.in_([BookingStatus.confirmed, BookingStatus.rescheduled]),
                         Booking.reminder_sent.is_(False),
                         Booking.appointment_start >= window_start,
                         Booking.appointment_start <= window_end,
@@ -208,26 +208,31 @@ def refresh_calendar_tokens(self):
         now = datetime.now(timezone.utc)
         expiry_threshold = now + timedelta(minutes=10)
 
+        doctor_ids: list = []
         async with AsyncSessionLocal() as db:
             result = await db.execute(
-                select(CalendarIntegration).where(
+                select(CalendarIntegration.doctor_id).where(
                     and_(
                         CalendarIntegration.is_connected.is_(True),
                         CalendarIntegration.token_expiry <= expiry_threshold,
                     )
                 )
             )
-            integrations = list(result.scalars().all())
-            for integration in integrations:
-                try:
-                    await calendar_service.get_credentials(integration.doctor_id, db)
-                    logger.info("token_refreshed", doctor_id=str(integration.doctor_id))
-                except Exception as exc:
-                    logger.error(
-                        "token_refresh_failed",
-                        doctor_id=str(integration.doctor_id),
-                        error=str(exc),
-                    )
+            doctor_ids = list(result.scalars().all())
+
+        # Use a separate session per doctor so a failure or rollback in one
+        # does not corrupt the session state for subsequent doctors.
+        for doctor_id in doctor_ids:
+            try:
+                async with AsyncSessionLocal() as db:
+                    await calendar_service.get_credentials(doctor_id, db)
+                logger.info("token_refreshed", doctor_id=str(doctor_id))
+            except Exception as exc:
+                logger.error(
+                    "token_refresh_failed",
+                    doctor_id=str(doctor_id),
+                    error=str(exc),
+                )
 
     try:
         _run_async(_inner())
