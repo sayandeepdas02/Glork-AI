@@ -3,61 +3,53 @@
 const steps = [
   {
     n: "01",
-    title: "Set up in 3 minutes",
-    description: "Create your account, connect Google Calendar, and configure your greeting. No technical knowledge needed — if you can send an email, you can set up Hyperglork.",
-    detail: "Avg. setup: 2 min 47 sec",
+    title: "Connect your clinic setup",
+    description:
+      "Create the account, connect Google Calendar, and define the basic rules for greetings, hours, and call routing.",
+    detail: "Average setup: under 3 minutes",
   },
   {
     n: "02",
-    title: "Forward your clinic number",
-    description: "Forward your existing clinic phone to your unique Hyperglork number. Patients call the same number they always have — nothing changes for them.",
-    detail: "Works with any phone provider",
+    title: "Point calls to Hyperglork",
+    description:
+      "Forward your current clinic line to the AI receptionist. Patients keep using the same number they already trust.",
+    detail: "Works with standard carrier forwarding",
   },
   {
     n: "03",
-    title: "Sit back and relax",
-    description: "The AI handles all incoming calls. View bookings, call logs, and full transcripts on your dashboard in real time.",
-    detail: "Live dashboard + notifications",
+    title: "Monitor the operation",
+    description:
+      "Review bookings, transcripts, and agent activity from the dashboard while the receptionist keeps taking calls around the clock.",
+    detail: "Live visibility from one control surface",
   },
 ]
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="bg-[#0F0F0F] border-t border-white/8">
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-14 py-24">
-
-        {/* Header */}
-        <div className="mb-16">
-          <span className="inline-flex items-center px-3.5 py-1.5 rounded-full border border-white/10 bg-[#F5E040]/10 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#F5E040]">
-            How it works
-          </span>
-          <h2 className="font-serif text-[2rem] md:text-[2.75rem] leading-[1.1] font-normal tracking-tight text-white mt-5">
-            Up and running in minutes
-          </h2>
+    <section id="how-it-works" className="section-block border-y border-white/8 bg-[#111111] text-white">
+      <div className="section-shell">
+        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div className="section-heading">
+            <span className="section-eyebrow border-white/12 bg-white/[0.04] text-white/78">How it works</span>
+            <h2 className="section-title text-white">A short path from setup to live coverage.</h2>
+          </div>
+          <p className="max-w-md text-sm leading-7 text-white/50">
+            The flow is intentionally simple. The redesign follows the same principle:
+            fewer visual interruptions, stronger spacing, clearer actions.
+          </p>
         </div>
 
-        {/* Steps — 3 col on desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+        <div className="mt-14 grid gap-4 md:grid-cols-3">
           {steps.map((step) => (
-            <div key={step.n} className="flex flex-col">
-
-              {/* Step number */}
-              <p className="text-[4rem] font-serif font-normal text-white/8 leading-none mb-6 select-none">
-                {step.n}
+            <article key={step.n} className="dark-panel-surface rounded-[26px] p-6 md:p-7">
+              <p className="font-serif text-6xl leading-none tracking-tight text-white/10">{step.n}</p>
+              <div className="mt-8 h-px w-12 bg-[var(--brand)]" />
+              <h3 className="mt-8 text-xl font-semibold tracking-tight text-white">{step.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-white/56">{step.description}</p>
+              <p className="mt-8 text-[12px] font-semibold uppercase tracking-[0.16em] text-[var(--brand-light)]">
+                {step.detail}
               </p>
-
-              {/* Yellow divider */}
-              <div className="w-8 h-[2px] bg-[#F5E040] mb-6" />
-
-              <h3 className="text-[17px] font-semibold text-white mb-3 tracking-tight">{step.title}</h3>
-              <p className="text-[14px] text-white/45 leading-[1.7] mb-5 flex-1">
-                {step.description}
-              </p>
-
-              <span className="inline-flex items-center gap-1.5 text-[12px] text-[#F5E040]/70 font-medium">
-                <span className="text-[#F5E040]">→</span> {step.detail}
-              </span>
-            </div>
+            </article>
           ))}
         </div>
       </div>

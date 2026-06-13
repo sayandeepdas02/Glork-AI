@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Twitter, Github, Mail } from "lucide-react"
+import { Github, Mail, Twitter } from "lucide-react"
 import { Logo } from "@/components/ui/logo"
 
 const footerLinks = {
@@ -12,35 +12,31 @@ const footerLinks = {
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0F0F0F] border-t border-white/8">
-
-      <div className="max-w-[1200px] mx-auto">
-        <div className="px-6 lg:px-14 pt-16 pb-10 grid grid-cols-1 md:grid-cols-5 gap-10 lg:gap-12 border-b border-white/8">
-
-          <div className="md:col-span-2 flex flex-col items-start">
-            <Link href="/" className="flex items-center gap-2.5 mb-5">
-              <Logo className="w-8 h-8 rounded-lg" />
-              <span className="text-[15px] font-semibold text-white tracking-tight">Hyperglork</span>
+    <footer className="border-t border-white/8 bg-[#111111] text-white">
+      <div className="section-shell py-12">
+        <div className="grid gap-10 border-b border-white/8 pb-10 lg:grid-cols-[minmax(0,1.2fr)_repeat(3,minmax(0,0.5fr))]">
+          <div>
+            <Link href="/" className="flex items-center gap-3">
+              <Logo className="h-9 w-9 rounded-xl" />
+              <span className="text-[15px] font-semibold tracking-tight text-white">Hyperglork</span>
             </Link>
-
-            <p className="text-[13px] text-white/40 leading-[1.7] max-w-[240px] mb-6">
-              AI-powered voice receptionist for doctors. Answer every call,
-              book every appointment, never miss a patient.
+            <p className="mt-5 max-w-sm text-sm leading-7 text-white/46">
+              AI-powered voice receptionist for clinics that need more professional call handling,
+              tighter booking flow, and clearer daily operations.
             </p>
-
-            <div className="flex items-center gap-2">
+            <div className="mt-6 flex items-center gap-2">
               {[
-                { Icon: Twitter, href: "#",                          label: "Twitter" },
-                { Icon: Github,  href: "#",                          label: "GitHub" },
-                { Icon: Mail,    href: "mailto:hello@hyperglork.ai", label: "Email" },
+                { Icon: Twitter, href: "#", label: "Twitter" },
+                { Icon: Github, href: "#", label: "GitHub" },
+                { Icon: Mail, href: "mailto:hello@hyperglork.ai", label: "Email" },
               ].map(({ Icon, href, label }) => (
                 <a
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/40 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-150"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-white/50 transition-colors hover:border-white/22 hover:text-white"
                 >
-                  <Icon className="h-3.5 w-3.5" />
+                  <Icon className="h-4 w-4" />
                 </a>
               ))}
             </div>
@@ -48,48 +44,28 @@ export default function Footer() {
 
           {Object.entries(footerLinks).map(([group, links]) => (
             <div key={group}>
-              <h4 className="text-[10.5px] font-semibold text-white/25 uppercase tracking-[0.2em] mb-4">
-                {group}
-              </h4>
-              <ul className="space-y-2.5">
-                {links.map((l) => (
-                  <li key={l}>
-                    <a href="#" className="text-[13px] text-white/45 hover:text-white transition-colors duration-150">
-                      {l}
-                    </a>
-                  </li>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/32">{group}</p>
+              <div className="mt-4 space-y-3">
+                {links.map((link) => (
+                  <a key={link} href="#" className="block text-sm text-white/52 transition-colors hover:text-white">
+                    {link}
+                  </a>
                 ))}
-              </ul>
+              </div>
             </div>
           ))}
         </div>
 
-        <div className="px-6 lg:px-14 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-[12px] text-white/25">
-            © {new Date().getFullYear()} Hyperglork Technologies
-          </p>
+        <div className="flex flex-col gap-3 py-6 text-sm text-white/32 md:flex-row md:items-center md:justify-between">
+          <p>© {new Date().getFullYear()} Hyperglork Technologies</p>
           <div className="flex items-center gap-2">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-ping-dot absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-60" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
             </span>
-            <span className="text-[12px] text-white/25">All systems operational</span>
+            All systems operational
           </div>
         </div>
-      </div>
-
-      {/* Giant watermark */}
-      <div className="flex justify-center select-none pointer-events-none pb-4 overflow-hidden">
-        <span
-          className="font-serif whitespace-nowrap leading-none"
-          style={{
-            fontSize: "clamp(56px, 10vw, 160px)",
-            color: "rgba(255,255,255,0.04)",
-            lineHeight: 1,
-          }}
-        >
-          Hyperglork
-        </span>
       </div>
     </footer>
   )

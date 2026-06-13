@@ -2,102 +2,105 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { Menu, X } from "lucide-react"
+import { ArrowRight, Menu, X } from "lucide-react"
 import { Logo } from "@/components/ui/logo"
 
 const NAV_LINKS = [
-  { label: "Features",     href: "#features" },
+  { label: "Features", href: "#features" },
   { label: "How it works", href: "#how-it-works" },
-  { label: "Pricing",      href: "#pricing" },
+  { label: "Pricing", href: "#pricing" },
 ]
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <nav className="sticky top-0 z-50 w-full">
-      {/* Pill navbar */}
-      <div className="max-w-[1200px] mx-auto px-5 pt-4">
-        <div className="flex items-center justify-between h-14 px-5 bg-white/95 backdrop-blur-md border border-[#E5E5E0] rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.07)]">
-
-          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
-            <Logo className="w-8 h-8 rounded-lg" />
-            <span className="text-[15px] font-semibold text-[#0F0F0F] tracking-tight">Hyperglork</span>
-            <span className="ml-0.5 rounded-full border border-[#E5E5E0] bg-[#F9F9F7] px-2 py-0.5 text-[9px] text-[#9B9B9B] uppercase tracking-widest font-medium">
-              Beta
-            </span>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-7">
-            {NAV_LINKS.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="text-[14px] text-[#6B6B6B] hover:text-[#0F0F0F] transition-colors duration-150 font-medium"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-
-          <div className="hidden md:flex items-center gap-3 flex-shrink-0">
-            <Link
-              href="/login"
-              className="text-[14px] text-[#6B6B6B] hover:text-[#0F0F0F] transition-colors duration-150 font-medium"
-            >
-              Sign in
+    <nav className="sticky top-0 z-50 w-full px-4 pt-4 md:px-6">
+      <div className="section-shell">
+        <div className="panel-surface rounded-[22px]">
+          <div className="flex h-16 items-center justify-between px-5 md:px-6">
+            <Link href="/" className="flex items-center gap-3">
+              <Logo className="h-9 w-9 rounded-xl" />
+              <div className="flex items-center gap-2">
+                <span className="text-[15px] font-semibold tracking-tight text-[var(--text-primary)]">Hyperglork</span>
+                <span className="rounded-full border border-[var(--edge)] bg-[var(--bg-surface)] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--text-faint)]">
+                  Beta
+                </span>
+              </div>
             </Link>
-            <Link
-              href="/dashboard"
-              className="flex items-center gap-1.5 px-4 py-2 text-[13px] font-semibold bg-[#F5E040] text-[#0F0F0F] hover:bg-[#F8EC70] transition-colors rounded-xl"
-            >
-              Get started →
-            </Link>
-          </div>
 
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden flex h-8 w-8 items-center justify-center rounded-lg text-[#6B6B6B] hover:text-[#0F0F0F] hover:bg-[#F2F2EE] transition-colors"
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-          </button>
-        </div>
-      </div>
+            <div className="hidden items-center gap-8 md:flex">
+              {NAV_LINKS.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="text-[14px] font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
 
-      {/* Mobile drawer */}
-      {mobileOpen && (
-        <div className="md:hidden max-w-[1200px] mx-auto px-5 pt-2">
-          <div className="bg-white border border-[#E5E5E0] rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] px-4 py-4 space-y-1">
-            {NAV_LINKS.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                onClick={() => setMobileOpen(false)}
-                className="block px-3 py-2.5 text-[14px] font-medium text-[#4A4A4A] hover:text-[#0F0F0F] hover:bg-[#F9F9F7] rounded-xl transition-colors"
-              >
-                {item.label}
-              </Link>
-            ))}
-            <div className="pt-3 border-t border-[#E5E5E0] mt-2 flex flex-col gap-2">
+            <div className="hidden items-center gap-3 md:flex">
               <Link
                 href="/login"
-                onClick={() => setMobileOpen(false)}
-                className="block px-3 py-2.5 text-[14px] font-medium text-[#4A4A4A] hover:text-[#0F0F0F] hover:bg-[#F9F9F7] rounded-xl transition-colors"
+                className="text-[14px] font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
               >
                 Sign in
               </Link>
               <Link
                 href="/dashboard"
-                onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center px-4 py-2.5 text-[14px] font-semibold bg-[#F5E040] text-[#0F0F0F] rounded-xl hover:bg-[#F8EC70] transition-colors"
+                className="inline-flex items-center gap-2 rounded-full bg-[#111111] px-4 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#232323]"
               >
-                Get started →
+                Get started
+                <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
+
+            <button
+              onClick={() => setMobileOpen((value) => !value)}
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-transparent text-[var(--text-muted)] transition-colors hover:border-[var(--edge)] hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)] md:hidden"
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </button>
           </div>
+
+          {mobileOpen && (
+            <div className="border-t border-[var(--edge)] px-4 py-4 md:hidden">
+              <div className="space-y-1">
+                {NAV_LINKS.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="block rounded-xl px-3 py-3 text-[14px] font-medium text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+              <div className="mt-4 grid gap-2 border-t border-[var(--edge)] pt-4">
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-xl px-3 py-3 text-[14px] font-medium text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setMobileOpen(false)}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#111111] px-4 py-3 text-[14px] font-semibold text-white"
+                >
+                  Get started
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </nav>
   )
 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Check } from "lucide-react"
+import { ArrowRight, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const plans = [
@@ -10,8 +10,8 @@ const plans = [
     name: "Starter",
     monthlyPrice: 0,
     annualPrice: 0,
-    description: "Perfect for solo practitioners",
-    features: ["50 calls / month", "Google Calendar sync", "SMS & email confirmations", "Basic analytics", "English only"],
+    description: "For solo practitioners validating the workflow.",
+    features: ["50 calls / month", "Calendar sync", "SMS and email confirmations", "Basic analytics", "Single-language assistant"],
     cta: "Get started free",
     href: "/dashboard",
     featured: false,
@@ -20,8 +20,8 @@ const plans = [
     name: "Pro",
     monthlyPrice: 49,
     annualPrice: 34,
-    description: "For busy practices",
-    features: ["Unlimited calls", "Priority support", "Custom greeting script", "Advanced analytics", "15+ languages", "Emergency routing", "Call transcripts"],
+    description: "For busy clinics that need dependable inbound coverage.",
+    features: ["Unlimited calls", "Advanced booking rules", "Priority support", "Transcripts and analytics", "15+ languages", "Urgency routing"],
     cta: "Start free trial",
     href: "/dashboard",
     featured: true,
@@ -30,9 +30,9 @@ const plans = [
     name: "Clinic",
     monthlyPrice: 149,
     annualPrice: 104,
-    description: "Multi-doctor clinics",
-    features: ["Everything in Pro", "Multiple doctors", "Team dashboard", "Custom integrations", "Account manager", "99.9% SLA guarantee"],
-    cta: "Contact us",
+    description: "For multi-doctor operations with custom requirements.",
+    features: ["Everything in Pro", "Multiple doctors", "Shared team dashboard", "Custom integrations", "Account manager", "SLA-backed support"],
+    cta: "Contact sales",
     href: "/dashboard",
     featured: false,
   },
@@ -42,117 +42,100 @@ export default function Pricing() {
   const [annual, setAnnual] = useState(false)
 
   return (
-    <section id="pricing" className="bg-white border-t border-[#E5E5E0]">
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-14 py-24">
-
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
-          <div>
-            <span className="inline-flex items-center px-3.5 py-1.5 rounded-full border border-[#E5E5E0] bg-[#F5E040]/10 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0F0F0F]">
-              Pricing
-            </span>
-            <h2 className="font-serif text-[2rem] md:text-[2.75rem] leading-[1.1] font-normal tracking-tight text-[#0F0F0F] mt-5">
-              Simple, transparent pricing
-            </h2>
+    <section id="pricing" className="section-block">
+      <div className="section-shell">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="section-heading">
+            <span className="section-eyebrow">Pricing</span>
+            <h2 className="section-title">Straightforward plans with room to grow.</h2>
+            <p className="section-copy">
+              The section has been tightened to read more like a serious product decision,
+              not a decorative pricing grid.
+            </p>
           </div>
 
-          {/* Toggle */}
-          <div className="flex items-center gap-3 pb-1">
-            <span className={cn("text-[13px] font-medium transition-colors", !annual ? "text-[#0F0F0F]" : "text-[#9B9B9B]")}>Monthly</span>
+          <div className="panel-surface flex w-fit items-center gap-3 rounded-full px-4 py-3">
+            <span className={cn("text-[13px] font-medium", !annual ? "text-[var(--text-primary)]" : "text-[var(--text-faint)]")}>Monthly</span>
             <button
-              onClick={() => setAnnual(!annual)}
+              onClick={() => setAnnual((value) => !value)}
               className={cn(
-                "relative h-6 w-11 rounded-full border transition-all duration-200",
-                annual ? "bg-[#F5E040] border-[#D4C01A]" : "bg-[#F2F2EE] border-[#C8C8C2]"
+                "relative h-7 w-12 rounded-full border transition-colors",
+                annual ? "border-[var(--brand-dark)] bg-[var(--brand)]" : "border-[var(--edge-strong)] bg-[var(--bg-surface-2)]"
               )}
+              aria-label="Toggle annual pricing"
             >
-              <span className={cn(
-                "absolute top-[2px] h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200",
-                annual ? "translate-x-[22px]" : "translate-x-[2px]"
-              )} />
+              <span
+                className={cn(
+                  "absolute top-[3px] h-5 w-5 rounded-full bg-white shadow-sm transition-transform",
+                  annual ? "translate-x-6" : "translate-x-[3px]"
+                )}
+              />
             </button>
-            <span className={cn("text-[13px] font-medium transition-colors", annual ? "text-[#0F0F0F]" : "text-[#9B9B9B]")}>Annual</span>
-            {annual && (
-              <span className="text-[10px] font-bold text-[#0F0F0F] bg-[#F5E040] px-2 py-0.5 rounded-full">Save 30%</span>
-            )}
+            <span className={cn("text-[13px] font-medium", annual ? "text-[var(--text-primary)]" : "text-[var(--text-faint)]")}>Annual</span>
+            <span className="rounded-full bg-[#111111] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--brand)]">
+              Save 30%
+            </span>
           </div>
         </div>
 
-        {/* Plans grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
+        <div className="mt-14 grid gap-4 lg:grid-cols-3">
           {plans.map((plan) => {
             const price = annual ? plan.annualPrice : plan.monthlyPrice
+
             return (
               <article
                 key={plan.name}
                 className={cn(
-                  "relative flex flex-col rounded-2xl overflow-hidden transition-all duration-200",
-                  plan.featured
-                    ? "bg-[#0F0F0F]"
-                    : "bg-[#F9F9F7] border border-[#E5E5E0] hover:border-[#C8C8C2]"
+                  "rounded-[28px] p-6 md:p-7",
+                  plan.featured ? "bg-[#111111] text-white shadow-[0_24px_50px_rgba(17,17,17,0.18)]" : "panel-surface"
                 )}
               >
-                {/* Featured top stripe */}
-                {plan.featured && (
-                  <div className="h-[3px] bg-[#F5E040]" />
-                )}
-
-                <div className="p-7 flex flex-col flex-1">
-                  <div className="flex items-center justify-between mb-5">
-                    <p className={cn(
-                      "text-[11px] font-semibold uppercase tracking-[0.14em]",
-                      plan.featured ? "text-white/50" : "text-[#9B9B9B]"
-                    )}>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className={cn("text-[11px] font-semibold uppercase tracking-[0.18em]", plan.featured ? "text-white/42" : "text-[var(--text-faint)]")}>
                       {plan.name}
                     </p>
-                    {plan.featured && (
-                      <span className="text-[10px] font-bold bg-[#F5E040] text-[#0F0F0F] px-2.5 py-1 rounded-full">
-                        Most popular
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="mb-5">
-                    <div className="flex items-end gap-1 mb-1.5">
-                      <span className={cn(
-                        "font-serif text-[3rem] font-normal leading-none tracking-tight",
-                        plan.featured ? "text-white" : "text-[#0F0F0F]"
-                      )}>
-                        ${price}
-                      </span>
-                      <span className={cn(
-                        "text-[13px] self-end mb-1",
-                        plan.featured ? "text-white/35" : "text-[#9B9B9B]"
-                      )}>
-                        / mo
-                      </span>
-                    </div>
-                    <p className={cn("text-[13px]", plan.featured ? "text-white/40" : "text-[#9B9B9B]")}>
+                    <p className={cn("mt-3 text-sm leading-7", plan.featured ? "text-white/58" : "text-[var(--text-muted)]")}>
                       {plan.description}
                     </p>
                   </div>
-
-                  <ul className="space-y-2.5 flex-1 mb-7">
-                    {plan.features.map((f) => (
-                      <li key={f} className={cn("flex items-center gap-2.5 text-[13.5px]", plan.featured ? "text-white/75" : "text-[#4A4A4A]")}>
-                        <Check className={cn("h-3.5 w-3.5 shrink-0", plan.featured ? "text-[#F5E040]" : "text-[#0F0F0F]")} />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Link
-                    href={plan.href}
-                    className={cn(
-                      "block text-center rounded-xl px-5 py-3 text-[14px] font-semibold transition-all duration-150",
-                      plan.featured
-                        ? "bg-[#F5E040] text-[#0F0F0F] hover:bg-[#F8EC70]"
-                        : "bg-white text-[#0F0F0F] border border-[#C8C8C2] hover:border-[#0F0F0F] hover:bg-[#F9F9F7]"
-                    )}
-                  >
-                    {plan.cta}
-                  </Link>
+                  {plan.featured && (
+                    <span className="rounded-full bg-[var(--brand)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#111111]">
+                      Popular
+                    </span>
+                  )}
                 </div>
+
+                <div className="mt-8 border-t border-black/8 pt-7 dark:border-white/8">
+                  <div className="flex items-end gap-1.5">
+                    <span className={cn("font-serif text-[3.4rem] leading-none tracking-tight", plan.featured ? "text-white" : "text-[var(--text-primary)]")}>
+                      ${price}
+                    </span>
+                    <span className={cn("pb-1 text-sm", plan.featured ? "text-white/42" : "text-[var(--text-faint)]")}>/ month</span>
+                  </div>
+                </div>
+
+                <ul className="mt-8 space-y-3">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className={cn("flex items-start gap-3 text-sm leading-7", plan.featured ? "text-white/70" : "text-[var(--text-muted)]")}>
+                      <Check className={cn("mt-1 h-4 w-4 shrink-0", plan.featured ? "text-[var(--brand)]" : "text-[var(--text-primary)]")} />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  href={plan.href}
+                  className={cn(
+                    "mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-[14px] font-semibold transition-colors",
+                    plan.featured
+                      ? "bg-[var(--brand)] text-[#111111] hover:bg-[var(--brand-light)]"
+                      : "bg-[#111111] text-white hover:bg-[#232323]"
+                  )}
+                >
+                  {plan.cta}
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </article>
             )
           })}

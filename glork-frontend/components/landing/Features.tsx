@@ -1,106 +1,149 @@
 "use client"
 
-import { Calendar, Clock, Globe, Phone, Shield, Zap } from "lucide-react"
+import { Calendar, Clock3, Globe2, Phone, Shield, Sparkles, Zap } from "lucide-react"
 
-function SectionLabel({ text }: { text: string }) {
-  return (
-    <span className="inline-flex items-center px-3.5 py-1.5 rounded-full border border-[#E5E5E0] bg-[#F5E040]/10 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0F0F0F]">
-      {text}
-    </span>
-  )
-}
+const featureCards = [
+  {
+    Icon: Calendar,
+    title: "Real-time scheduling",
+    description: "Checks live calendar availability and books the right appointment without back-and-forth.",
+  },
+  {
+    Icon: Zap,
+    title: "Immediate confirmations",
+    description: "Patients get confirmation messages as soon as the booking is placed.",
+  },
+  {
+    Icon: Globe2,
+    title: "Multilingual conversations",
+    description: "Serve a broader patient base with natural voice support across major languages.",
+  },
+  {
+    Icon: Shield,
+    title: "Urgency routing",
+    description: "Escalate emergencies or sensitive calls using predefined clinic rules.",
+  },
+  {
+    Icon: Clock3,
+    title: "Hours and guardrails",
+    description: "Only books inside the windows, durations, and doctor constraints you define.",
+  },
+]
 
 export default function Features() {
   return (
-    <section id="features" className="bg-white border-t border-[#E5E5E0]">
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-14">
+    <section id="features" className="section-block">
+      <div className="section-shell">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end">
+          <div className="section-heading">
+            <span className="section-eyebrow">Features</span>
+            <h2 className="section-title">Built to run the front desk with less friction.</h2>
+            <p className="section-copy">
+              Inspired by product-led enterprise pages, the interface now leans on stronger
+              alignment, quieter chrome, and more deliberate information density.
+            </p>
+          </div>
 
-        {/* Header */}
-        <div className="pt-20 pb-14">
-          <SectionLabel text="Features" />
-          <h2 className="font-serif text-[2rem] md:text-[2.75rem] leading-[1.1] font-normal tracking-tight text-[#0F0F0F] mt-5">
-            Everything your clinic needs
-          </h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {[
+              { value: "0", label: "Missed handoffs in flow" },
+              { value: "24/7", label: "Coverage without staffing gaps" },
+              { value: "< 1 min", label: "Typical booking resolution" },
+            ].map((item) => (
+              <div key={item.label} className="panel-surface rounded-[24px] p-5">
+                <p className="font-serif text-4xl leading-none tracking-tight text-[var(--text-primary)]">{item.value}</p>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{item.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-20">
-
-          {/* Large featured card — black bg */}
-          <article className="md:col-span-2 md:row-span-2 flex flex-col justify-between p-8 rounded-2xl bg-[#0F0F0F] border border-[#1A1A1A]">
-            <div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F5E040] mb-5">
-                <Phone className="h-4.5 w-4.5 text-[#0F0F0F]" />
-              </div>
-              <h3 className="text-[19px] font-semibold text-white mb-3 tracking-tight">24/7 AI Receptionist</h3>
-              <p className="text-[14px] text-white/50 leading-relaxed max-w-sm">
-                The AI picks up every call — after hours, weekends, public holidays.
-                Never a busy signal, never voicemail. Your clinic is always open.
-              </p>
+        <div className="mt-14 grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+          <article className="rounded-[30px] bg-[#121212] p-7 text-white md:p-8">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--brand)] text-[#111111]">
+              <Phone className="h-5 w-5" />
             </div>
-
-            {/* Live preview widget */}
-            <div className="mt-8 p-5 rounded-xl border border-white/8 bg-white/4">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#F5E040] animate-pulse" />
-                  <span className="text-[11px] text-white/40 uppercase tracking-wider font-medium">Live</span>
-                </div>
-                <span className="text-[11px] text-[#F5E040] font-medium">3 active calls</span>
-              </div>
-              <div className="space-y-2.5">
-                {[
-                  { text: "Dr. Sharma — slot 9:00 AM confirmed", active: true },
-                  { text: "Dr. Sharma — slot 10:30 AM booking…", active: true },
-                  { text: "Routing emergency to Dr. Bose", active: false },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-2.5">
-                    <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${item.active ? "bg-[#F5E040]/60" : "bg-amber-400"}`} />
-                    <span className="text-[12px] text-white/50 font-mono truncate">{item.text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </article>
-
-          {/* Medium card: Smart Scheduling */}
-          <article className="flex flex-col p-6 rounded-2xl bg-[#F9F9F7] border border-[#E5E5E0] hover:border-[#C8C8C2] hover:-translate-y-0.5 transition-all duration-200">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F5E040]/15 mb-4">
-              <Calendar className="h-4 w-4 text-[#0F0F0F]" />
-            </div>
-            <h3 className="text-[15px] font-semibold text-[#0F0F0F] mb-2 tracking-tight">Smart Scheduling</h3>
-            <p className="text-[13px] text-[#6B6B6B] leading-relaxed">
-              Checks live Calendar availability and books instantly. Zero double-booking.
-            </p>
-          </article>
-
-          {/* Medium card: Confirmations */}
-          <article className="flex flex-col p-6 rounded-2xl bg-[#F9F9F7] border border-[#E5E5E0] hover:border-[#C8C8C2] hover:-translate-y-0.5 transition-all duration-200">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F5E040]/15 mb-4">
-              <Zap className="h-4 w-4 text-[#0F0F0F]" />
-            </div>
-            <h3 className="text-[15px] font-semibold text-[#0F0F0F] mb-2 tracking-tight">Instant Confirmations</h3>
-            <p className="text-[13px] text-[#6B6B6B] leading-relaxed">
-              SMS and email confirmations sent the moment a booking is made.
-            </p>
-          </article>
-
-          {/* Small inline cards */}
-          {[
-            { Icon: Globe,  title: "Multilingual",       desc: "English, Hindi, Tamil & more." },
-            { Icon: Shield, title: "Emergency Handling", desc: "Routes urgent calls instantly." },
-            { Icon: Clock,  title: "Custom Hours",       desc: "Books within your schedule only." },
-          ].map(({ Icon, title, desc }) => (
-            <article key={title} className="flex items-start gap-3.5 p-6 rounded-2xl bg-[#F9F9F7] border border-[#E5E5E0] hover:border-[#C8C8C2] hover:-translate-y-0.5 transition-all duration-200">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F5E040]/15 mt-0.5">
-                <Icon className="h-3.5 w-3.5 text-[#0F0F0F]" />
-              </div>
+            <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
               <div>
-                <h3 className="text-[14px] font-semibold text-[#0F0F0F] mb-1 tracking-tight">{title}</h3>
-                <p className="text-[12.5px] text-[#9B9B9B] leading-relaxed">{desc}</p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/38">Core workflow</p>
+                <h3 className="mt-4 text-3xl font-semibold tracking-tight text-white">
+                  24/7 AI receptionist with clear operating rules.
+                </h3>
+                <p className="mt-4 max-w-md text-[15px] leading-7 text-white/58">
+                  Every inbound call follows a structured path: greet, qualify, book, confirm, or
+                  route. The UI mirrors that discipline with cleaner edges and stronger layout rhythm.
+                </p>
+              </div>
+
+              <div className="rounded-[26px] border border-white/10 bg-white/[0.03] p-5">
+                <div className="flex items-center justify-between border-b border-white/8 pb-4">
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-white/38">Current queue</p>
+                  <span className="rounded-full bg-[var(--brand)]/14 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--brand-light)]">
+                    3 active
+                  </span>
+                </div>
+
+                <div className="mt-4 space-y-3">
+                  {[
+                    "Dr. Sharma follow-up confirmed for 09:00",
+                    "Dr. Iyer new consultation being scheduled",
+                    "Urgent callback routed to the duty desk",
+                  ].map((item, index) => (
+                    <div key={item} className="flex items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.025] px-4 py-3">
+                      <div className={`h-2 w-2 rounded-full ${index === 2 ? "bg-amber-400" : "bg-[var(--brand)]"}`} />
+                      <span className="text-sm text-white/58">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+            {featureCards.slice(0, 2).map(({ Icon, title, description }) => (
+              <article key={title} className="panel-surface rounded-[24px] p-6">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--brand-dim)] text-[var(--text-primary)]">
+                  <Icon className="h-4 w-4" />
+                </div>
+                <h3 className="mt-5 text-lg font-semibold tracking-tight text-[var(--text-primary)]">{title}</h3>
+                <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">{description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-4 md:grid-cols-3">
+          {featureCards.slice(2).map(({ Icon, title, description }) => (
+            <article key={title} className="panel-surface rounded-[24px] p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-base font-semibold tracking-tight text-[var(--text-primary)]">{title}</h3>
+                  <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">{description}</p>
+                </div>
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[var(--bg-surface)] text-[var(--text-primary)]">
+                  <Icon className="h-4 w-4" />
+                </div>
               </div>
             </article>
           ))}
+
+          <article className="panel-surface rounded-[24px] p-6 md:col-span-3">
+            <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+              <div className="max-w-2xl">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">Why this matters</p>
+                <h3 className="mt-3 text-2xl font-semibold tracking-tight text-[var(--text-primary)]">
+                  A cleaner UI builds trust before the first interaction.
+                </h3>
+                <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
+                  The updated hierarchy borrows the discipline of strong B2B product sites:
+                  consistent section widths, sharper button weights, and quieter surfaces around the content.
+                </p>
+              </div>
+              <div className="flex h-14 w-14 items-center justify-center rounded-[18px] bg-[#111111] text-[var(--brand)]">
+                <Sparkles className="h-5 w-5" />
+              </div>
+            </div>
+          </article>
         </div>
       </div>
     </section>

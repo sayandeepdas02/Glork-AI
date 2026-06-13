@@ -9,15 +9,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { sidebarOpen, setSidebarOpen } = useUIStore()
 
   return (
-    <div className="flex h-screen bg-[#F5F5F2] overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-[var(--bg-surface)]">
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex w-60 shrink-0 border-r border-[#EAEAE5]">
+      <aside className="hidden w-72 shrink-0 border-r border-[var(--edge)] bg-[rgba(255,255,255,0.72)] backdrop-blur-md lg:flex">
         <Sidebar />
       </aside>
 
       {/* Mobile sidebar sheet */}
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-        <SheetContent side="left" className="w-60 p-0 border-0">
+        <SheetContent side="left" className="w-72 border-0 p-0">
           <Sidebar onClose={() => setSidebarOpen(false)} />
         </SheetContent>
       </Sheet>
@@ -26,7 +26,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="flex flex-1 flex-col overflow-hidden min-w-0">
         <TopNav />
         <main className="flex-1 overflow-y-auto scrollbar-thin">
-          <div className="max-w-6xl mx-auto px-5 lg:px-8 py-7">
+          <div className="mx-auto max-w-7xl px-5 py-7 lg:px-8 lg:py-8">
             {children}
           </div>
         </main>

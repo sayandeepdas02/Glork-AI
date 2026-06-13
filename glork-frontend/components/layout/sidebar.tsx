@@ -22,35 +22,35 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
   const doctor = useAuthStore((s) => s.doctor)
 
   return (
-    <div className="flex h-full w-full flex-col bg-white overflow-y-auto scrollbar-sidebar">
+    <div className="flex h-full w-full flex-col overflow-y-auto bg-transparent scrollbar-sidebar">
 
       {/* ── Logo ── */}
-      <div className="flex items-center gap-2.5 px-5 pt-6 pb-5 border-b border-[#EAEAE5]">
-        <Logo className="w-8 h-8 rounded-lg transition-transform hover:scale-105" />
-        <span className="text-base font-semibold text-[#111] tracking-tight">Hyperglork</span>
-        <span className="ml-auto rounded-full border border-brand/20 bg-brand/5 px-1.5 py-0.5 text-[9px] font-bold text-brand uppercase tracking-widest">
+      <div className="flex items-center gap-3 border-b border-[var(--edge)] px-6 pb-5 pt-6">
+        <Logo className="h-9 w-9 rounded-xl transition-transform hover:scale-105" />
+        <span className="text-base font-semibold tracking-tight text-[var(--text-primary)]">Hyperglork</span>
+        <span className="ml-auto rounded-full border border-[var(--brand-border)] bg-[var(--brand-dim)] px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-[var(--brand-dark)]">
           beta
         </span>
       </div>
 
       {/* ── Doctor card ── */}
       {doctor && (
-        <div className="mx-3 mt-4 rounded-xl bg-[#FAFAF8] border border-[#EAEAE5] px-3.5 py-3">
+        <div className="mx-4 mt-5 rounded-[22px] border border-[var(--edge)] bg-white/80 px-4 py-4 shadow-[0_14px_28px_rgba(17,17,17,0.05)]">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F5E040] text-xs font-bold text-[#0F0F0F]">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--brand)] text-xs font-bold text-[#111111]">
               {doctor.name?.slice(0, 2).toUpperCase() ?? "DR"}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-[#111] truncate">{doctor.name}</p>
-              <p className="text-xs text-[#888] truncate">{doctor.clinic_name}</p>
+              <p className="truncate text-sm font-semibold text-[var(--text-primary)]">{doctor.name}</p>
+              <p className="truncate text-xs text-[var(--text-faint)]">{doctor.clinic_name}</p>
             </div>
             <div className="relative shrink-0">
               <div className={cn(
                 "h-2 w-2 rounded-full",
-                doctor.is_agent_active ? "bg-[#22c55e]" : "bg-[#C8C8C2]"
+                doctor.is_agent_active ? "bg-emerald-500" : "bg-[var(--edge-strong)]"
               )} />
               {doctor.is_agent_active && (
-                <div className="absolute inset-0 h-2 w-2 rounded-full bg-[#22c55e] animate-ping opacity-60" />
+                <div className="absolute inset-0 h-2 w-2 rounded-full bg-emerald-500 animate-ping opacity-60" />
               )}
             </div>
           </div>
@@ -58,8 +58,8 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       )}
 
       {/* ── Nav ── */}
-      <nav className="flex-1 px-2 py-4 space-y-0.5">
-        <p className="px-3 mb-3 text-[10px] font-mono font-semibold text-[#bbb] uppercase tracking-[0.2em]">
+      <nav className="flex-1 space-y-1 px-3 py-5">
+        <p className="mb-3 px-3 text-[10px] font-mono font-semibold uppercase tracking-[0.2em] text-[var(--text-faint)]">
           Menu
         </p>
         {NAV_ITEMS.map(({ href, label, icon: Icon, exact }) => {
@@ -73,19 +73,19 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
               onClick={onClose}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "sidebar-nav-item group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
+                "sidebar-nav-item group flex items-center gap-3 rounded-2xl border px-3.5 py-3 text-sm font-medium transition-all duration-150",
                 active
-                  ? "active bg-[#F5E040]/10 text-[#0F0F0F] border border-[#F5E040]/25"
-                  : "text-[#6B6B6B] hover:bg-[#F9F9F7] hover:text-[#0F0F0F] border border-transparent"
+                  ? "active border-[var(--brand-border)] bg-[var(--brand-dim)] text-[var(--text-primary)] shadow-[0_10px_18px_rgba(17,17,17,0.04)]"
+                  : "border-transparent text-[var(--text-muted)] hover:border-[var(--edge)] hover:bg-white/72 hover:text-[var(--text-primary)]"
               )}
             >
               <Icon className={cn(
                 "h-4 w-4 shrink-0 transition-colors",
-                active ? "text-[#0F0F0F]" : "text-[#9B9B9B] group-hover:text-[#4A4A4A]"
+                active ? "text-[var(--text-primary)]" : "text-[var(--text-faint)] group-hover:text-[var(--text-muted)]"
               )} />
               {label}
               {active && (
-                <div className="ml-auto h-1.5 w-1.5 rounded-full bg-[#F5E040]" />
+                <div className="ml-auto h-1.5 w-1.5 rounded-full bg-[var(--brand)]" />
               )}
             </Link>
           )
@@ -93,13 +93,13 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       </nav>
 
       {/* ── Bottom ── */}
-      <div className="p-3 border-t border-[#EAEAE5]">
+      <div className="border-t border-[var(--edge)] p-4">
         <button
           onClick={() => { onClose?.(); logout() }}
           aria-label="Sign out"
-          className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[#777] hover:text-[#111] hover:bg-[#F5F5F2] transition-all duration-150"
+          className="flex w-full items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-medium text-[var(--text-muted)] transition-all duration-150 hover:bg-white/72 hover:text-[var(--text-primary)]"
         >
-          <LogOut className="h-4 w-4 shrink-0 text-[#aaa]" />
+          <LogOut className="h-4 w-4 shrink-0 text-[var(--text-faint)]" />
           Sign out
         </button>
       </div>
