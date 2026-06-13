@@ -53,6 +53,8 @@ export function useToggleAgent() {
         store.setDoctor({ ...store.doctor, is_agent_active: data.is_agent_active })
       }
       qc.invalidateQueries({ queryKey: ["me"] })
+      qc.invalidateQueries({ queryKey: ["agent-config"] })
+      qc.invalidateQueries({ queryKey: ["calendar-status"] })
       toast.success(data.message)
     },
     onError: (err: Error) => toast.error(err.message || "Failed to toggle agent"),
