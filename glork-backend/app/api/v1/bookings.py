@@ -3,15 +3,13 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from uuid import UUID
 
-import structlog
-from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import and_, extract, func, select
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dependencies import get_current_active_doctor, get_db
 from app.models.booking import Booking, BookingStatus
 from app.models.call_log import CallLog
-from app.models.calendar_integration import CalendarIntegration
 from app.models.doctor import Doctor
 from app.schemas.booking import (
     BookingCreate,
@@ -21,22 +19,9 @@ from app.schemas.booking import (
     BookingUpdate,
 )
 from app.services.booking_service import booking_service
-from app.services.calendar_service import calendar_service
 from app.tasks.celery_tasks import send_sms_confirmation
 
-logger = structlog.get_logger()
-
 router = APIRouter(prefix="/bookings", tags=["bookings"])
-
-
-async def _get_calendar_id(doctor_id: UUID, db: AsyncSession) -> str:
-    result = await db.execute(
-        select(CalendarIntegration).where(CalendarIntegration.doctor_id == doctor_id)
-    )
-    cal = result.scalar_one_or_none()
-    if cal and cal.is_connected:
-        return cal.google_calendar_id or "primary"
-    return "primary"
 
 
 @router.get("/stats", response_model=BookingStatsResponse)
@@ -152,23 +137,6 @@ async def create_booking(
     doctor: Doctor = Depends(get_current_active_doctor),
     db: AsyncSession = Depends(get_db),
 ):
-    calendar_id = await _get_calendar_id(doctor.id, db)
-
-    google_event_id = None
-    try:
-        google_event_id = await calendar_service.create_event(
-            doctor_id=doctor.id,
-            patient_name=payload.patient_name,
-            patient_phone=payload.patient_phone,
-            start_datetime=payload.appointment_start,
-            end_datetime=payload.appointment_end,
-            reason=payload.reason,
-            calendar_id=calendar_id,
-            db=db,
-        )
-    except HTTPException:
-        logger.warning("calendar_event_skipped_no_integration", doctor_id=str(doctor.id))
-
     booking = await booking_service.create_booking(
         doctor_id=doctor.id,
         patient_name=payload.patient_name,
@@ -178,7 +146,6 @@ async def create_booking(
         appointment_end=payload.appointment_end,
         reason=payload.reason,
         notes=payload.notes,
-        google_event_id=google_event_id,
         db=db,
     )
 
@@ -202,11 +169,16 @@ async def update_booking(
     if not booking:
         raise HTTPException(status_code=404, detail="Booking not found")
 
-    calendar_id = await _get_calendar_id(doctor.id, db)
     is_rescheduling = (
         payload.appointment_start is not None or payload.appointment_end is not None
     )
     is_cancelling = payload.status == BookingStatus.cancelled
+
+    if is_rescheduling and is_cancelling:
+        raise HTTPException(
+            status_code=422,
+            detail="Rescheduling and cancelling the same booking in one request is not supported",
+        )
 
     if is_rescheduling:
         new_start = payload.appointment_start or booking.appointment_start
@@ -218,31 +190,16 @@ async def update_booking(
             doctor_id=doctor.id,
             db=db,
         )
-        if booking.google_event_id:
-            await calendar_service.update_event(
-                doctor_id=doctor.id,
-                event_id=booking.google_event_id,
-                start=new_start,
-                end=new_end,
-                calendar_id=calendar_id,
-                db=db,
-            )
-
-    if is_cancelling:
+    elif is_cancelling:
         booking = await booking_service.cancel_booking(booking_id, doctor.id, db)
-        if booking.google_event_id:
-            await calendar_service.delete_event(
-                doctor_id=doctor.id,
-                event_id=booking.google_event_id,
-                calendar_id=calendar_id,
-                db=db,
-            )
-
-    if payload.notes is not None and not is_rescheduling and not is_cancelling:
-        booking.notes = payload.notes
-        booking.status = payload.status or booking.status
-        await db.commit()
-        await db.refresh(booking)
+    elif payload.notes is not None or payload.status is not None:
+        booking = await booking_service.update_booking_details(
+            booking_id=booking_id,
+            doctor_id=doctor.id,
+            status_value=payload.status,
+            notes=payload.notes,
+            db=db,
+        )
 
     return BookingResponse.model_validate(booking)
 
@@ -262,18 +219,8 @@ async def delete_booking(
     if not booking:
         raise HTTPException(status_code=404, detail="Booking not found")
 
-    calendar_id = await _get_calendar_id(doctor.id, db)
-
     if booking.status != BookingStatus.cancelled:
-        booking.status = BookingStatus.cancelled
-        if booking.google_event_id:
-            await calendar_service.delete_event(
-                doctor_id=doctor.id,
-                event_id=booking.google_event_id,
-                calendar_id=calendar_id,
-                db=db,
-            )
-        await db.commit()
+        await booking_service.cancel_booking(booking_id, doctor.id, db)
     else:
         await db.delete(booking)
         await db.commit()

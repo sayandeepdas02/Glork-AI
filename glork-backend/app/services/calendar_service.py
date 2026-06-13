@@ -243,6 +243,7 @@ class CalendarService:
         reason: str | None,
         calendar_id: str,
         db: AsyncSession,
+        event_id: str | None = None,
     ) -> str:
         creds = await self.get_credentials(doctor_id, db)
 
@@ -266,6 +267,8 @@ class CalendarService:
                 "overrides": [{"method": "popup", "minutes": 30}],
             },
         }
+        if event_id:
+            event["id"] = event_id
 
         try:
             loop = asyncio.get_event_loop()
@@ -277,6 +280,13 @@ class CalendarService:
             created_event = await loop.run_in_executor(None, _insert)
             return created_event["id"]
         except HttpError as exc:
+            if exc.resp.status == 409 and event_id:
+                logger.info(
+                    "calendar_event_create_idempotent_conflict",
+                    doctor_id=str(doctor_id),
+                    event_id=event_id,
+                )
+                return event_id
             logger.error("calendar_event_create_failed", doctor_id=str(doctor_id), error=str(exc))
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
@@ -298,12 +308,18 @@ class CalendarService:
             return True
         except HttpError as exc:
             if exc.resp.status == 404:
-                return False
+                return True
             logger.error("calendar_event_delete_failed", event_id=event_id, error=str(exc))
-            return False
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail="Failed to delete Google Calendar event",
+            ) from exc
         except Exception as exc:
             logger.error("calendar_event_delete_error", event_id=event_id, error=str(exc))
-            return False
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail="Failed to delete Google Calendar event",
+            ) from exc
 
     async def update_event(
         self,
@@ -337,7 +353,16 @@ class CalendarService:
             return True
         except HttpError as exc:
             logger.error("calendar_event_update_failed", event_id=event_id, error=str(exc))
-            return False
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail="Failed to update Google Calendar event",
+            ) from exc
+        except Exception as exc:
+            logger.error("calendar_event_update_error", event_id=event_id, error=str(exc))
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail="Failed to update Google Calendar event",
+            ) from exc
 
     async def list_calendars(self, doctor_id: UUID, db: AsyncSession) -> list[dict]:
         creds = await self.get_credentials(doctor_id, db)

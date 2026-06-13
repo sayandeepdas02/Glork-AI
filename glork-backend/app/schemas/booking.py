@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, model_validator
 
 from app.models.booking import BookingStatus
 from app.schemas.validators import PersonName, PhoneNumber
@@ -18,12 +18,28 @@ class BookingCreate(BaseModel):
     reason: str | None = None
     notes: str | None = None
 
+    @model_validator(mode="after")
+    def validate_range(self) -> "BookingCreate":
+        if self.appointment_end <= self.appointment_start:
+            raise ValueError("appointment_end must be after appointment_start")
+        return self
+
 
 class BookingUpdate(BaseModel):
     status: BookingStatus | None = None
     appointment_start: datetime | None = None
     appointment_end: datetime | None = None
     notes: str | None = None
+
+    @model_validator(mode="after")
+    def validate_range(self) -> "BookingUpdate":
+        if (
+            self.appointment_start is not None
+            and self.appointment_end is not None
+            and self.appointment_end <= self.appointment_start
+        ):
+            raise ValueError("appointment_end must be after appointment_start")
+        return self
 
 
 class BookingResponse(BaseModel):

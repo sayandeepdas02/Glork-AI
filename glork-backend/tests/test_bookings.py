@@ -1,16 +1,22 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 from uuid import uuid4
 
 import pytest
 from httpx import AsyncClient
+from fastapi import HTTPException
+from sqlalchemy import select
 
+from app.models.booking import Booking, BookingStatus
+from app.models.calendar_integration import CalendarIntegration
 from app.models.doctor import Doctor
 
 
-def future_slot(days_ahead: int = 1, hour: int = 10) -> dict:
-    start = datetime.now(timezone.utc) + timedelta(days=days_ahead)
+def future_slot(days_ahead: int = 1, hour: int = 10, tz_name: str = "Asia/Kolkata") -> dict:
+    tz = ZoneInfo(tz_name)
+    start = datetime.now(tz) + timedelta(days=days_ahead)
     start = start.replace(hour=hour, minute=0, second=0, microsecond=0)
     end = start + timedelta(minutes=30)
     return {
@@ -140,6 +146,150 @@ async def test_booking_create_with_conflict(async_client: AsyncClient, auth_head
 
     resp2 = await async_client.post("/api/v1/bookings", headers=auth_headers, json=payload)
     assert resp2.status_code == 409
+
+
+@pytest.mark.asyncio
+async def test_create_booking_rejects_invalid_time_range(
+    async_client: AsyncClient, auth_headers: dict
+):
+    slot = future_slot(days_ahead=2, hour=11)
+    resp = await async_client.post(
+        "/api/v1/bookings",
+        headers=auth_headers,
+        json={
+            "patient_name": "Range Test",
+            "patient_phone": "+919876543250",
+            "appointment_start": slot["appointment_end"],
+            "appointment_end": slot["appointment_start"],
+        },
+    )
+    assert resp.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_create_booking_rejects_outside_working_hours(
+    async_client: AsyncClient, auth_headers: dict
+):
+    slot = future_slot(days_ahead=2, hour=7)
+    resp = await async_client.post(
+        "/api/v1/bookings",
+        headers=auth_headers,
+        json={
+            "patient_name": "Early Bird",
+            "patient_phone": "+919876543251",
+            **slot,
+        },
+    )
+    assert resp.status_code == 422
+    assert "working hours" in resp.json()["detail"].lower()
+
+
+@pytest.mark.asyncio
+async def test_create_booking_rejects_beyond_max_advance_window(
+    async_client: AsyncClient, auth_headers: dict
+):
+    slot = future_slot(days_ahead=45, hour=10)
+    resp = await async_client.post(
+        "/api/v1/bookings",
+        headers=auth_headers,
+        json={
+            "patient_name": "Far Future",
+            "patient_phone": "+919876543252",
+            **slot,
+        },
+    )
+    assert resp.status_code == 422
+    assert "days in advance" in resp.json()["detail"].lower()
+
+
+@pytest.mark.asyncio
+async def test_create_booking_rolls_back_when_calendar_sync_fails(
+    async_client: AsyncClient,
+    auth_headers: dict,
+    doctor: Doctor,
+    db,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    db.add(
+        CalendarIntegration(
+            doctor_id=doctor.id,
+            google_calendar_id="primary",
+            is_connected=True,
+        )
+    )
+    await db.commit()
+
+    async def fail_create_event(*args, **kwargs):
+        raise HTTPException(status_code=502, detail="Failed to create Google Calendar event")
+
+    monkeypatch.setattr(
+        "app.services.calendar_service.calendar_service.create_event",
+        fail_create_event,
+    )
+
+    resp = await async_client.post(
+        "/api/v1/bookings",
+        headers=auth_headers,
+        json={
+            "patient_name": "Calendar Fail",
+            "patient_phone": "+919876543253",
+            **future_slot(days_ahead=4, hour=12),
+        },
+    )
+
+    assert resp.status_code == 502
+
+    result = await db.execute(
+        select(Booking).where(Booking.patient_phone == "+919876543253")
+    )
+    assert result.scalar_one_or_none() is None
+
+
+@pytest.mark.asyncio
+async def test_cancel_booking_keeps_state_when_calendar_delete_fails(
+    async_client: AsyncClient,
+    auth_headers: dict,
+    doctor: Doctor,
+    db,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    db.add(
+        CalendarIntegration(
+            doctor_id=doctor.id,
+            google_calendar_id="primary",
+            is_connected=True,
+        )
+    )
+    booking = Booking(
+        doctor_id=doctor.id,
+        patient_name="Keep Me",
+        patient_phone="+919876543254",
+        appointment_start=datetime.now(timezone.utc) + timedelta(days=2),
+        appointment_end=datetime.now(timezone.utc) + timedelta(days=2, minutes=30),
+        status=BookingStatus.confirmed,
+        google_event_id="existing-google-event",
+    )
+    db.add(booking)
+    await db.commit()
+
+    async def fail_delete_event(*args, **kwargs):
+        raise HTTPException(status_code=502, detail="Failed to delete Google Calendar event")
+
+    monkeypatch.setattr(
+        "app.services.calendar_service.calendar_service.delete_event",
+        fail_delete_event,
+    )
+
+    resp = await async_client.patch(
+        f"/api/v1/bookings/{booking.id}",
+        headers=auth_headers,
+        json={"status": "cancelled"},
+    )
+
+    assert resp.status_code == 502
+
+    await db.refresh(booking)
+    assert booking.status == BookingStatus.confirmed
 
 
 @pytest.mark.asyncio
