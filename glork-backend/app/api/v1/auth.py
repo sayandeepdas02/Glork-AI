@@ -9,6 +9,7 @@ from app.core.limiter import limiter
 from app.dependencies import get_db
 from app.schemas.auth import (
     GoogleAuthUrlResponse,
+    GoogleExchangeRequest,
     LoginRequest,
     RefreshRequest,
     RegisterRequest,
@@ -131,15 +132,36 @@ async def google_callback(
         return RedirectResponse(f"{frontend_callback}?error=missing_params", status_code=302)
 
     try:
-        token_response, is_new = await svc.handle_google_signin_callback(code, state, db)
+        doctor, is_new = await svc.handle_google_signin_callback(code, state, db)
     except Exception:
         return RedirectResponse(f"{frontend_callback}?error=signin_failed", status_code=302)
 
+    # Issue a 60-second opaque exchange code instead of real tokens.
+    # The frontend redeems this via POST /auth/google/exchange which sets httpOnly
+    # cookies — keeping real tokens out of the URL and browser history entirely.
+    exchange_code = svc.create_google_exchange_code(doctor, is_new)
     is_new_str = "true" if is_new else "false"
     return RedirectResponse(
-        f"{frontend_callback}"
-        f"?access_token={token_response.access_token}"
-        f"&refresh_token={token_response.refresh_token}"
-        f"&is_new={is_new_str}",
+        f"{frontend_callback}?exchange_code={exchange_code}&is_new={is_new_str}",
         status_code=302,
     )
+
+
+@router.post("/google/exchange", response_model=TokenResponse)
+@limiter.limit("10/minute")
+async def google_exchange(
+    request: Request,
+    response: Response,
+    body: GoogleExchangeRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    """Redeem a Google exchange code for real tokens and set httpOnly auth cookies.
+
+    This is the second step of the Google sign-in flow. The frontend calls this
+    endpoint immediately after landing on /google-callback with an exchange_code
+    query param. The exchange code expires in 60 seconds and cannot be used as an
+    auth token anywhere else.
+    """
+    token_response, _ = await svc.handle_google_exchange(body.exchange_code, db)
+    _set_auth_cookies(response, token_response.access_token, token_response.refresh_token)
+    return token_response
