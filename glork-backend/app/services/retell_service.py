@@ -243,6 +243,7 @@ IMPORTANT RULES:
                 "llm_id": llm_id,
             },
             "webhook_url": webhook_url,
+            "timezone": agent_config.timezone,
             "enable_backchannel": True,
             "backchannel_frequency": 0.9,
             "interruption_sensitivity": 0.8,
@@ -254,6 +255,80 @@ IMPORTANT RULES:
         async with httpx.AsyncClient(timeout=30.0) as client:
             resp = await client.post(
                 f"{RETELL_BASE_URL}/create-agent",
+                headers=self._headers(),
+                json=payload,
+            )
+            resp.raise_for_status()
+            return resp.json()
+
+    async def get_agent(self, retell_agent_id: str) -> dict:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            resp = await client.get(
+                f"{RETELL_BASE_URL}/get-agent/{retell_agent_id}",
+                headers=self._headers(),
+            )
+            resp.raise_for_status()
+            return resp.json()
+
+    async def publish_agent(self, retell_agent_id: str, version: int) -> bool:
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                resp = await client.post(
+                    f"{RETELL_BASE_URL}/publish-agent-version/{retell_agent_id}",
+                    headers=self._headers(),
+                    json={"version": version},
+                )
+                resp.raise_for_status()
+                return True
+        except Exception as exc:
+            logger.error(
+                "retell_publish_agent_failed",
+                agent_id=retell_agent_id,
+                version=version,
+                error=str(exc),
+            )
+            return False
+
+    async def create_phone_number(
+        self,
+        retell_agent_id: str,
+        agent_version: int,
+        nickname: str | None = None,
+    ) -> dict:
+        payload: dict[str, Any] = {
+            "inbound_agents": [
+                {
+                    "agent_id": retell_agent_id,
+                    "agent_version": agent_version,
+                    "weight": 1,
+                }
+            ],
+        }
+        if nickname:
+            payload["nickname"] = nickname
+
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            resp = await client.post(
+                f"{RETELL_BASE_URL}/create-phone-number",
+                headers=self._headers(),
+                json=payload,
+            )
+            resp.raise_for_status()
+            return resp.json()
+
+    async def update_phone_number(
+        self,
+        phone_number: str,
+        inbound_agents: list[dict[str, Any]] | None,
+        nickname: str | None = None,
+    ) -> dict:
+        payload: dict[str, Any] = {"inbound_agents": inbound_agents}
+        if nickname:
+            payload["nickname"] = nickname
+
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            resp = await client.patch(
+                f"{RETELL_BASE_URL}/update-phone-number/{phone_number}",
                 headers=self._headers(),
                 json=payload,
             )
@@ -274,6 +349,19 @@ IMPORTANT RULES:
             logger.error("retell_update_prompt_failed", llm_id=retell_llm_id, error=str(exc))
             return False
 
+    async def delete_llm(self, retell_llm_id: str) -> bool:
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                resp = await client.delete(
+                    f"{RETELL_BASE_URL}/delete-retell-llm/{retell_llm_id}",
+                    headers=self._headers(),
+                )
+                resp.raise_for_status()
+                return True
+        except Exception as exc:
+            logger.error("retell_delete_llm_failed", llm_id=retell_llm_id, error=str(exc))
+            return False
+
     async def delete_agent(self, retell_agent_id: str) -> bool:
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
@@ -285,6 +373,19 @@ IMPORTANT RULES:
                 return True
         except Exception as exc:
             logger.error("retell_delete_agent_failed", agent_id=retell_agent_id, error=str(exc))
+            return False
+
+    async def delete_phone_number(self, phone_number: str) -> bool:
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                resp = await client.delete(
+                    f"{RETELL_BASE_URL}/delete-phone-number/{phone_number}",
+                    headers=self._headers(),
+                )
+                resp.raise_for_status()
+                return True
+        except Exception as exc:
+            logger.error("retell_delete_phone_number_failed", phone_number=phone_number, error=str(exc))
             return False
 
     def verify_webhook_signature(self, payload: bytes, signature: str) -> bool:

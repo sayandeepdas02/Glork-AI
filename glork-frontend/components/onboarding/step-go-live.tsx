@@ -14,11 +14,11 @@ interface StepGoLiveProps {
 
 export function StepGoLive({ onBack, onComplete }: StepGoLiveProps) {
   const router = useRouter()
-  const { mutate: toggleAgent, isPending } = useToggleAgent()
+  const { mutateAsync: toggleAgent, isPending } = useToggleAgent()
   const { data: calendarStatus } = useCalendarStatus()
 
-  const handleGoLive = () => {
-    toggleAgent()
+  const handleGoLive = async () => {
+    await toggleAgent()
     onComplete()
   }
 
