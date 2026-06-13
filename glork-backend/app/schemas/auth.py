@@ -38,3 +38,7 @@ class RefreshRequest(BaseModel):
 
 class GoogleAuthUrlResponse(BaseModel):
     auth_url: str
+
+
+class GoogleExchangeRequest(BaseModel):
+    exchange_code: str

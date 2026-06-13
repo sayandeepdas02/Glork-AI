@@ -171,6 +171,13 @@ export async function getGoogleAuthUrl(): Promise<{ auth_url: string }> {
   return data
 }
 
+export async function exchangeGoogleCode(exchangeCode: string): Promise<TokenResponse> {
+  const { data } = await api.post<TokenResponse>("/auth/google/exchange", {
+    exchange_code: exchangeCode,
+  })
+  return data
+}
+
 // Doctor
 export async function getMe(): Promise<Doctor> {
   const { data } = await api.get<Doctor>("/doctors/me")

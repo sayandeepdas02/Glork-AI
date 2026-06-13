@@ -33,6 +33,22 @@ def create_refresh_token(data: dict) -> str:
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 
+def create_exchange_token(doctor_id: str, is_new: bool) -> str:
+    """60-second single-use token for completing the Google OAuth handshake.
+
+    Intentionally carries no 'type' field so it cannot be mistaken for an
+    access or refresh token and will be rejected by get_current_doctor.
+    """
+    expire = datetime.now(timezone.utc) + timedelta(seconds=60)
+    payload = {
+        "purpose": "google_exchange",
+        "sub": doctor_id,
+        "is_new": is_new,
+        "exp": expire,
+    }
+    return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+
 def decode_token(token: str) -> dict:
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])

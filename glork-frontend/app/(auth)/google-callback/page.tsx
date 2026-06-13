@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Loader2 } from "lucide-react"
-import { api } from "@/lib/api"
+import { api, exchangeGoogleCode } from "@/lib/api"
 import { useAuthStore } from "@/store/auth-store"
 import type { Doctor } from "@/types"
 
@@ -28,23 +28,31 @@ function GoogleCallbackInner() {
         return
       }
 
-      const accessToken = searchParams.get("access_token")
-      const refreshToken = searchParams.get("refresh_token")
+      const exchangeCode = searchParams.get("exchange_code")
       const isNew = searchParams.get("is_new") === "true"
 
-      if (!accessToken || !refreshToken) {
+      if (!exchangeCode) {
         setErrorMsg("Missing authentication data. Please try again.")
         return
       }
 
-      // Clear tokens from URL immediately to avoid leaking them in history
+      // Clear the exchange code from the URL before any network calls so it
+      // never ends up in browser history even if the tab is backgrounded mid-flight.
       window.history.replaceState({}, "", "/google-callback")
 
       try {
-        const { data: doctor } = await api.get<Doctor>("/doctors/me", {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        })
-        setAuth(doctor, accessToken, refreshToken)
+        // Step 1: redeem the exchange code — backend validates it, issues real tokens,
+        // and sets httpOnly cookies in the response. withCredentials ensures the
+        // browser stores those cookies for all subsequent same-origin requests.
+        const tokens = await exchangeGoogleCode(exchangeCode)
+
+        // Step 2: fetch the doctor profile — httpOnly cookie is now set so no
+        // explicit Authorization header is needed here.
+        const { data: doctor } = await api.get<Doctor>("/doctors/me")
+
+        // Step 3: hydrate the in-memory auth store so the Bearer interceptor has
+        // a token for subsequent API calls within this session.
+        setAuth(doctor, tokens.access_token, tokens.refresh_token)
         router.replace(isNew ? "/onboarding" : "/dashboard")
       } catch {
         setErrorMsg("Failed to complete sign-in. Please try again.")

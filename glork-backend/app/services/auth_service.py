@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.core.security import (
     create_access_token,
+    create_exchange_token,
     create_refresh_token,
     decode_token,
     hash_password,
@@ -164,7 +165,12 @@ async def handle_google_signin_callback(
     code: str,
     state: str,
     db: AsyncSession,
-) -> tuple[TokenResponse, bool]:
+) -> tuple[Doctor, bool]:
+    """Validate the Google OAuth callback and return the authenticated Doctor.
+
+    Returns the Doctor ORM object (not a TokenResponse) so the caller can decide
+    whether to issue an exchange code (callback endpoint) or tokens directly.
+    """
     # Validate the state token
     try:
         payload = decode_token(state)
@@ -256,4 +262,30 @@ async def handle_google_signin_callback(
         raise HTTPException(status_code=403, detail="Account is inactive")
 
     logger.info("doctor_logged_in_google", doctor_id=str(doctor.id))
+    return doctor, is_new
+
+
+def create_google_exchange_code(doctor: Doctor, is_new: bool) -> str:
+    """Return a 60-second exchange JWT that the frontend trades for real auth tokens."""
+    return create_exchange_token(str(doctor.id), is_new)
+
+
+async def handle_google_exchange(exchange_code: str, db: AsyncSession) -> tuple[TokenResponse, bool]:
+    """Validate a Google exchange code and issue real access + refresh tokens."""
+    try:
+        payload = decode_token(exchange_code)
+        if payload.get("purpose") != "google_exchange":
+            raise HTTPException(status_code=400, detail="Invalid exchange code")
+    except HTTPException:
+        raise HTTPException(status_code=400, detail="Invalid or expired exchange code")
+
+    doctor_id = payload.get("sub")
+    is_new: bool = bool(payload.get("is_new", False))
+
+    result = await db.execute(select(Doctor).where(Doctor.id == doctor_id))
+    doctor = result.scalar_one_or_none()
+
+    if not doctor or not doctor.is_active:
+        raise HTTPException(status_code=401, detail="Doctor not found or inactive")
+
     return _build_token_response(doctor), is_new

@@ -37,10 +37,12 @@ async def get_current_doctor(
     db: AsyncSession = Depends(get_db),
     credentials: HTTPAuthorizationCredentials | None = Depends(_bearer_scheme),
 ) -> Doctor:
-    # Prefer httpOnly cookie; fall back to Authorization: Bearer header
-    token: str | None = request.cookies.get(_COOKIE_ACCESS)
-    if not token and credentials:
-        token = credentials.credentials
+    # Prefer explicit Authorization: Bearer header; fall back to httpOnly cookie.
+    # Bearer is an intentional signal from the client; a cookie may be stale from
+    # a previous session and should never silently override a fresh bearer token.
+    token: str | None = credentials.credentials if credentials else None
+    if not token:
+        token = request.cookies.get(_COOKIE_ACCESS)
     if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
