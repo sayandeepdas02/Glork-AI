@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import structlog
 from fastapi import APIRouter, HTTPException, Request, status
+from pydantic import ValidationError
 from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,7 +18,13 @@ from app.models.booking import Booking, BookingStatus
 from app.models.calendar_integration import CalendarIntegration
 from app.models.call_log import CallLog, CallOutcome
 from app.models.doctor import Doctor
-from app.schemas.retell import RetellToolRequest, RetellWebhookEvent
+from app.schemas.retell import (
+    CancelBookingToolRequest,
+    CheckAvailabilityToolRequest,
+    CreateBookingToolRequest,
+    GetPatientBookingsToolRequest,
+    RetellWebhookEvent,
+)
 from app.services.booking_service import booking_service
 from app.services.calendar_service import calendar_service
 from app.services.retell_service import retell_service
@@ -233,30 +240,27 @@ async def retell_webhook(request: Request):
 async def tool_check_availability(request: Request):
     try:
         body = await _verify_tool_request(request)
-        data = json.loads(body)
+        payload = CheckAvailabilityToolRequest.model_validate(json.loads(body))
     except HTTPException:
         raise
+    except ValidationError as exc:
+        return _err(exc.errors()[0]["msg"])
     except Exception:
         return _err("Invalid request body")
 
-    call_data = data.get("call", {})
-    metadata = call_data.get("metadata", {}) or {}
-    args = data.get("args", {}) or {}
+    metadata = payload.call.metadata or {}
 
     try:
         doctor_id = _require_metadata_doctor_id(metadata)
     except ValueError as exc:
         return _err(str(exc))
 
-    date = args.get("date")
-    preferred_time = args.get("preferred_time", "any")
-
-    if not date:
-        return _err("date is required")
+    date = payload.args.date
+    preferred_time = payload.args.preferred_time
 
     try:
         async with AsyncSessionLocal() as db:
-            doctor, config, cal = await _get_doctor_and_config(doctor_id, db)
+            doctor, config, _ = await _get_doctor_and_config(doctor_id, db)
 
             if not cal or not cal.is_connected:
                 return _ok({
@@ -296,36 +300,28 @@ async def tool_check_availability(request: Request):
 async def tool_create_booking(request: Request):
     try:
         body = await _verify_tool_request(request)
-        data = json.loads(body)
+        payload = CreateBookingToolRequest.model_validate(json.loads(body))
     except HTTPException:
         raise
+    except ValidationError as exc:
+        return _err(exc.errors()[0]["msg"])
     except Exception:
         return _err("Invalid request body")
 
-    call_data = data.get("call", {})
-    metadata = call_data.get("metadata", {}) or {}
-    args = data.get("args", {}) or {}
+    metadata = payload.call.metadata or {}
 
     try:
         doctor_id = _require_metadata_doctor_id(metadata)
     except ValueError as exc:
         return _err(str(exc))
 
-    retell_call_id = call_data.get("call_id")
-    patient_name = args.get("patient_name")
-    patient_phone = args.get("patient_phone")
-    slot_datetime_str = args.get("slot_datetime")
-    reason = args.get("reason")
-
-    if not all([doctor_id, patient_name, patient_phone, slot_datetime_str]):
-        return _err("Missing required fields: patient_name, patient_phone, slot_datetime")
-
-    try:
-        slot_dt = datetime.fromisoformat(slot_datetime_str)
-        if slot_dt.tzinfo is None:
-            slot_dt = slot_dt.replace(tzinfo=timezone.utc)
-    except ValueError:
-        return _err(f"Invalid slot_datetime format: {slot_datetime_str}")
+    retell_call_id = payload.call.call_id
+    patient_name = payload.args.patient_name
+    patient_phone = payload.args.patient_phone
+    slot_dt = payload.args.slot_datetime
+    reason = payload.args.reason
+    if slot_dt.tzinfo is None or slot_dt.utcoffset() is None:
+        slot_dt = slot_dt.replace(tzinfo=timezone.utc)
 
     try:
         async with AsyncSessionLocal() as db:
@@ -341,23 +337,6 @@ async def tool_create_booking(request: Request):
                 if cl:
                     call_log_id = cl.id
 
-            calendar_id = cal.google_calendar_id if cal else "primary"
-            google_event_id = None
-            if cal and cal.is_connected:
-                try:
-                    google_event_id = await calendar_service.create_event(
-                        doctor_id=doctor.id,
-                        patient_name=patient_name,
-                        patient_phone=patient_phone,
-                        start_datetime=slot_dt,
-                        end_datetime=slot_end,
-                        reason=reason,
-                        calendar_id=calendar_id,
-                        db=db,
-                    )
-                except Exception as exc:
-                    logger.error("tool_create_booking_calendar_error", error=str(exc))
-
             booking = await booking_service.create_booking(
                 doctor_id=doctor.id,
                 patient_name=patient_name,
@@ -366,7 +345,6 @@ async def tool_create_booking(request: Request):
                 appointment_end=slot_end,
                 reason=reason,
                 call_log_id=call_log_id,
-                google_event_id=google_event_id,
                 db=db,
             )
 
@@ -408,25 +386,22 @@ async def tool_create_booking(request: Request):
 async def tool_get_patient_bookings(request: Request):
     try:
         body = await _verify_tool_request(request)
-        data = json.loads(body)
+        payload = GetPatientBookingsToolRequest.model_validate(json.loads(body))
     except HTTPException:
         raise
+    except ValidationError as exc:
+        return _err(exc.errors()[0]["msg"])
     except Exception:
         return _err("Invalid request body")
 
-    call_data = data.get("call", {})
-    metadata = call_data.get("metadata", {}) or {}
-    args = data.get("args", {}) or {}
+    metadata = payload.call.metadata or {}
 
     try:
         doctor_id = _require_metadata_doctor_id(metadata)
     except ValueError as exc:
         return _err(str(exc))
 
-    patient_phone = args.get("patient_phone")
-
-    if not patient_phone:
-        return _err("patient_phone is required")
+    patient_phone = payload.args.patient_phone
 
     try:
         async with AsyncSessionLocal() as db:
@@ -472,15 +447,15 @@ async def tool_get_patient_bookings(request: Request):
 async def tool_cancel_booking(request: Request):
     try:
         body = await _verify_tool_request(request)
-        data = json.loads(body)
+        payload = CancelBookingToolRequest.model_validate(json.loads(body))
     except HTTPException:
         raise
+    except ValidationError as exc:
+        return _err(exc.errors()[0]["msg"])
     except Exception:
         return _err("Invalid request body")
 
-    call_data = data.get("call", {})
-    metadata = call_data.get("metadata", {}) or {}
-    args = data.get("args", {}) or {}
+    metadata = payload.call.metadata or {}
 
     # doctor_id MUST come from trusted call metadata only — never from AI-supplied args
     try:
@@ -489,15 +464,8 @@ async def tool_cancel_booking(request: Request):
     except ValueError as exc:
         return _err(str(exc))
 
-    booking_id_str = args.get("booking_id")
-
-    if not booking_id_str:
-        return _err("booking_id is required")
-
-    try:
-        booking_uid = UUID(booking_id_str)
-    except ValueError:
-        return _err("Invalid booking_id")
+    booking_uid = payload.args.booking_id
+    booking_id_str = str(booking_uid)
 
     try:
         async with AsyncSessionLocal() as db:
@@ -516,30 +484,16 @@ async def tool_cancel_booking(request: Request):
                 )
                 return _err("Booking does not belong to this doctor")
 
-            cal_result = await db.execute(
-                select(CalendarIntegration).where(
-                    CalendarIntegration.doctor_id == booking.doctor_id
-                )
-            )
-            cal = cal_result.scalar_one_or_none()
-
-            if booking.google_event_id and cal and cal.is_connected:
-                await calendar_service.delete_event(
-                    doctor_id=booking.doctor_id,
-                    event_id=booking.google_event_id,
-                    calendar_id=cal.google_calendar_id or "primary",
-                    db=db,
-                )
-
-            booking.status = BookingStatus.cancelled
-            await db.commit()
+            await booking_service.cancel_booking(booking_uid, doctor_uid, db)
 
             return _ok({
                 "success": True,
-                "booking_id": str(booking.id),
+                "booking_id": booking_id_str,
                 "message": "Appointment cancelled successfully.",
             })
 
+    except HTTPException as exc:
+        return _err(exc.detail)
     except Exception as exc:
         logger.error("tool_cancel_booking_error", error=str(exc))
         return _err("Internal error cancelling booking")

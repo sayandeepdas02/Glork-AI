@@ -39,7 +39,7 @@ class Booking(Base):
         ForeignKey("call_logs.id", ondelete="SET NULL"), nullable=True
     )
     patient_name: Mapped[str] = mapped_column(String(200), nullable=False)
-    patient_phone: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    patient_phone: Mapped[str] = mapped_column(String(20), nullable=False)
     patient_email: Mapped[str | None] = mapped_column(String(255), nullable=True)
     appointment_start: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, index=True

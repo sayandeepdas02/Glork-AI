@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Any
+from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from app.schemas.validators import PersonName, PhoneNumber
 
@@ -64,6 +65,50 @@ class RetellToolRequest(BaseModel):
     name: str | None = None
 
 
+class CheckAvailabilityArgs(BaseModel):
+    date: str
+    preferred_time: str = "any"
+
+
+class CheckAvailabilityToolRequest(BaseModel):
+    call: RetellCallObject
+    args: CheckAvailabilityArgs
+    name: str | None = None
+
+
+class CreateBookingToolArgs(BaseModel):
+    patient_name: PersonName
+    patient_phone: PhoneNumber
+    slot_datetime: datetime
+    reason: str | None = None
+
+
+class CreateBookingToolRequest(BaseModel):
+    call: RetellCallObject
+    args: CreateBookingToolArgs
+    name: str | None = None
+
+
+class GetPatientBookingsToolArgs(BaseModel):
+    patient_phone: PhoneNumber
+
+
+class GetPatientBookingsToolRequest(BaseModel):
+    call: RetellCallObject
+    args: GetPatientBookingsToolArgs
+    name: str | None = None
+
+
+class CancelBookingToolArgs(BaseModel):
+    booking_id: UUID
+
+
+class CancelBookingToolRequest(BaseModel):
+    call: RetellCallObject
+    args: CancelBookingToolArgs
+    name: str | None = None
+
+
 class CheckAvailabilityRequest(BaseModel):
     doctor_id: str
     date: str
@@ -98,6 +143,8 @@ class GetPatientBookingsRequest(BaseModel):
 
 
 class SimpleBooking(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     appointment_start: str
     appointment_end: str

@@ -170,6 +170,27 @@ async def test_tool_create_booking_missing_fields(async_client: AsyncClient, doc
 
 
 @pytest.mark.asyncio
+async def test_tool_create_booking_validates_phone_number(async_client: AsyncClient, doctor: Doctor):
+    resp = await async_client.post(
+        "/api/v1/retell/tools/create-booking",
+        json={
+            "call": {"metadata": {"doctor_id": str(doctor.id)}},
+            "args": {
+                "patient_name": "Test Patient",
+                "patient_phone": "invalid-phone",
+                "slot_datetime": (
+                    datetime.now(timezone.utc) + timedelta(days=2)
+                ).isoformat(),
+            },
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.json()["result"]
+    assert "error" in data
+    assert "phone number" in data["error"].lower()
+
+
+@pytest.mark.asyncio
 async def test_tool_get_patient_bookings_no_bookings(async_client: AsyncClient, doctor: Doctor):
     resp = await async_client.post(
         "/api/v1/retell/tools/get-patient-bookings",
