@@ -4,16 +4,14 @@ import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { toast } from "sonner"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { useMe, useAuth } from "@/hooks/use-auth"
+import { useMe, useAuth, useUpdateMe } from "@/hooks/use-auth"
 import { getInitials } from "@/lib/utils"
-import { updateMe } from "@/lib/api"
 
 const profileSchema = z.object({
   name: z.string().min(2),
@@ -25,12 +23,13 @@ type ProfileValues = z.infer<typeof profileSchema>
 export default function SettingsClient() {
   const { data: doctor, isLoading } = useMe()
   const { logout } = useAuth()
+  const { mutateAsync: updateMe, isPending: isSaving } = useUpdateMe()
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isDirty, isSubmitting },
+    formState: { errors, isDirty },
   } = useForm<ProfileValues>({ resolver: zodResolver(profileSchema) })
 
   useEffect(() => {
@@ -43,12 +42,8 @@ export default function SettingsClient() {
   }, [doctor, reset])
 
   const onSubmit = async (values: ProfileValues) => {
-    try {
-      await updateMe(values)
-      toast.success("Profile updated")
-    } catch {
-      toast.error("Failed to update profile")
-    }
+    await updateMe(values)
+    reset(values)
   }
 
   return (
@@ -116,10 +111,10 @@ export default function SettingsClient() {
               <div className="flex justify-end">
                 <Button
                   type="submit"
-                  disabled={!isDirty || isSubmitting}
+                  disabled={!isDirty || isSaving}
                   className="bg-brand hover:bg-brand-light text-white"
                 >
-                  {isSubmitting ? "Saving…" : "Save Changes"}
+                  {isSaving ? "Saving…" : "Save Changes"}
                 </Button>
               </div>
             </form>

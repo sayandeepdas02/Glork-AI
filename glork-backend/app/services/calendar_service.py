@@ -87,7 +87,17 @@ class CalendarService:
             if not integration:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Calendar not connected")
 
-            # Re-check expiry after acquiring lock — another worker may have already refreshed
+            if not integration.access_token_encrypted or not integration.refresh_token_encrypted:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Calendar tokens missing",
+                )
+
+            # Rebuild credentials from the freshly-locked row — another worker may have
+            # already refreshed; re-reading both token AND expiry prevents returning stale tokens.
+            creds.token = decrypt(integration.access_token_encrypted)
+            creds.refresh_token = decrypt(integration.refresh_token_encrypted)
+
             if integration.token_expiry:
                 fresh_expiry = integration.token_expiry
                 if fresh_expiry.tzinfo is None:

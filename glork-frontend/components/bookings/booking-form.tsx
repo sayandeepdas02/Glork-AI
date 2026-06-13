@@ -47,8 +47,30 @@ export function BookingForm({ open, onOpenChange }: BookingFormProps) {
     formState: { errors },
   } = useForm<FormValues>({ resolver: zodResolver(schema) })
 
+  function toUTCInClinicTimezone(date: string, time: string, tz: string): Date {
+    // Interpret the wall-clock time in the clinic's configured timezone (not the browser's).
+    // Step 1: parse the user's input as if it were UTC to get a reference timestamp.
+    const wallAsUTC = new Date(`${date}T${time}:00Z`)
+    // Step 2: find what that reference moment looks like in the clinic TZ.
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: tz,
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", second: "2-digit",
+      hour12: false,
+    }).formatToParts(wallAsUTC)
+    const p: Record<string, string> = {}
+    for (const { type, value } of parts) p[type] = value
+    const h = p.hour === "24" ? "00" : p.hour
+    // Step 3: re-interpret the TZ representation as UTC to measure the offset.
+    const tzAsUTC = new Date(`${p.year}-${p.month}-${p.day}T${h}:${p.minute}:${p.second}Z`)
+    const offsetMs = tzAsUTC.getTime() - wallAsUTC.getTime()
+    // Step 4: subtract the offset so the result is the correct UTC instant.
+    return new Date(wallAsUTC.getTime() - offsetMs)
+  }
+
   function onSubmit(values: FormValues) {
-    const start = new Date(`${values.appointment_date}T${values.appointment_time}`)
+    const clinicTz = agentConfig?.timezone ?? "UTC"
+    const start = toUTCInClinicTimezone(values.appointment_date, values.appointment_time, clinicTz)
     const end = addMinutes(start, slotDuration)
     create(
       {
