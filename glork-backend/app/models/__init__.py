@@ -3,6 +3,7 @@ from app.models.agent_config import AgentConfig, DEFAULT_WORKING_HOURS
 from app.models.calendar_integration import CalendarIntegration
 from app.models.booking import Booking, BookingStatus
 from app.models.call_log import CallLog, CallOutcome
+from app.models.refresh_token import RevokedToken
 
 __all__ = [
     "Doctor",
@@ -13,4 +14,5 @@ __all__ = [
     "BookingStatus",
     "CallLog",
     "CallOutcome",
+    "RevokedToken",
 ]
