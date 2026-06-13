@@ -7,7 +7,7 @@ import { z } from "zod"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth, useUpdateMe } from "@/hooks/use-auth"
 
 const schema = z.object({
   name: z.string().min(2),
@@ -22,6 +22,7 @@ interface StepProfileProps {
 
 export function StepProfile({ onNext }: StepProfileProps) {
   const { doctor } = useAuth()
+  const { mutateAsync: updateProfile, isPending } = useUpdateMe()
 
   const {
     register,
@@ -39,8 +40,13 @@ export function StepProfile({ onNext }: StepProfileProps) {
     }
   }, [doctor, reset])
 
-  const onSubmit = (_values: FormValues) => {
-    onNext()
+  const onSubmit = async (values: FormValues) => {
+    try {
+      await updateProfile(values)
+      onNext()
+    } catch {
+      // error feedback handled by useUpdateMe's onError toast
+    }
   }
 
   return (
@@ -66,9 +72,10 @@ export function StepProfile({ onNext }: StepProfileProps) {
 
         <Button
           type="submit"
+          disabled={isPending}
           className="w-full bg-[#1d6b4a] hover:bg-[#155638] text-white mt-2"
         >
-          Continue
+          {isPending ? "Saving…" : "Continue"}
         </Button>
       </form>
     </div>

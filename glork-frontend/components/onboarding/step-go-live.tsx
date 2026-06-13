@@ -18,8 +18,12 @@ export function StepGoLive({ onBack, onComplete }: StepGoLiveProps) {
   const { data: calendarStatus } = useCalendarStatus()
 
   const handleGoLive = async () => {
-    await toggleAgent()
-    onComplete()
+    try {
+      await toggleAgent()
+      onComplete()
+    } catch {
+      // error feedback handled by useToggleAgent's onError toast
+    }
   }
 
   const readyChecks = [
