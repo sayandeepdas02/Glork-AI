@@ -2,11 +2,15 @@ from __future__ import annotations
 
 import asyncio
 import copy
+from pathlib import Path
 from typing import AsyncGenerator
 from uuid import uuid4
 
 import pytest
 import pytest_asyncio
+from alembic.config import Config as AlembicConfig
+from alembic.runtime.environment import EnvironmentContext
+from alembic.script import ScriptDirectory
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -18,6 +22,22 @@ from app.main import app
 from app.models import AgentConfig, Doctor
 from app.models.agent_config import DEFAULT_WORKING_HOURS
 from app.core.security import create_access_token, hash_password
+
+_ALEMBIC_INI = Path(__file__).parent.parent / "alembic.ini"
+
+
+def _apply_migrations(connection) -> None:
+    """Run all Alembic migrations against the given synchronous connection."""
+    cfg = AlembicConfig(str(_ALEMBIC_INI))
+    script = ScriptDirectory.from_config(cfg)
+
+    def upgrade_fn(rev, context):
+        return script._upgrade_revs("head", rev)  # noqa: SLF001
+
+    with EnvironmentContext(cfg, script, fn=upgrade_fn) as ctx:
+        ctx.configure(connection=connection, target_metadata=Base.metadata, compare_type=True)
+        with ctx.begin_transaction():
+            ctx.run_migrations()
 
 TEST_DATABASE_URL = settings.DATABASE_URL.replace(
     "/glork", "/glork_test"
@@ -40,7 +60,7 @@ def event_loop():
 async def setup_db():
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(_apply_migrations)
     yield
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)

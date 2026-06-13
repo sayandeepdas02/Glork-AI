@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select"
+import { toast } from "sonner"
 import { useAgentConfig, useUpdateAgentConfig } from "@/hooks/use-agent-config"
 import type { WorkingHours } from "@/types"
 
@@ -76,6 +77,14 @@ export function WorkingHoursEditor() {
 
   const handleSave = () => {
     if (!hours) return
+    const invalid = DAYS.filter(({ key }) => {
+      const d = hours[key]
+      return d.enabled && d.start >= d.end
+    })
+    if (invalid.length > 0) {
+      toast.error(`End time must be after start for: ${invalid.map((d) => d.label).join(", ")}`)
+      return
+    }
     update({ working_hours: hours })
     setDirty(false)
   }

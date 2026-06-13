@@ -219,8 +219,5 @@ async def delete_booking(
     if not booking:
         raise HTTPException(status_code=404, detail="Booking not found")
 
-    if booking.status != BookingStatus.cancelled:
-        await booking_service.cancel_booking(booking_id, doctor.id, db)
-    else:
-        await db.delete(booking)
-        await db.commit()
+    await db.delete(booking)
+    await db.commit()

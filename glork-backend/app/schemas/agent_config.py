@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.schemas.validators import BufferMins, MaxAdvanceBookingDays, PhoneNumber, SlotDurationMins
 
@@ -15,6 +15,12 @@ class WorkingHourDay(BaseModel):
     start: str
     end: str
     enabled: bool
+
+    @model_validator(mode="after")
+    def end_after_start(self) -> "WorkingHourDay":
+        if self.start >= self.end:
+            raise ValueError(f"end ({self.end}) must be after start ({self.start})")
+        return self
 
 
 class AgentConfigUpdate(BaseModel):

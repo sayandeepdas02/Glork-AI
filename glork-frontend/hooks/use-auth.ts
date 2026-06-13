@@ -1,12 +1,12 @@
 "use client"
 
 import { useCallback } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { login as apiLogin, logout as apiLogout, register as apiRegister, getMe } from "@/lib/api"
+import { login as apiLogin, logout as apiLogout, register as apiRegister, getMe, updateMe } from "@/lib/api"
 import { useAuthStore } from "@/store/auth-store"
-import type { RegisterData } from "@/types"
+import type { Doctor, RegisterData } from "@/types"
 
 export function useAuth() {
   const store = useAuthStore()
@@ -61,5 +61,18 @@ export function useMe() {
     },
     enabled: store.isAuthenticated,
     staleTime: 60_000,
+  })
+}
+
+export function useUpdateMe() {
+  const qc = useQueryClient()
+  const store = useAuthStore()
+  return useMutation<Doctor, Error, Partial<Doctor>>({
+    mutationFn: updateMe,
+    onSuccess: (doctor) => {
+      store.setDoctor(doctor)
+      qc.setQueryData(["me"], doctor)
+    },
+    onError: (err) => toast.error(err.message || "Failed to update profile"),
   })
 }
