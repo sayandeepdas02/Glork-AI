@@ -17,7 +17,7 @@ export function GoogleCalendarConnect() {
 
   if (isLoading) {
     return (
-      <Card className="rounded-2xl border border-gray-100 shadow-card">
+      <Card className="panel-surface rounded-[24px] shadow-none">
         <CardContent className="p-6">
           <div className="flex items-center gap-4">
             <div className="h-12 w-12 animate-pulse rounded-full bg-gray-100" />
@@ -33,7 +33,7 @@ export function GoogleCalendarConnect() {
 
   if (statusError) {
     return (
-      <Card className="rounded-2xl border border-red-100">
+      <Card className="rounded-[24px] border border-red-100">
         <CardContent className="p-6">
           <p className="text-sm text-red-600 font-medium">Could not check calendar status.</p>
           <p className="text-xs text-red-400 mt-1">Refresh the page to try again.</p>
@@ -45,13 +45,13 @@ export function GoogleCalendarConnect() {
   const isConnected = status?.is_connected ?? false
 
   return (
-    <Card className={isConnected ? "border-[#1d6b4a] border-2" : "border-gray-200"}>
+    <Card className={isConnected ? "rounded-[24px] border-2 border-[var(--brand-border)]" : "panel-surface rounded-[24px] shadow-none"}>
       <CardContent className="p-6">
         <div className="flex items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className={`flex h-12 w-12 items-center justify-center rounded-full ${isConnected ? "bg-[#f0faf5]" : "bg-gray-100"}`}>
-              <Calendar className={`h-5 w-5 ${isConnected ? "text-[#1d6b4a]" : "text-gray-400"}`} />
-            </div>
+              <div className={`flex h-12 w-12 items-center justify-center rounded-full ${isConnected ? "bg-[var(--brand-dim)]" : "bg-gray-100"}`}>
+                <Calendar className={`h-5 w-5 ${isConnected ? "text-[var(--brand-dark)]" : "text-gray-400"}`} />
+              </div>
             <div>
               <div className="flex items-center gap-2">
                 <p className="text-sm font-semibold text-gray-900">Google Calendar</p>
@@ -91,7 +91,7 @@ export function GoogleCalendarConnect() {
                 size="sm"
                 onClick={() => { resetConnect(); connect() }}
                 disabled={isConnecting}
-                className="bg-[#1d6b4a] hover:bg-[#155638] text-white gap-1.5"
+                className="gap-1.5 rounded-full bg-[#111111] text-white hover:bg-[#232323]"
               >
                 {isConnecting ? (
                   <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Redirecting…</>

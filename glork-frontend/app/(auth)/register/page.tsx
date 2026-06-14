@@ -7,8 +7,11 @@ export default function RegisterPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-[1.75rem] font-bold text-[#111] tracking-tight">Create your account</h1>
-        <p className="text-[14px] text-[#777] mt-1.5">Set up your AI receptionist in 3 minutes</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">Create account</p>
+        <h1 className="mt-3 text-[2rem] font-semibold tracking-tight text-[var(--text-primary)]">Set up your clinic workspace</h1>
+        <p className="mt-2 text-[15px] leading-7 text-[var(--text-muted)]">
+          Create the account, connect your tools, and get your AI receptionist ready to go live.
+        </p>
       </div>
       <RegisterForm />
     </div>

@@ -13,16 +13,16 @@ export function RecentCalls() {
   const { data, isLoading, isError } = useCalls(RECENT_FILTERS)
 
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E8E3] overflow-hidden">
+    <div className="panel-surface overflow-hidden rounded-[28px]">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-[#EAEAE5]">
+      <div className="flex items-center justify-between border-b border-[#EAEAE5] px-5 py-4">
         <div>
           <h3 className="text-sm font-semibold text-[#111]">Recent Calls</h3>
           <p className="text-[11px] font-mono text-[#aaa] mt-0.5">Last 5 calls from your agent</p>
         </div>
         <Link
           href="/calls"
-          className="flex items-center gap-0.5 text-xs font-medium text-brand hover:text-brand-dark transition-colors"
+          className="flex items-center gap-0.5 text-xs font-medium text-[var(--text-primary)] transition-colors hover:text-[var(--brand-dark)]"
         >
           View all <ChevronRight className="h-3.5 w-3.5" />
         </Link>
@@ -63,10 +63,10 @@ export function RecentCalls() {
             <Link
               key={call.id}
               href={`/calls/${call.id}`}
-              className="flex items-center gap-3 px-5 py-3.5 hover:bg-[#FAFAF8] transition-colors group"
+              className="group flex items-center gap-3 px-5 py-4 transition-colors hover:bg-[#FAFAF8]"
             >
-              <div className="h-9 w-9 shrink-0 rounded-xl bg-brand/8 border border-brand/15 flex items-center justify-center group-hover:bg-brand/12 transition-colors">
-                <Phone className="h-4 w-4 text-brand" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[var(--brand-border)] bg-[var(--brand-dim)] transition-colors group-hover:bg-white">
+                <Phone className="h-4 w-4 text-[var(--brand-dark)]" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-[#111] font-mono tabular-nums">
@@ -82,6 +82,7 @@ export function RecentCalls() {
                   )}
                 </p>
               </div>
+              <ChevronRight className="h-4 w-4 text-[#c4b9a2] transition-transform group-hover:translate-x-0.5" />
               <OutcomeBadge outcome={call.outcome} />
             </Link>
           ))}

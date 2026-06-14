@@ -13,16 +13,16 @@ export function UpcomingBookings() {
   const { data, isLoading, isError } = useBookings(UPCOMING_FILTERS)
 
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E8E3] overflow-hidden h-full">
+    <div className="panel-surface h-full overflow-hidden rounded-[28px]">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-[#EAEAE5]">
+      <div className="flex items-center justify-between border-b border-[#EAEAE5] px-5 py-4">
         <div>
           <h3 className="text-sm font-semibold text-[#111]">Upcoming Bookings</h3>
           <p className="text-[11px] font-mono text-[#aaa] mt-0.5">Next confirmed appointments</p>
         </div>
         <Link
           href="/bookings"
-          className="flex items-center gap-0.5 text-xs font-medium text-brand hover:text-brand-dark transition-colors"
+          className="flex items-center gap-0.5 text-xs font-medium text-[var(--text-primary)] transition-colors hover:text-[var(--brand-dark)]"
         >
           View all <ChevronRight className="h-3.5 w-3.5" />
         </Link>
@@ -63,13 +63,13 @@ export function UpcomingBookings() {
             <Link
               key={booking.id}
               href={`/bookings/${booking.id}`}
-              className="flex items-center gap-3 px-5 py-3.5 hover:bg-[#FAFAF8] transition-colors group"
+              className="group flex items-center gap-3 px-5 py-4 transition-colors hover:bg-[#FAFAF8]"
             >
-              <div className="h-9 w-9 shrink-0 rounded-xl bg-brand/8 border border-brand/15 flex flex-col items-center justify-center group-hover:bg-brand/15 transition-colors">
-                <span className="text-[10px] font-bold text-brand uppercase leading-none">
+              <div className="flex h-10 w-10 shrink-0 flex-col items-center justify-center rounded-2xl border border-[var(--brand-border)] bg-[var(--brand-dim)] transition-colors group-hover:bg-white">
+                <span className="text-[10px] font-bold uppercase leading-none text-[var(--brand-dark)]">
                   {formatAppointmentDate(booking.appointment_start).slice(0, 3)}
                 </span>
-                <span className="text-[11px] font-bold text-brand tabular-nums leading-none mt-0.5">
+                <span className="mt-0.5 text-[11px] font-bold leading-none tabular-nums text-[var(--brand-dark)]">
                   {new Date(booking.appointment_start).getDate()}
                 </span>
               </div>
@@ -79,6 +79,7 @@ export function UpcomingBookings() {
                   {formatAppointmentTime(booking.appointment_start)}
                 </p>
               </div>
+              <ChevronRight className="h-4 w-4 text-[#c4b9a2] transition-transform group-hover:translate-x-0.5" />
               <StatusBadge status={booking.status} />
             </Link>
           ))}

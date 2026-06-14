@@ -64,7 +64,7 @@ export function AgentConfigForm() {
         {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className="space-y-1.5">
             <div className="h-4 w-24 animate-pulse rounded bg-gray-100" />
-            <div className="h-9 animate-pulse rounded-md bg-gray-100" />
+            <div className="h-11 animate-pulse rounded-2xl bg-gray-100" />
           </div>
         ))}
       </div>
@@ -88,6 +88,21 @@ export function AgentConfigForm() {
             ))}
           </SelectContent>
         </Select>
+      </div>
+
+      <div className="grid gap-4 rounded-[24px] bg-[var(--bg-surface)] p-4 sm:grid-cols-2">
+        <div>
+          <p className="text-sm font-semibold text-[var(--text-primary)]">Voice behavior</p>
+          <p className="mt-1 text-xs leading-6 text-[var(--text-muted)]">
+            Define how the receptionist greets callers and handles escalation details.
+          </p>
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-[var(--text-primary)]">Booking rules</p>
+          <p className="mt-1 text-xs leading-6 text-[var(--text-muted)]">
+            Control slot length and how far in advance the AI can schedule appointments.
+          </p>
+        </div>
       </div>
 
       <div className="space-y-1.5">
@@ -154,7 +169,7 @@ export function AgentConfigForm() {
         <Button
           type="submit"
           disabled={!isDirty || isPending}
-          className="bg-[#1d6b4a] hover:bg-[#155638] text-white"
+          className="rounded-full bg-[#111111] text-white hover:bg-[#232323]"
         >
           {isPending ? "Saving…" : "Save Changes"}
         </Button>

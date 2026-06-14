@@ -35,14 +35,15 @@ export function StepGoLive({ onBack, onComplete }: StepGoLiveProps) {
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <div className="flex justify-center mb-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#f0faf5]">
-            <CheckCircle2 className="h-8 w-8 text-[#1d6b4a]" />
+      <div>
+        <div className="mb-4 flex">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--brand-dim)]">
+            <CheckCircle2 className="h-8 w-8 text-[var(--brand-dark)]" />
           </div>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900">Almost there!</h2>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">Step 5</p>
+        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-gray-900">Almost there!</h2>
+        <p className="mt-2 text-sm leading-7 text-gray-500">
           Review your setup and activate the AI receptionist.
         </p>
       </div>
@@ -51,10 +52,10 @@ export function StepGoLive({ onBack, onComplete }: StepGoLiveProps) {
         {readyChecks.map((check) => (
           <div
             key={check.label}
-            className="flex items-center gap-3 rounded-lg bg-gray-50 px-4 py-3"
+            className="flex items-center gap-3 rounded-2xl bg-[var(--bg-surface)] px-4 py-3"
           >
             <div className={`flex h-5 w-5 items-center justify-center rounded-full ${
-              check.done ? "bg-[#1d6b4a]" : "bg-gray-200"
+              check.done ? "bg-[#111111]" : "bg-gray-200"
             }`}>
               <CheckCircle2 className={`h-3.5 w-3.5 ${check.done ? "text-white" : "text-gray-400"}`} />
             </div>
@@ -77,7 +78,7 @@ export function StepGoLive({ onBack, onComplete }: StepGoLiveProps) {
         <Button
           onClick={handleGoLive}
           disabled={isPending}
-          className="flex-1 bg-[#1d6b4a] hover:bg-[#155638] text-white font-semibold"
+          className="flex-1 rounded-full bg-[#111111] font-semibold text-white hover:bg-[#232323]"
         >
           {isPending ? "Activating…" : "Go Live!"}
         </Button>

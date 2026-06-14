@@ -51,9 +51,10 @@ export function StepProfile({ onNext }: StepProfileProps) {
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900">Confirm your profile</h2>
-        <p className="text-sm text-gray-500 mt-1">
+      <div>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">Step 1</p>
+        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-gray-900">Confirm your profile</h2>
+        <p className="mt-2 text-sm leading-7 text-gray-500">
           The AI agent will use this information to greet callers.
         </p>
       </div>
@@ -73,7 +74,7 @@ export function StepProfile({ onNext }: StepProfileProps) {
         <Button
           type="submit"
           disabled={isPending}
-          className="w-full bg-[#1d6b4a] hover:bg-[#155638] text-white mt-2"
+          className="mt-2 w-full rounded-full bg-[#111111] text-white hover:bg-[#232323]"
         >
           {isPending ? "Saving…" : "Continue"}
         </Button>

@@ -139,7 +139,7 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       {sessionMsg && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
           <p className="text-xs text-amber-800">{sessionMsg}</p>
         </div>
       )}
@@ -179,9 +179,9 @@ export function LoginForm() {
         type="submit"
         disabled={isSubmitting || isGoogleLoading}
         className={cn(
-          "w-full flex items-center justify-center gap-2 rounded-xl",
-          "bg-brand hover:bg-brand-light text-[#0F0F0F] font-semibold",
-          "py-3 text-sm transition-all duration-150",
+          "w-full flex items-center justify-center gap-2 rounded-full",
+          "bg-[#111111] text-white font-semibold hover:bg-[#232323]",
+          "py-3.5 text-sm transition-all duration-150",
           "hover:-translate-y-0.5",
           "disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
         )}
@@ -202,9 +202,9 @@ export function LoginForm() {
         onClick={handleGoogleSignIn}
         disabled={isSubmitting || isGoogleLoading}
         className={cn(
-          "w-full flex items-center justify-center gap-2.5 rounded-xl",
-          "border border-gray-200 bg-white hover:bg-gray-50",
-          "py-3 text-sm font-medium text-gray-700 transition-all duration-150",
+          "w-full flex items-center justify-center gap-2.5 rounded-full",
+          "border border-[var(--edge)] bg-[var(--bg-surface)] hover:bg-white",
+          "py-3.5 text-sm font-medium text-[var(--text-primary)] transition-all duration-150",
           "disabled:opacity-60 disabled:cursor-not-allowed"
         )}
       >
@@ -214,9 +214,9 @@ export function LoginForm() {
         Sign in with Google
       </button>
 
-      <p className="text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-[var(--text-muted)]">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-semibold text-brand hover:text-brand-dark transition-colors">
+        <Link href="/register" className="font-semibold text-[var(--text-primary)] transition-colors hover:text-[var(--brand-dark)]">
           Create one free
         </Link>
       </p>

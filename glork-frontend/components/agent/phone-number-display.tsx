@@ -20,12 +20,12 @@ export function PhoneNumberDisplay() {
   }
 
   if (isLoading) {
-    return <div className="h-14 animate-pulse rounded-lg bg-gray-100" />
+    return <div className="h-16 animate-pulse rounded-2xl bg-gray-100" />
   }
 
   if (!phoneNumber) {
     return (
-      <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 px-4 py-3">
+      <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 px-4 py-4">
         <p className="text-sm text-gray-500 text-center">
           Phone number will be assigned when your agent is configured.
         </p>
@@ -34,9 +34,9 @@ export function PhoneNumberDisplay() {
   }
 
   return (
-    <div className="flex items-center justify-between rounded-lg border border-[#e6f4ed] bg-[#f0faf5] px-4 py-3">
+    <div className="flex items-center justify-between rounded-2xl border border-[var(--brand-border)] bg-[var(--brand-dim)] px-4 py-4">
       <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1d6b4a]">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#111111]">
           <Phone className="h-4 w-4 text-white" />
         </div>
         <div>
@@ -48,7 +48,7 @@ export function PhoneNumberDisplay() {
         variant="ghost"
         size="sm"
         onClick={handleCopy}
-        className="h-8 gap-1.5 text-xs text-[#1d6b4a] hover:text-[#155638] hover:bg-[#e6f4ed]"
+        className="h-9 gap-1.5 rounded-full px-3 text-xs text-[#111111] hover:bg-white/70 hover:text-[#111111]"
       >
         {copied ? (
           <><Check className="h-3.5 w-3.5" /> Copied</>
