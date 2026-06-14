@@ -47,13 +47,14 @@ export default function SettingsClient() {
   }
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <div>
-        <h2 className="text-xl font-bold text-gray-900">Settings</h2>
-        <p className="text-sm text-gray-500 mt-0.5">Manage your account and preferences</p>
+    <div className="max-w-3xl space-y-6">
+      <div className="panel-surface rounded-[30px] px-6 py-6">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">Account</p>
+        <h2 className="mt-2 text-[30px] font-semibold tracking-tight text-gray-900">Settings</h2>
+        <p className="mt-2 text-sm leading-7 text-gray-500">Manage your account and preferences</p>
       </div>
 
-      <Card className="rounded-2xl border border-gray-100 shadow-card">
+      <Card className="rounded-[30px] border border-gray-100 shadow-none">
         <CardHeader>
           <CardTitle className="text-base">Profile</CardTitle>
         </CardHeader>
@@ -122,7 +123,7 @@ export default function SettingsClient() {
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl border border-red-100 shadow-card">
+      <Card className="rounded-[30px] border border-red-100 shadow-none">
         <CardHeader>
           <CardTitle className="text-base text-red-600">Danger Zone</CardTitle>
         </CardHeader>

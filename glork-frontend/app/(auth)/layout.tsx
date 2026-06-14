@@ -19,21 +19,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="grid min-h-screen bg-[#111111] lg:grid-cols-[minmax(0,1.15fr)_minmax(440px,0.85fr)]">
       <div className="relative hidden overflow-hidden border-r border-white/8 lg:flex">
-        <div
-          className="absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, rgba(255,255,255,0.9) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.9) 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-          }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(circle at 24% 25%, rgba(232,197,71,0.20), transparent 28%), radial-gradient(circle at 85% 80%, rgba(232,197,71,0.10), transparent 32%)",
-          }}
-        />
+        <div className="hero-image-surface absolute inset-0" />
+        <div className="absolute inset-0 bg-black/42" />
 
         <div className="relative flex w-full flex-col justify-between p-10 xl:p-14">
           <div className="flex items-center justify-between">
@@ -117,7 +104,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(circle at top, rgba(232,197,71,0.12), transparent 25%), linear-gradient(to bottom, rgba(255,255,255,0.55), rgba(247,245,240,0.92))",
+              "radial-gradient(circle at top, rgba(255,106,0,0.12), transparent 25%), linear-gradient(to bottom, rgba(255,255,255,0.55), rgba(247,245,240,0.92))",
           }}
         />
         <div className="relative w-full max-w-[460px]">

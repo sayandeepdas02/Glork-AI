@@ -68,17 +68,18 @@ export default function CallsClient() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="panel-surface flex flex-col justify-between gap-4 rounded-[30px] px-6 py-6 sm:flex-row sm:items-center">
         <div>
-          <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-[#111]">Call History</h2>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">Operations</p>
+          <div className="mt-2 flex items-center gap-3">
+            <h2 className="text-[30px] font-semibold tracking-tight text-[#111]">Call History</h2>
             {data && (
-              <span className="inline-flex items-center justify-center rounded-full bg-[#F0F0EC] px-2.5 py-0.5 text-xs font-medium text-[#666] border border-[#E0E0DB]">
+              <span className="inline-flex items-center justify-center rounded-full bg-[#F0F0EC] px-3 py-1 text-xs font-medium text-[#666] border border-[#E0E0DB]">
                 {data.total}
               </span>
             )}
           </div>
-          <p className="text-sm font-mono text-[#888] mt-1">
+          <p className="mt-2 text-sm leading-7 text-[#888]">
             Review and audit AI interactions
           </p>
         </div>
@@ -90,7 +91,7 @@ export default function CallsClient() {
           }
         >
           <SelectTrigger
-            className="w-full sm:w-44 h-9 rounded-xl bg-white border-[#D8D8D3] text-sm text-[#555] focus:ring-brand"
+            className="h-11 w-full rounded-2xl border-[#D8D8D3] bg-white text-sm text-[#555] focus:ring-brand sm:w-52"
             aria-label="Filter by call outcome"
           >
             <SelectValue placeholder="All outcomes" />
@@ -106,7 +107,7 @@ export default function CallsClient() {
       </div>
 
       {isError ? (
-        <div className="rounded-2xl border border-red-100 bg-red-50 py-12 text-center">
+        <div className="rounded-[28px] border border-red-100 bg-red-50 py-12 text-center">
           <p className="text-sm font-medium text-red-600">Could not load call history.</p>
           <p className="text-xs text-red-400 mt-1">Check your connection and try again.</p>
         </div>

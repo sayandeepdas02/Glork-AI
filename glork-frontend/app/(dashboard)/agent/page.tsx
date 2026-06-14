@@ -10,10 +10,11 @@ export const metadata: Metadata = { title: "AI Agent · Hyperglork" }
 
 export default function AgentPage() {
   return (
-    <div className="space-y-6 max-w-2xl">
-      <div>
-        <h2 className="text-xl font-bold text-gray-900">AI Receptionist</h2>
-        <p className="text-sm text-gray-500 mt-0.5">Configure and manage your AI phone agent</p>
+    <div className="max-w-4xl space-y-6">
+      <div className="panel-surface rounded-[30px] px-6 py-6">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">Agent</p>
+        <h2 className="mt-2 text-[30px] font-semibold tracking-tight text-gray-900">AI Receptionist</h2>
+        <p className="mt-2 text-sm leading-7 text-gray-500">Configure and manage your AI phone agent</p>
       </div>
 
       <AgentToggle />
@@ -24,26 +25,26 @@ export default function AgentPage() {
       </div>
 
       <Tabs defaultValue="general">
-        <TabsList className="grid grid-cols-3 w-full rounded-xl bg-gray-100/80 p-1">
-          <TabsTrigger value="general" className="rounded-lg text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm">
+        <TabsList className="grid w-full grid-cols-3 rounded-[24px] bg-white p-1.5 shadow-[0_12px_24px_rgba(17,17,17,0.04)]">
+          <TabsTrigger value="general" className="rounded-[18px] text-sm data-[state=active]:bg-[#111111] data-[state=active]:text-white data-[state=active]:shadow-none">
             General
           </TabsTrigger>
-          <TabsTrigger value="hours" className="rounded-lg text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm">
+          <TabsTrigger value="hours" className="rounded-[18px] text-sm data-[state=active]:bg-[#111111] data-[state=active]:text-white data-[state=active]:shadow-none">
             Schedule
           </TabsTrigger>
-          <TabsTrigger value="calendar" className="rounded-lg text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm">
+          <TabsTrigger value="calendar" className="rounded-[18px] text-sm data-[state=active]:bg-[#111111] data-[state=active]:text-white data-[state=active]:shadow-none">
             Calendar
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="mt-5">
-          <div className="rounded-2xl bg-white border border-gray-100 shadow-card p-6">
+          <div className="rounded-[30px] bg-white border border-gray-100 p-6 shadow-[0_16px_30px_rgba(17,17,17,0.04)]">
             <AgentConfigForm />
           </div>
         </TabsContent>
 
         <TabsContent value="hours" className="mt-5">
-          <div className="rounded-2xl bg-white border border-gray-100 shadow-card p-6">
+          <div className="rounded-[30px] bg-white border border-gray-100 p-6 shadow-[0_16px_30px_rgba(17,17,17,0.04)]">
             <WorkingHoursEditor />
           </div>
         </TabsContent>

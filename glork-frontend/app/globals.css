@@ -4,42 +4,42 @@
 
 :root {
   --bg-base:       #FFFFFF;
-  --bg-surface:    #F7F5F0;
-  --bg-surface-2:  #F1EEE6;
-  --bg-surface-3:  #E8E1D2;
-  --bg-dark:       #111111;
+  --bg-surface:    #F6F4F1;
+  --bg-surface-2:  #F1EEEA;
+  --bg-surface-3:  #E7E0D7;
+  --bg-dark:       #101010;
 
-  --brand:         #E8C547;
-  --brand-light:   #F0D46F;
-  --brand-dark:    #C9A52A;
-  --brand-dim:     rgba(232, 197, 71, 0.10);
-  --brand-border:  rgba(232, 197, 71, 0.24);
+  --brand:         #FF6A00;
+  --brand-light:   #FF8A33;
+  --brand-dark:    #DB5500;
+  --brand-dim:     rgba(255, 106, 0, 0.10);
+  --brand-border:  rgba(255, 106, 0, 0.24);
 
-  --edge:          #E7E0D4;
-  --edge-strong:   #CEC5B4;
-  --edge-card:     #EDE6DA;
+  --edge:          #E5DFD8;
+  --edge-strong:   #CFC6BC;
+  --edge-card:     #EEE9E2;
 
-  --text-primary:  #161616;
-  --text-muted:    #5F5A51;
-  --text-faint:    #8E8679;
+  --text-primary:  #171717;
+  --text-muted:    #59544E;
+  --text-faint:    #8B847B;
 
   --radius: 0.5rem;
 
   --background:    0 0% 100%;
   --foreground:    0 0% 6%;
-  --primary:       45 78% 59%;
+  --primary:       25 100% 50%;
   --primary-foreground: 0 0% 8%;
-  --secondary:     36 22% 95%;
+  --secondary:     30 17% 95%;
   --secondary-foreground: 0 0% 30%;
-  --muted:         38 18% 93%;
+  --muted:         30 16% 93%;
   --muted-foreground: 30 8% 38%;
-  --accent:        36 22% 91%;
+  --accent:        28 20% 91%;
   --accent-foreground: 0 0% 15%;
   --destructive:   0 84% 60%;
   --destructive-foreground: 0 0% 100%;
-  --border:        36 20% 87%;
-  --input:         36 20% 87%;
-  --ring:          45 78% 59%;
+  --border:        30 16% 86%;
+  --input:         30 16% 86%;
+  --ring:          25 100% 50%;
   --card:          0 0% 100%;
   --card-foreground: 0 0% 6%;
   --popover:       0 0% 100%;
@@ -52,10 +52,7 @@
   html { scroll-behavior: smooth; }
 
   body {
-    background:
-      radial-gradient(circle at top, rgba(232, 197, 71, 0.08), transparent 30%),
-      linear-gradient(to bottom, #fdfcf9 0%, #ffffff 24%, #f7f5f0 100%);
-    background-color: var(--bg-base);
+    background: var(--bg-base);
     color: var(--text-primary);
     font-feature-settings: "rlig" 1, "calt" 1, "cv11" 1;
     -webkit-font-smoothing: antialiased;
@@ -99,32 +96,46 @@
   }
 
   .section-eyebrow {
-    @apply inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em];
-    border-color: var(--brand-border);
-    background: rgba(232, 197, 71, 0.08);
+    @apply inline-flex items-center gap-2 rounded-full px-0 py-0 text-[11px] font-semibold uppercase tracking-[0.18em];
     color: var(--text-primary);
   }
 
+  .section-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background: var(--brand);
+  }
+
   .section-title {
-    @apply mt-5 font-serif text-4xl leading-none tracking-tight md:text-5xl;
+    @apply mt-5 text-4xl leading-[0.95] tracking-[-0.04em] md:text-6xl;
   }
 
   .section-copy {
-    @apply mt-4 max-w-xl text-base leading-7;
+    @apply mt-4 max-w-xl text-base leading-8 md:text-[17px];
     color: var(--text-muted);
   }
 
   .panel-surface {
-    background: rgba(255, 255, 255, 0.88);
+    background: rgba(255, 255, 255, 0.95);
     border: 1px solid var(--edge-card);
-    box-shadow: 0 18px 40px rgba(17, 17, 17, 0.06);
-    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 36px rgba(17, 17, 17, 0.04);
   }
 
   .dark-panel-surface {
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+  }
+
+  .hero-image-surface {
+    background-image:
+      linear-gradient(90deg, rgba(10, 5, 6, 0.84) 0%, rgba(68, 19, 10, 0.62) 30%, rgba(120, 47, 25, 0.34) 60%, rgba(8, 4, 5, 0.78) 100%),
+      url("/hero-bg.png");
+    background-size: cover;
+    background-position: center;
   }
 
   .screen-line-before { position: relative; }

@@ -22,27 +22,27 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
   const doctor = useAuthStore((s) => s.doctor)
 
   return (
-    <div className="flex h-full w-full flex-col overflow-y-auto bg-transparent scrollbar-sidebar">
+    <div className="flex h-full w-full flex-col overflow-y-auto bg-[#111111] text-white scrollbar-sidebar">
 
       {/* ── Logo ── */}
-      <div className="flex items-center gap-3 border-b border-[var(--edge)] px-6 pb-5 pt-6">
+      <div className="flex items-center gap-3 border-b border-white/8 px-6 pb-6 pt-7">
         <Logo className="h-9 w-9 rounded-xl transition-transform hover:scale-105" />
-        <span className="text-base font-semibold tracking-tight text-[var(--text-primary)]">Hyperglork</span>
-        <span className="ml-auto rounded-full border border-[var(--brand-border)] bg-[var(--brand-dim)] px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-[var(--brand-dark)]">
+        <span className="text-base font-semibold tracking-tight text-white">Hyperglork</span>
+        <span className="ml-auto rounded-full border border-white/10 bg-white/6 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-white/62">
           beta
         </span>
       </div>
 
       {/* ── Doctor card ── */}
       {doctor && (
-        <div className="mx-4 mt-5 rounded-[22px] border border-[var(--edge)] bg-white/80 px-4 py-4 shadow-[0_14px_28px_rgba(17,17,17,0.05)]">
+        <div className="mx-4 mt-5 rounded-[24px] border border-white/10 bg-white/[0.05] px-4 py-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--brand)] text-xs font-bold text-[#111111]">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--brand)] text-xs font-bold text-white">
               {doctor.name?.slice(0, 2).toUpperCase() ?? "DR"}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="truncate text-sm font-semibold text-[var(--text-primary)]">{doctor.name}</p>
-              <p className="truncate text-xs text-[var(--text-faint)]">{doctor.clinic_name}</p>
+              <p className="truncate text-sm font-semibold text-white">{doctor.name}</p>
+              <p className="truncate text-xs text-white/46">{doctor.clinic_name}</p>
             </div>
             <div className="relative shrink-0">
               <div className={cn(
@@ -59,7 +59,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
 
       {/* ── Nav ── */}
       <nav className="flex-1 space-y-1 px-3 py-5">
-        <p className="mb-3 px-3 text-[10px] font-mono font-semibold uppercase tracking-[0.2em] text-[var(--text-faint)]">
+        <p className="mb-3 px-3 text-[10px] font-mono font-semibold uppercase tracking-[0.2em] text-white/34">
           Menu
         </p>
         {NAV_ITEMS.map(({ href, label, icon: Icon, exact }) => {
@@ -75,13 +75,13 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
               className={cn(
                 "sidebar-nav-item group flex items-center gap-3 rounded-2xl border px-3.5 py-3 text-sm font-medium transition-all duration-150",
                 active
-                  ? "active border-[var(--brand-border)] bg-[var(--brand-dim)] text-[var(--text-primary)] shadow-[0_10px_18px_rgba(17,17,17,0.04)]"
-                  : "border-transparent text-[var(--text-muted)] hover:border-[var(--edge)] hover:bg-white/72 hover:text-[var(--text-primary)]"
+                  ? "active border-white/10 bg-white text-[#111111] shadow-[0_10px_18px_rgba(17,17,17,0.14)]"
+                  : "border-transparent text-white/62 hover:border-white/10 hover:bg-white/6 hover:text-white"
               )}
             >
               <Icon className={cn(
                 "h-4 w-4 shrink-0 transition-colors",
-                active ? "text-[var(--text-primary)]" : "text-[var(--text-faint)] group-hover:text-[var(--text-muted)]"
+                active ? "text-[#111111]" : "text-white/38 group-hover:text-white/72"
               )} />
               {label}
               {active && (
@@ -93,13 +93,13 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       </nav>
 
       {/* ── Bottom ── */}
-      <div className="border-t border-[var(--edge)] p-4">
+      <div className="border-t border-white/8 p-4">
         <button
           onClick={() => { onClose?.(); logout() }}
           aria-label="Sign out"
-          className="flex w-full items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-medium text-[var(--text-muted)] transition-all duration-150 hover:bg-white/72 hover:text-[var(--text-primary)]"
+          className="flex w-full items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-medium text-white/56 transition-all duration-150 hover:bg-white/6 hover:text-white"
         >
-          <LogOut className="h-4 w-4 shrink-0 text-[var(--text-faint)]" />
+          <LogOut className="h-4 w-4 shrink-0 text-white/36" />
           Sign out
         </button>
       </div>

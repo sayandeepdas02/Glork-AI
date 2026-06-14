@@ -37,9 +37,9 @@ export function AgentToggle() {
     <>
       <Card
         className={cn(
-          "border-2 transition-colors duration-300",
+          "rounded-[30px] border-2 transition-colors duration-300 shadow-none",
           isActive
-            ? "border-[#1d6b4a] bg-[#f0faf5]"
+            ? "border-[var(--brand-border)] bg-[var(--brand-dim)]"
             : "border-gray-200 bg-white"
         )}
       >
@@ -49,11 +49,11 @@ export function AgentToggle() {
               <div
                 className={cn(
                   "relative flex h-14 w-14 items-center justify-center rounded-full",
-                  isActive ? "bg-[#1d6b4a]" : "bg-gray-100"
+                  isActive ? "bg-[#111111]" : "bg-gray-100"
                 )}
               >
                 {isActive && (
-                  <span className="absolute inset-0 rounded-full bg-[#1d6b4a] animate-pulse-ring opacity-40" />
+                  <span className="absolute inset-0 rounded-full bg-[var(--brand)] animate-pulse-ring opacity-30" />
                 )}
                 {isActive ? (
                   <Phone className="h-6 w-6 text-white" />
@@ -67,7 +67,7 @@ export function AgentToggle() {
                 </p>
                 <p className={cn(
                   "text-sm mt-0.5",
-                  isActive ? "text-[#1d6b4a] font-medium" : "text-gray-500"
+                  isActive ? "text-[var(--brand-dark)] font-medium" : "text-gray-500"
                 )}>
                   {isLoading
                     ? "Loading..."
@@ -84,13 +84,13 @@ export function AgentToggle() {
                 checked={isActive}
                 onCheckedChange={handleToggleClick}
                 disabled={isLoading || isPending}
-                className="data-[state=checked]:bg-[#1d6b4a]"
+                className="data-[state=checked]:bg-[var(--brand)]"
               />
             </div>
           </div>
 
           {isActive && config?.glork_phone_number && (
-            <div className="mt-4 pt-4 border-t border-[#c8e6d4]">
+            <div className="mt-4 border-t border-[var(--brand-border)] pt-4">
               <p className="text-xs text-gray-500">
                 Patients can reach the AI at{" "}
                 <span className="font-semibold text-gray-700">{config.glork_phone_number}</span>

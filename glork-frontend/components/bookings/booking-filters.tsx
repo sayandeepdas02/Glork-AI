@@ -40,7 +40,7 @@ export function BookingFilters() {
   }, [debouncedSearch, setBookingFilters])
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="panel-surface flex flex-wrap items-center gap-3 rounded-[28px] p-4">
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
         <Input

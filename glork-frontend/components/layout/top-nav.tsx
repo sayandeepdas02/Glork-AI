@@ -35,20 +35,20 @@ export function TopNav() {
   const { title, sub } = getPageMeta(pathname)
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b border-[var(--edge)] bg-[rgba(255,255,255,0.72)] px-4 backdrop-blur-md lg:px-6">
+    <header className="flex h-20 shrink-0 items-center justify-between border-b border-black/6 bg-white/82 px-4 backdrop-blur-md lg:px-6">
       <div className="flex items-center gap-3">
         {/* Mobile hamburger */}
         <button
           onClick={toggleSidebar}
           aria-label="Open navigation menu"
-          className="flex h-10 w-10 items-center justify-center rounded-xl border border-transparent text-[var(--text-faint)] transition-colors hover:border-[var(--edge)] hover:bg-white/80 hover:text-[var(--text-primary)] lg:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-2xl border border-black/6 text-[var(--text-faint)] transition-colors hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)] lg:hidden"
         >
           <Menu className="h-5 w-5" />
         </button>
 
         <div>
-          <h1 className="text-sm font-semibold leading-none text-[var(--text-primary)]">{title}</h1>
-          {sub && <p className="mt-1 text-[11px] font-mono text-[var(--text-faint)]">{sub}</p>}
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">Workspace</p>
+          <h1 className="mt-2 text-[28px] font-semibold leading-none tracking-tight text-[var(--text-primary)]">{title}</h1>
         </div>
       </div>
 
@@ -56,7 +56,7 @@ export function TopNav() {
         {/* New booking shortcut */}
         {pathname === "/bookings" && (
           <Link href="/bookings">
-            <button className="hidden items-center gap-1.5 rounded-full bg-[#111111] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#232323] sm:inline-flex">
+            <button className="hidden items-center gap-1.5 rounded-full bg-[#111111] px-5 py-2.5 text-xs font-semibold text-white transition-colors hover:bg-[#232323] sm:inline-flex">
               <Plus className="h-3.5 w-3.5" /> New Booking
             </button>
           </Link>
@@ -65,7 +65,7 @@ export function TopNav() {
         {/* Notifications */}
         <button
           aria-label="View notifications"
-          className="flex h-10 w-10 items-center justify-center rounded-xl border border-transparent text-[var(--text-faint)] transition-colors hover:border-[var(--edge)] hover:bg-white/80 hover:text-[var(--text-primary)]"
+          className="flex h-11 w-11 items-center justify-center rounded-2xl border border-black/6 text-[var(--text-faint)] transition-colors hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]"
         >
           <Bell className="h-4 w-4" />
         </button>
@@ -76,7 +76,7 @@ export function TopNav() {
             <button
               aria-label={`Account menu for ${doctor?.name ?? "account"}`}
               aria-haspopup="menu"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--brand)] text-xs font-bold text-[#111111] transition-colors hover:bg-[var(--brand-light)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-[#111111] text-xs font-bold text-white transition-colors hover:bg-[#232323] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2"
             >
               {doctor ? getInitials(doctor.name) : "DR"}
             </button>

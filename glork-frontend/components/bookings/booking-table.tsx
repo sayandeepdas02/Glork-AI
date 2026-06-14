@@ -24,7 +24,7 @@ interface BookingTableProps {
 
 export function BookingTableSkeleton() {
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E8E3] overflow-hidden">
+    <div className="overflow-hidden rounded-[28px] bg-white border border-[#E8E8E3]">
       <div className="flex items-center gap-3 px-5 py-3.5 border-b border-[#EAEAE5] bg-[#FAFAF8]">
         {["w-28", "w-36", "w-24", "w-20", "w-16"].map((w, i) => (
           <div key={i} className={cn("h-3 rounded animate-pulse bg-[#E8E8E3]", w)} />
@@ -58,7 +58,7 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
 
   if (!bookings.length) {
     return (
-      <div className="rounded-2xl border border-dashed border-[#D8D8D3] bg-white flex flex-col items-center justify-center py-20 text-center">
+      <div className="rounded-[28px] border border-dashed border-[#D8D8D3] bg-white flex flex-col items-center justify-center py-20 text-center">
         <div className="h-14 w-14 rounded-2xl bg-[#F0F0EC] border border-[#E8E8E3] flex items-center justify-center mb-4">
           <Calendar className="h-6 w-6 text-[#aaa]" />
         </div>
@@ -72,9 +72,9 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
 
   return (
     <>
-      <div className="rounded-2xl bg-white border border-[#E8E8E3] overflow-hidden">
+      <div className="overflow-hidden rounded-[28px] bg-white border border-[#E8E8E3] shadow-[0_16px_30px_rgba(17,17,17,0.04)]">
         {/* Table header */}
-        <div className="hidden md:grid grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,1fr)_40px] gap-4 items-center px-5 py-3 bg-[#FAFAF8] border-b border-[#EAEAE5]">
+        <div className="hidden md:grid grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,1fr)_40px] gap-4 items-center px-5 py-4 bg-[#faf8f5] border-b border-[#EAEAE5]">
           {["Patient", "Date & Time", "Status", "Source", ""].map((h) => (
             <p key={h} className="text-[11px] font-mono font-semibold text-[#bbb] uppercase tracking-widest">{h}</p>
           ))}
@@ -85,12 +85,12 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
             <div
               key={booking.id}
               onClick={() => router.push(`/bookings/${booking.id}`)}
-              className="grid grid-cols-[minmax(0,1fr)_auto] md:grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,1fr)_40px] gap-4 items-center px-5 py-4 cursor-pointer hover:bg-[#FAFAF8] transition-colors group"
+              className="grid cursor-pointer grid-cols-[minmax(0,1fr)_auto] gap-4 items-center px-5 py-5 transition-colors hover:bg-[#FAFAF8] group md:grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,1fr)_40px]"
             >
               {/* Patient */}
               <div className="flex items-center gap-3 min-w-0">
-                <div className="h-9 w-9 shrink-0 rounded-xl bg-brand/8 border border-brand/15 flex items-center justify-center group-hover:border-brand/30 transition-colors">
-                  <span className="text-xs font-bold text-brand">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[var(--brand-border)] bg-[var(--brand-dim)] transition-colors group-hover:bg-white">
+                  <span className="text-xs font-bold text-[var(--brand-dark)]">
                     {booking.patient_name.slice(0, 2).toUpperCase()}
                   </span>
                 </div>
@@ -121,7 +121,7 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
               {/* Source */}
               <div className="hidden md:flex items-center gap-1.5">
                 {booking.call_log_id ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-brand/8 border border-brand/20 px-2 py-0.5 text-[10px] font-mono font-medium text-brand">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--brand-dim)] border border-[var(--brand-border)] px-2 py-0.5 text-[10px] font-mono font-medium text-[var(--brand-dark)]">
                     <Zap className="h-2.5 w-2.5" /> AI
                   </span>
                 ) : (
