@@ -64,7 +64,7 @@ export function BookingDetailCard({ booking }: BookingDetailCardProps) {
 
   return (
     <>
-      <Card className="rounded-2xl border border-gray-100 shadow-card">
+      <Card className="rounded-[30px] border border-gray-100 shadow-none">
         <CardHeader className="pb-4">
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -135,7 +135,7 @@ export function BookingDetailCard({ booking }: BookingDetailCardProps) {
             <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Appointment
             </h4>
-            <div className="rounded-lg bg-gray-50 p-3 space-y-1.5">
+            <div className="space-y-1.5 rounded-2xl bg-[#f7f5f1] p-4">
               <div className="flex items-center gap-2 text-sm text-gray-700">
                 <Clock className="h-4 w-4 text-gray-400" />
                 <span>
@@ -173,14 +173,14 @@ export function BookingDetailCard({ booking }: BookingDetailCardProps) {
 
           {/* Call link */}
           {booking.call_log_id && (
-            <div className="flex items-center justify-between rounded-lg border border-[#e6f4ed] bg-[#f0faf5] px-4 py-3">
-              <div className="flex items-center gap-2 text-sm text-[#1d6b4a]">
+            <div className="flex items-center justify-between rounded-2xl border border-[var(--brand-border)] bg-[var(--brand-dim)] px-4 py-3">
+              <div className="flex items-center gap-2 text-sm text-[var(--brand-dark)]">
                 <Phone className="h-4 w-4" />
                 Booked via AI agent
               </div>
               <Link
                 href={`/calls/${booking.call_log_id}`}
-                className="text-xs text-[#1d6b4a] hover:underline font-medium"
+                className="text-xs font-medium text-[var(--brand-dark)] hover:underline"
               >
                 View call →
               </Link>

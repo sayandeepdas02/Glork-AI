@@ -14,7 +14,7 @@ interface CallLogTableProps {
 
 function CallLogTableSkeleton() {
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E8E3] overflow-hidden">
+    <div className="overflow-hidden rounded-[28px] bg-white border border-[#E8E8E3]">
       <div className="flex items-center gap-3 px-5 py-3.5 border-b border-[#EAEAE5] bg-[#FAFAF8]">
         {["w-24", "w-32", "w-20", "w-20", "flex-1"].map((w, i) => (
           <div key={i} className={cn("h-3 rounded animate-pulse bg-[#E8E8E3]", w)} />
@@ -41,7 +41,7 @@ function CallLogTableSkeleton() {
 
 function EmptyState() {
   return (
-    <div className="rounded-2xl border border-dashed border-[#D8D8D3] bg-white flex flex-col items-center justify-center py-20 text-center">
+    <div className="rounded-[28px] border border-dashed border-[#D8D8D3] bg-white flex flex-col items-center justify-center py-20 text-center">
       <div className="h-14 w-14 rounded-2xl bg-[#F0F0EC] border border-[#E8E8E3] flex items-center justify-center mb-4">
         <Phone className="h-6 w-6 text-[#aaa]" />
       </div>
@@ -58,9 +58,9 @@ export function CallLogTable({ calls, isLoading }: CallLogTableProps) {
   if (!calls.length) return <EmptyState />
 
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E8E3] overflow-hidden">
+    <div className="overflow-hidden rounded-[28px] bg-white border border-[#E8E8E3] shadow-[0_16px_30px_rgba(17,17,17,0.04)]">
       {/* Header */}
-      <div className="hidden md:grid grid-cols-[minmax(0,1.5fr)_minmax(0,1.5fr)_80px_minmax(0,1fr)_minmax(0,2fr)_60px] gap-4 items-center px-5 py-3 bg-[#FAFAF8] border-b border-[#EAEAE5]">
+      <div className="hidden md:grid grid-cols-[minmax(0,1.5fr)_minmax(0,1.5fr)_80px_minmax(0,1fr)_minmax(0,2fr)_60px] gap-4 items-center px-5 py-4 bg-[#faf8f5] border-b border-[#EAEAE5]">
         {["Caller", "Date & Time", "Duration", "Outcome", "Summary", ""].map((h) => (
           <p key={h} className="text-[11px] font-mono font-semibold text-[#bbb] uppercase tracking-widest">{h}</p>
         ))}
@@ -70,12 +70,12 @@ export function CallLogTable({ calls, isLoading }: CallLogTableProps) {
         {calls.map((call) => (
           <div
             key={call.id}
-            className="grid grid-cols-[minmax(0,1fr)_auto] md:grid-cols-[minmax(0,1.5fr)_minmax(0,1.5fr)_80px_minmax(0,1fr)_minmax(0,2fr)_60px] gap-4 items-center px-5 py-4 hover:bg-[#FAFAF8] transition-colors group"
+            className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 items-center px-5 py-5 transition-colors hover:bg-[#FAFAF8] group md:grid-cols-[minmax(0,1.5fr)_minmax(0,1.5fr)_80px_minmax(0,1fr)_minmax(0,2fr)_60px]"
           >
             {/* Caller */}
             <div className="flex items-center gap-3 min-w-0">
-              <div className="h-9 w-9 shrink-0 rounded-xl bg-[#F5F5F2] border border-[#E8E8E3] flex items-center justify-center group-hover:bg-brand/8 group-hover:border-brand/20 transition-colors">
-                <Phone className="h-4 w-4 text-[#aaa] group-hover:text-brand transition-colors" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#E8E8E3] bg-[#f7f5f1] transition-colors group-hover:border-[var(--brand-border)] group-hover:bg-[var(--brand-dim)]">
+                <Phone className="h-4 w-4 text-[#999] transition-colors group-hover:text-[var(--brand-dark)]" />
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-[#111] font-mono tabular-nums">
@@ -131,14 +131,14 @@ export function CallLogTable({ calls, isLoading }: CallLogTableProps) {
             <div className="hidden md:flex justify-end">
               <Link
                 href={`/calls/${call.id}`}
-                className="text-xs font-semibold text-brand hover:text-brand-dark transition-colors opacity-0 group-hover:opacity-100"
+                className="text-xs font-semibold text-[var(--brand-dark)] transition-colors opacity-0 group-hover:opacity-100"
               >
                 View →
               </Link>
             </div>
 
             {/* Mobile link */}
-            <Link href={`/calls/${call.id}`} className="md:hidden text-xs font-semibold text-brand">
+            <Link href={`/calls/${call.id}`} className="md:hidden text-xs font-semibold text-[var(--brand-dark)]">
               View →
             </Link>
           </div>

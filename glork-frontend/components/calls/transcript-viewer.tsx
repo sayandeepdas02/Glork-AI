@@ -49,7 +49,7 @@ export function TranscriptViewer({ transcript }: TranscriptViewerProps) {
 
   if (!transcript) {
     return (
-      <Card className="rounded-2xl border border-gray-100 shadow-card">
+      <Card className="rounded-[30px] border border-gray-100 shadow-none">
         <CardHeader>
           <CardTitle className="text-base">Transcript</CardTitle>
         </CardHeader>
@@ -68,7 +68,7 @@ export function TranscriptViewer({ transcript }: TranscriptViewerProps) {
   const lines = parseTranscript(transcript)
 
   return (
-    <Card className="rounded-2xl border border-gray-100 shadow-card">
+    <Card className="rounded-[30px] border border-gray-100 shadow-none">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">Transcript</CardTitle>
@@ -86,10 +86,10 @@ export function TranscriptViewer({ transcript }: TranscriptViewerProps) {
           </Button>
         </div>
         <div className="flex items-center gap-4 text-xs text-gray-500 pt-1">
-          <span className="flex items-center gap-1.5">
-            <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#1d6b4a]" />
-            AI Agent
-          </span>
+            <span className="flex items-center gap-1.5">
+              <span className="inline-block h-2.5 w-2.5 rounded-full bg-[var(--brand)]" />
+              AI Agent
+            </span>
           <span className="flex items-center gap-1.5">
             <span className="inline-block h-2.5 w-2.5 rounded-full bg-gray-400" />
             Patient
@@ -111,14 +111,14 @@ export function TranscriptViewer({ transcript }: TranscriptViewerProps) {
                   className={cn(
                     "max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
                     line.speaker === "agent"
-                      ? "bg-[#f0faf5] text-[#1d4a33] rounded-tl-sm"
+                      ? "bg-[var(--brand-dim)] text-[#5a2500] rounded-tl-sm"
                       : line.speaker === "user"
                         ? "bg-gray-100 text-gray-800 rounded-tr-sm"
                         : "bg-gray-50 text-gray-600 italic text-xs"
                   )}
                 >
                   {line.speaker === "agent" && (
-                    <p className="text-[10px] font-semibold text-[#1d6b4a] mb-0.5 uppercase tracking-wide">
+                    <p className="mb-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--brand-dark)]">
                       AI Agent
                     </p>
                   )}

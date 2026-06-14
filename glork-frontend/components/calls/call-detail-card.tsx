@@ -24,7 +24,7 @@ function Row({ icon: Icon, label, value }: { icon: React.ElementType; label: str
 
 export function CallDetailCard({ call }: CallDetailCardProps) {
   return (
-    <Card className="rounded-2xl border border-gray-100 shadow-card">
+    <Card className="rounded-[30px] border border-gray-100 shadow-none">
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between gap-4">
           <CardTitle className="text-xl">
@@ -62,7 +62,7 @@ export function CallDetailCard({ call }: CallDetailCardProps) {
             <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Summary
             </h4>
-            <p className="text-sm text-gray-700 rounded-lg bg-gray-50 p-3 leading-relaxed">
+            <p className="rounded-2xl bg-[#f7f5f1] p-4 text-sm leading-relaxed text-gray-700">
               {call.agent_summary}
             </p>
           </div>

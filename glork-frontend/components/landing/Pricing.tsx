@@ -2,160 +2,62 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Check } from "lucide-react"
-import { cn } from "@/lib/utils"
 
-const plans = [
+const faqs = [
   {
-    name: "Starter",
-    monthlyPrice: 0,
-    annualPrice: 0,
-    description: "Perfect for solo practitioners",
-    features: ["50 calls / month", "Google Calendar sync", "SMS & email confirmations", "Basic analytics", "English only"],
-    cta: "Get started free",
-    href: "/dashboard",
-    featured: false,
+    q: "What can Hyperglork handle?",
+    a: "The agent can answer FAQs, handle booking requests, qualify incoming inquiries, and route calls to humans when needed.",
   },
-  {
-    name: "Pro",
-    monthlyPrice: 49,
-    annualPrice: 34,
-    description: "For busy practices",
-    features: ["Unlimited calls", "Priority support", "Custom greeting script", "Advanced analytics", "15+ languages", "Emergency routing", "Call transcripts"],
-    cta: "Start free trial",
-    href: "/dashboard",
-    featured: true,
-  },
-  {
-    name: "Clinic",
-    monthlyPrice: 149,
-    annualPrice: 104,
-    description: "Multi-doctor clinics",
-    features: ["Everything in Pro", "Multiple doctors", "Team dashboard", "Custom integrations", "Account manager", "99.9% SLA guarantee"],
-    cta: "Contact us",
-    href: "/dashboard",
-    featured: false,
-  },
+  { q: "Does the voice agent sound human?", a: "Yes. It is designed for natural turn-taking, intent recognition, and conversational responses." },
+  { q: "How long does it take to set up?", a: "Most clinics can be live in a few minutes once calendar access and routing rules are configured." },
+  { q: "Can it integrate with our existing tools?", a: "Yes. The system is designed around direct calendar workflows and extensible operational integrations." },
+  { q: "Is it secure and enterprise-ready?", a: "The redesign positions the product with a more enterprise-ready interface and operational clarity throughout the experience." },
 ]
 
 export default function Pricing() {
-  const [annual, setAnnual] = useState(false)
+  const [open, setOpen] = useState(0)
 
   return (
-    <section id="pricing" className="bg-white border-t border-[#E5E5E0]">
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-14 py-24">
-
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
+    <section id="faq" className="bg-[var(--bg-surface)] pt-24 md:pt-32">
+      <div className="section-shell">
+        <div className="grid gap-14 xl:grid-cols-[420px_minmax(0,1fr)]">
           <div>
-            <span className="inline-flex items-center px-3.5 py-1.5 rounded-full border border-[#E5E5E0] bg-[#F5E040]/10 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0F0F0F]">
-              Pricing
-            </span>
-            <h2 className="font-serif text-[2rem] md:text-[2.75rem] leading-[1.1] font-normal tracking-tight text-[#0F0F0F] mt-5">
-              Simple, transparent pricing
+            <span className="section-eyebrow">FAQ</span>
+            <h2 className="mt-8 text-[3rem] leading-[0.95] tracking-[-0.05em] text-[var(--text-primary)] md:text-[4.6rem]">
+              Questions
+              <br />
+              resolved in
+              <br />
+              one place
             </h2>
-          </div>
-
-          {/* Toggle */}
-          <div className="flex items-center gap-3 pb-1">
-            <span className={cn("text-[13px] font-medium transition-colors", !annual ? "text-[#0F0F0F]" : "text-[#9B9B9B]")}>Monthly</span>
-            <button
-              onClick={() => setAnnual(!annual)}
-              className={cn(
-                "relative h-6 w-11 rounded-full border transition-all duration-200",
-                annual ? "bg-[#F5E040] border-[#D4C01A]" : "bg-[#F2F2EE] border-[#C8C8C2]"
-              )}
+            <Link
+              href="/register"
+              className="mt-10 inline-flex items-center justify-center rounded-full bg-[#121212] px-9 py-4 text-[18px] font-semibold text-white transition-colors hover:bg-[#232323]"
             >
-              <span className={cn(
-                "absolute top-[2px] h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200",
-                annual ? "translate-x-[22px]" : "translate-x-[2px]"
-              )} />
-            </button>
-            <span className={cn("text-[13px] font-medium transition-colors", annual ? "text-[#0F0F0F]" : "text-[#9B9B9B]")}>Annual</span>
-            {annual && (
-              <span className="text-[10px] font-bold text-[#0F0F0F] bg-[#F5E040] px-2 py-0.5 rounded-full">Save 30%</span>
-            )}
+              Get Started Free
+            </Link>
           </div>
-        </div>
 
-        {/* Plans grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
-          {plans.map((plan) => {
-            const price = annual ? plan.annualPrice : plan.monthlyPrice
-            return (
-              <article
-                key={plan.name}
-                className={cn(
-                  "relative flex flex-col rounded-2xl overflow-hidden transition-all duration-200",
-                  plan.featured
-                    ? "bg-[#0F0F0F]"
-                    : "bg-[#F9F9F7] border border-[#E5E5E0] hover:border-[#C8C8C2]"
-                )}
-              >
-                {/* Featured top stripe */}
-                {plan.featured && (
-                  <div className="h-[3px] bg-[#F5E040]" />
-                )}
-
-                <div className="p-7 flex flex-col flex-1">
-                  <div className="flex items-center justify-between mb-5">
-                    <p className={cn(
-                      "text-[11px] font-semibold uppercase tracking-[0.14em]",
-                      plan.featured ? "text-white/50" : "text-[#9B9B9B]"
-                    )}>
-                      {plan.name}
-                    </p>
-                    {plan.featured && (
-                      <span className="text-[10px] font-bold bg-[#F5E040] text-[#0F0F0F] px-2.5 py-1 rounded-full">
-                        Most popular
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="mb-5">
-                    <div className="flex items-end gap-1 mb-1.5">
-                      <span className={cn(
-                        "font-serif text-[3rem] font-normal leading-none tracking-tight",
-                        plan.featured ? "text-white" : "text-[#0F0F0F]"
-                      )}>
-                        ${price}
-                      </span>
-                      <span className={cn(
-                        "text-[13px] self-end mb-1",
-                        plan.featured ? "text-white/35" : "text-[#9B9B9B]"
-                      )}>
-                        / mo
-                      </span>
+          <div>
+            {faqs.map((faq, index) => {
+              const isOpen = open === index
+              return (
+                <button
+                  key={faq.q}
+                  onClick={() => setOpen(isOpen ? -1 : index)}
+                  className="w-full border-t border-[var(--edge)] py-6 text-left last:border-b"
+                >
+                  <div className="flex items-start justify-between gap-6">
+                    <div>
+                      <p className="text-[24px] font-semibold tracking-tight text-[var(--text-primary)]">{faq.q}</p>
+                      {isOpen && <p className="mt-4 max-w-3xl text-[16px] leading-8 text-[var(--text-muted)]">{faq.a}</p>}
                     </div>
-                    <p className={cn("text-[13px]", plan.featured ? "text-white/40" : "text-[#9B9B9B]")}>
-                      {plan.description}
-                    </p>
+                    <span className="pt-1 text-2xl text-[var(--text-primary)]">{isOpen ? "×" : "+"}</span>
                   </div>
-
-                  <ul className="space-y-2.5 flex-1 mb-7">
-                    {plan.features.map((f) => (
-                      <li key={f} className={cn("flex items-center gap-2.5 text-[13.5px]", plan.featured ? "text-white/75" : "text-[#4A4A4A]")}>
-                        <Check className={cn("h-3.5 w-3.5 shrink-0", plan.featured ? "text-[#F5E040]" : "text-[#0F0F0F]")} />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Link
-                    href={plan.href}
-                    className={cn(
-                      "block text-center rounded-xl px-5 py-3 text-[14px] font-semibold transition-all duration-150",
-                      plan.featured
-                        ? "bg-[#F5E040] text-[#0F0F0F] hover:bg-[#F8EC70]"
-                        : "bg-white text-[#0F0F0F] border border-[#C8C8C2] hover:border-[#0F0F0F] hover:bg-[#F9F9F7]"
-                    )}
-                  >
-                    {plan.cta}
-                  </Link>
-                </div>
-              </article>
-            )
-          })}
+                </button>
+              )
+            })}
+          </div>
         </div>
       </div>
     </section>

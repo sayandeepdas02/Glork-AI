@@ -13,10 +13,10 @@ export default function BookingDetailClient({ id }: { id: string }) {
   const { data: booking, isLoading, isError } = useBooking(id)
 
   return (
-    <div className="space-y-5 max-w-2xl">
+    <div className="space-y-5 max-w-3xl">
       <Link
         href="/bookings"
-        className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-gray-700"
       >
         <ChevronLeft className="h-4 w-4" aria-hidden="true" />
         Bookings
@@ -30,7 +30,7 @@ export default function BookingDetailClient({ id }: { id: string }) {
       )}
 
       {isError && (
-        <div className="rounded-2xl border border-red-100 bg-red-50 p-8 text-center">
+        <div className="rounded-[28px] border border-red-100 bg-red-50 p-8 text-center">
           <p className="text-sm font-medium text-red-600">Could not load this booking.</p>
           <Link href="/bookings" className="text-sm text-red-400 underline mt-2 inline-block">
             Back to bookings

@@ -1,70 +1,59 @@
 "use client"
 
-const testimonials = [
+const cards = [
   {
-    outcome: "Reduced missed calls by 85%",
-    quote: "Hyperglork has completely transformed how we handle calls. We used to miss 20–30% of calls during busy hours. Now? Zero missed calls and our booking rate is up significantly.",
-    name: "Dr. Priya Sharma",
-    specialty: "Dermatologist · Bengaluru",
-    avatar: "PS",
+    title: "Human Conversations, Built to Scale",
+    copy:
+      "Serve high inbound volumes without hiring, training, or sacrificing response quality when patient demand spikes.",
   },
   {
-    outcome: "Saved 18 hours every week",
-    quote: "The setup took me literally 4 minutes. I was skeptical, but the AI handles everything perfectly — even my patients who call in Tamil. Incredible product.",
-    name: "Dr. Rajan Murugan",
-    specialty: "Dental Surgeon · Chennai",
-    avatar: "RM",
+    title: "Enterprise-Grade Reliability & Security",
+    copy:
+      "Designed for mission-critical operations with uptime discipline, security controls, and clear operational trust signals.",
   },
   {
-    outcome: "Cut reception costs by 60%",
-    quote: "As a solo practitioner, I couldn't afford a full-time receptionist. Hyperglork is like having a 24/7 front desk at a fraction of the cost.",
-    name: "Dr. Ananya Bose",
-    specialty: "Pediatrician · Kolkata",
-    avatar: "AB",
+    title: "24/7 Multilingual Support",
+    copy:
+      "Ensure every patient is understood and helped in a natural conversation across major languages and operating hours.",
   },
 ]
 
 export default function Testimonials() {
   return (
-    <section id="testimonials" className="bg-[#F9F9F7] border-t border-[#E5E5E0]">
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-14 py-24">
+    <section id="enterprise" className="bg-[var(--bg-surface)] py-24 md:py-32">
+      <div className="section-shell">
+        <span className="section-eyebrow">Enterprise Solution</span>
+        <h2 className="mt-8 max-w-3xl text-[3rem] leading-[0.95] tracking-[-0.05em] text-[var(--text-primary)] md:text-[5rem]">
+          Why Leading Clinics
+          <br />
+          Choose Hyperglork
+        </h2>
 
-        {/* Header */}
-        <div className="mb-14">
-          <span className="inline-flex items-center px-3.5 py-1.5 rounded-full border border-[#E5E5E0] bg-[#F5E040]/10 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0F0F0F]">
-            Testimonials
-          </span>
-          <h2 className="font-serif text-[2rem] md:text-[2.75rem] leading-[1.1] font-normal tracking-tight text-[#0F0F0F] mt-5">
-            Loved by doctors
-          </h2>
-        </div>
+        <div className="mt-14 grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]">
+          <article className="panel-surface rounded-[30px] p-7">
+            <h3 className="text-[22px] font-semibold tracking-tight text-[var(--text-primary)]">{cards[0].title}</h3>
+            <p className="mt-4 text-[16px] leading-8 text-[var(--text-muted)]">{cards[0].copy}</p>
+            <div className="hero-image-surface mt-8 h-[550px] overflow-hidden rounded-[26px] border border-black/5" />
+          </article>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          {testimonials.map((t) => (
-            <article
-              key={t.name}
-              className="flex flex-col p-7 rounded-2xl bg-white border border-[#E5E5E0] hover:border-[#C8C8C2] hover:shadow-card-hover transition-all duration-200"
-            >
-              {/* Outcome tag */}
-              <div className="inline-flex self-start items-center px-3 py-1 rounded-full bg-[#F5E040] text-[11px] font-semibold text-[#0F0F0F] mb-5">
-                {t.outcome}
-              </div>
+          <div className="grid gap-4">
+            {cards.slice(1).map((card) => (
+              <article key={card.title} className="panel-surface rounded-[30px] p-7">
+                <h3 className="text-[22px] font-semibold tracking-tight text-[var(--text-primary)]">{card.title}</h3>
+                <p className="mt-4 text-[16px] leading-8 text-[var(--text-muted)]">{card.copy}</p>
+                <div className="hero-image-surface mt-8 h-[195px] overflow-hidden rounded-[26px] border border-black/5" />
+              </article>
+            ))}
+          </div>
 
-              <blockquote className="text-[14.5px] text-[#4A4A4A] leading-[1.75] flex-1 mb-7">
-                &ldquo;{t.quote}&rdquo;
-              </blockquote>
-
-              <div className="flex items-center gap-3 pt-5 border-t border-[#E5E5E0]">
-                <div className="h-9 w-9 shrink-0 rounded-full bg-[#0F0F0F] flex items-center justify-center text-[11px] font-bold text-white">
-                  {t.avatar}
-                </div>
-                <div>
-                  <p className="text-[13px] font-semibold text-[#0F0F0F] tracking-tight">{t.name}</p>
-                  <p className="text-[12px] text-[#9B9B9B] mt-0.5">{t.specialty}</p>
-                </div>
-              </div>
-            </article>
-          ))}
+          <article className="panel-surface rounded-[30px] p-7">
+            <h3 className="text-[22px] font-semibold tracking-tight text-[var(--text-primary)]">Patient conversations, made visible</h3>
+            <p className="mt-4 text-[16px] leading-8 text-[var(--text-muted)]">
+              The product redesign carries the same clarity into the app itself: summaries, outcomes,
+              schedules, and transcripts are easier to scan, use, and trust.
+            </p>
+            <div className="hero-image-surface mt-8 h-[550px] overflow-hidden rounded-[26px] border border-black/5" />
+          </article>
         </div>
       </div>
     </section>

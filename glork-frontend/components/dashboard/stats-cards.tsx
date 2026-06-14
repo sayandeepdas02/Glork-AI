@@ -54,7 +54,7 @@ function StatCard({
   iconBg: string; iconColor: string; accentColor: string; trend: string
 }) {
   return (
-    <div className="relative rounded-2xl bg-white border border-[#E8E8E3] p-5 overflow-hidden group hover:border-[#D0D0CA] transition-all duration-200">
+    <div className="panel-surface group relative overflow-hidden rounded-[24px] p-5 transition-all duration-200 hover:-translate-y-0.5">
       {/* Top gradient line */}
       <div className={cn("absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r to-transparent opacity-60", accentColor)} />
 
@@ -73,7 +73,7 @@ function StatCard({
 
 function StatCardSkeleton() {
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E8E3] p-5">
+    <div className="panel-surface rounded-[24px] p-5">
       <div className="h-10 w-10 rounded-xl bg-[#F0F0EC] animate-pulse mb-4" />
       <div className="space-y-2">
         <div className="h-7 w-14 rounded bg-[#F0F0EC] animate-pulse" />
@@ -85,7 +85,7 @@ function StatCardSkeleton() {
 
 function StatCardError() {
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E8E3] p-5 flex items-center justify-center">
+    <div className="panel-surface flex items-center justify-center rounded-[24px] p-5">
       <p className="text-xs text-[#aaa]">Unavailable</p>
     </div>
   )

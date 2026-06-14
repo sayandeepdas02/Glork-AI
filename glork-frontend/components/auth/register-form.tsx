@@ -134,9 +134,9 @@ export function RegisterForm() {
           onClick={handleGoogleSignUp}
           disabled={isSubmitting || isGoogleLoading}
           className={cn(
-            "w-full flex items-center justify-center gap-2.5 rounded-xl",
-            "border border-gray-200 bg-white hover:bg-gray-50",
-            "py-3 text-sm font-medium text-gray-700 transition-all duration-150",
+            "w-full flex items-center justify-center gap-2.5 rounded-full",
+            "border border-[var(--edge)] bg-[var(--bg-surface)] hover:bg-white",
+            "py-3.5 text-sm font-medium text-[var(--text-primary)] transition-all duration-150",
             "disabled:opacity-60 disabled:cursor-not-allowed"
           )}
         >
@@ -204,9 +204,9 @@ export function RegisterForm() {
           type="submit"
           disabled={isSubmitting || isGoogleLoading}
           className={cn(
-            "w-full flex items-center justify-center gap-2 rounded-xl",
-            "bg-brand hover:bg-brand-light text-[#0F0F0F] font-semibold",
-            "py-3 text-sm transition-all duration-150",
+            "w-full flex items-center justify-center gap-2 rounded-full",
+            "bg-[#111111] text-white font-semibold hover:bg-[#232323]",
+            "py-3.5 text-sm transition-all duration-150",
             "hover:-translate-y-0.5",
             "disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
           )}
@@ -217,9 +217,9 @@ export function RegisterForm() {
         </button>
       </div>
 
-      <p className="text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-[var(--text-muted)]">
         Already have an account?{" "}
-        <Link href="/login" className="font-semibold text-brand hover:text-brand-dark transition-colors">
+        <Link href="/login" className="font-semibold text-[var(--text-primary)] transition-colors hover:text-[var(--brand-dark)]">
           Sign in
         </Link>
       </p>

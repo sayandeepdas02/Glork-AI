@@ -49,7 +49,7 @@ export function WorkingHoursEditor() {
     return (
       <div className="space-y-3">
         {DAYS.map((d) => (
-          <div key={d.key} className="h-12 animate-pulse rounded-lg bg-gray-100" />
+          <div key={d.key} className="h-14 animate-pulse rounded-2xl bg-gray-100" />
         ))}
       </div>
     )
@@ -91,13 +91,20 @@ export function WorkingHoursEditor() {
 
   return (
     <div className="space-y-4">
+      <div className="rounded-[24px] bg-[var(--bg-surface)] p-4">
+        <p className="text-sm font-semibold text-[var(--text-primary)]">Booking window</p>
+        <p className="mt-1 text-xs leading-6 text-[var(--text-muted)]">
+          These hours define when the AI is allowed to offer appointments. Disabled days are treated as closed.
+        </p>
+      </div>
+
       <div className="space-y-2">
         {DAYS.map(({ key, label }) => {
           const daySchedule = hours[key]
           return (
             <div
               key={key}
-              className="flex items-center gap-4 rounded-lg border border-gray-200 px-4 py-3"
+              className="flex items-center gap-4 rounded-2xl border border-gray-200 px-4 py-3"
             >
               <div className="w-32 flex items-center gap-2.5">
                 <Switch
@@ -165,7 +172,7 @@ export function WorkingHoursEditor() {
           onClick={handleSave}
           disabled={!dirty || isPending}
           size="sm"
-          className="bg-[#1d6b4a] hover:bg-[#155638] text-white"
+          className="rounded-full bg-[#111111] text-white hover:bg-[#232323]"
         >
           {isPending ? "Saving…" : "Save Hours"}
         </Button>

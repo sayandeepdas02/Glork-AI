@@ -143,18 +143,21 @@ export default function DashboardClient() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="panel-surface flex items-center justify-between rounded-[28px] px-6 py-5">
         <div>
-          <h2 className="text-xl font-bold text-[#111]">{getGreeting()} 👋</h2>
-          <p className="text-[13px] text-[#888] mt-0.5 font-mono">Here&apos;s what&apos;s happening with your clinic</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">
+            Clinic overview
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#111]">{getGreeting()}</h2>
+          <p className="mt-1 text-[13px] font-mono text-[#888]">Here&apos;s what&apos;s happening with your clinic</p>
         </div>
       </div>
 
       <AgentStatusBanner />
       <StatsCards />
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
-        <div className="lg:col-span-3 rounded-2xl bg-white border border-[#E8E8E3] p-5">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-5">
+        <div className="panel-surface rounded-[28px] p-5 lg:col-span-3">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="text-sm font-semibold text-[#111]">Call volume</h3>

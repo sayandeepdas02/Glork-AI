@@ -57,24 +57,25 @@ export default function BookingsClient() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
+      <div className="panel-surface flex items-center justify-between rounded-[30px] px-6 py-6">
         <div>
-          <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-[#111]">Bookings</h2>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">Scheduling</p>
+          <div className="mt-2 flex items-center gap-3">
+            <h2 className="text-[30px] font-semibold tracking-tight text-[#111]">Bookings</h2>
             {data && (
-              <span className="inline-flex items-center justify-center rounded-full bg-[#F0F0EC] px-2.5 py-0.5 text-xs font-medium text-[#666] border border-[#E0E0DB]">
+              <span className="inline-flex items-center justify-center rounded-full bg-[#F0F0EC] px-3 py-1 text-xs font-medium text-[#666] border border-[#E0E0DB]">
                 {data.total}
               </span>
             )}
           </div>
-          <p className="text-sm font-mono text-[#888] mt-1">
+          <p className="mt-2 text-sm leading-7 text-[#888]">
             Manage your patient appointments
           </p>
         </div>
         <button
           onClick={() => setCreateOpen(true)}
           aria-label="Create new booking"
-          className="inline-flex items-center gap-1.5 rounded-xl bg-brand hover:bg-brand-light px-4 py-2.5 text-sm font-semibold text-white transition-all duration-150"
+          className="inline-flex items-center gap-1.5 rounded-full bg-[#111111] px-5 py-3 text-sm font-semibold text-white transition-all duration-150 hover:bg-[#232323]"
         >
           <Plus className="h-4 w-4" aria-hidden="true" />
           New Booking
@@ -84,7 +85,7 @@ export default function BookingsClient() {
       <BookingFilters />
 
       {isError ? (
-        <div className="rounded-2xl border border-red-100 bg-red-50 py-12 text-center">
+        <div className="rounded-[28px] border border-red-100 bg-red-50 py-12 text-center">
           <p className="text-sm font-medium text-red-600">Could not load bookings.</p>
           <p className="text-xs text-red-400 mt-1">Check your connection and try again.</p>
         </div>

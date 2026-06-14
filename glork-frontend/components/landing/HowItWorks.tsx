@@ -1,64 +1,82 @@
 "use client"
 
-const steps = [
+import Link from "next/link"
+
+const items = [
   {
-    n: "01",
-    title: "Set up in 3 minutes",
-    description: "Create your account, connect Google Calendar, and configure your greeting. No technical knowledge needed — if you can send an email, you can set up Hyperglork.",
-    detail: "Avg. setup: 2 min 47 sec",
+    n: "01.",
+    title: "Human-Like Voice Conversations",
+    copy:
+      "Your AI receptionist speaks naturally, understands intent, and responds like a trained human agent rather than a brittle script.",
   },
   {
-    n: "02",
-    title: "Forward your clinic number",
-    description: "Forward your existing clinic phone to your unique Hyperglork number. Patients call the same number they always have — nothing changes for them.",
-    detail: "Works with any phone provider",
+    n: "02.",
+    title: "Instant 24/7 Call Handling",
+    copy:
+      "Every inbound call is answered immediately, even during peak hours, after hours, and on weekends.",
   },
   {
-    n: "03",
-    title: "Sit back and relax",
-    description: "The AI handles all incoming calls. View bookings, call logs, and full transcripts on your dashboard in real time.",
-    detail: "Live dashboard + notifications",
+    n: "03.",
+    title: "Smart Escalation to Humans",
+    copy:
+      "Urgent conversations, handoffs, and exception cases can be routed with clean operational guardrails.",
+  },
+  {
+    n: "04.",
+    title: "Actionable Call Insights",
+    copy:
+      "Review summaries, call outcomes, and transcripts in a clearer interface built for real daily use.",
   },
 ]
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="bg-[#0F0F0F] border-t border-white/8">
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-14 py-24">
+    <section id="solution" className="bg-[var(--bg-surface)] py-24 md:py-32">
+      <div className="section-shell">
+        <div className="grid gap-12 xl:grid-cols-[minmax(0,0.95fr)_minmax(540px,0.85fr)]">
+          <div>
+            <span className="section-eyebrow">The Solution</span>
+            <h2 className="mt-8 max-w-3xl text-[3rem] leading-[0.95] tracking-[-0.05em] text-[var(--text-primary)] md:text-[5rem]">
+              One Voice Agent.
+              <br />
+              Unlimited Conversations.
+            </h2>
+            <p className="mt-8 max-w-2xl text-[19px] leading-9 text-[var(--text-muted)]">
+              Deploy AI voice receptionists that understand patient intent, respond naturally,
+              and resolve real clinic needs in seconds.
+            </p>
+            <Link
+              href="/register"
+              className="mt-10 inline-flex items-center justify-center rounded-full bg-[#121212] px-9 py-4 text-[18px] font-semibold text-white transition-colors hover:bg-[#232323]"
+            >
+              Get Started Free
+            </Link>
 
-        {/* Header */}
-        <div className="mb-16">
-          <span className="inline-flex items-center px-3.5 py-1.5 rounded-full border border-white/10 bg-[#F5E040]/10 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#F5E040]">
-            How it works
-          </span>
-          <h2 className="font-serif text-[2rem] md:text-[2.75rem] leading-[1.1] font-normal tracking-tight text-white mt-5">
-            Up and running in minutes
-          </h2>
-        </div>
-
-        {/* Steps — 3 col on desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-          {steps.map((step) => (
-            <div key={step.n} className="flex flex-col">
-
-              {/* Step number */}
-              <p className="text-[4rem] font-serif font-normal text-white/8 leading-none mb-6 select-none">
-                {step.n}
-              </p>
-
-              {/* Yellow divider */}
-              <div className="w-8 h-[2px] bg-[#F5E040] mb-6" />
-
-              <h3 className="text-[17px] font-semibold text-white mb-3 tracking-tight">{step.title}</h3>
-              <p className="text-[14px] text-white/45 leading-[1.7] mb-5 flex-1">
-                {step.description}
-              </p>
-
-              <span className="inline-flex items-center gap-1.5 text-[12px] text-[#F5E040]/70 font-medium">
-                <span className="text-[#F5E040]">→</span> {step.detail}
-              </span>
+            <div className="mt-14">
+              {items.map((item, index) => (
+                <div key={item.title} className={`grid grid-cols-[60px_minmax(0,1fr)_40px] gap-4 border-b border-[var(--edge)] py-7 ${index === 0 ? "border-t" : ""}`}>
+                  <div className="pt-1 text-[18px] text-[var(--text-faint)]">{item.n}</div>
+                  <div>
+                    <h3 className={`text-[22px] font-semibold tracking-tight ${index === 0 ? "text-[var(--text-primary)]" : "text-[var(--text-faint)]"}`}>
+                      {item.title}
+                    </h3>
+                    {index === 0 && (
+                      <p className="mt-4 max-w-xl text-[16px] leading-8 text-[var(--text-muted)]">
+                        {item.copy}
+                      </p>
+                    )}
+                  </div>
+                  <div className="pt-1 text-right text-[42px] leading-none text-[var(--text-primary)]">
+                    {index === 0 ? "→" : ""}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          <div className="overflow-hidden rounded-[32px]">
+            <div className="h-full min-h-[760px] w-full bg-[url('/hero-bg.png')] bg-cover bg-center" />
+          </div>
         </div>
       </div>
     </section>
