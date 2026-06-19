@@ -1,48 +1,35 @@
 "use client"
 
 import { Calendar, CheckCircle2, TrendingUp, XCircle } from "lucide-react"
-import { cn } from "@/lib/utils"
 import { useBookingStats } from "@/hooks/use-bookings"
 
 const CARDS = [
   {
-    key: "total_this_month" as const,
-    label: "Total bookings",
-    icon: Calendar,
-    accent: "#1C80F2",
-    accentBg: "#EBF4FE",
-    accentText: "text-brand",
-    trend: "This month",
+    key:    "total_this_month" as const,
+    label:  "Total bookings",
+    icon:   Calendar,
+    sub:    "This month",
     format: (v: number | string) => v,
   },
   {
-    key: "confirmed_this_month" as const,
-    label: "Confirmed",
-    icon: CheckCircle2,
-    accent: "#10B981",
-    accentBg: "#ECFDF5",
-    accentText: "text-emerald-600",
-    trend: "Active schedule",
+    key:    "confirmed_this_month" as const,
+    label:  "Confirmed",
+    icon:   CheckCircle2,
+    sub:    "Active schedule",
     format: (v: number | string) => v,
   },
   {
-    key: "cancelled_this_month" as const,
-    label: "Cancelled",
-    icon: XCircle,
-    accent: "#EF4444",
-    accentBg: "#FEF2F2",
-    accentText: "text-red-500",
-    trend: "Needs review",
+    key:    "cancelled_this_month" as const,
+    label:  "Cancelled",
+    icon:   XCircle,
+    sub:    "Needs review",
     format: (v: number | string) => v,
   },
   {
-    key: "conversion_rate" as const,
-    label: "Conversion rate",
-    icon: TrendingUp,
-    accent: "#0EA5E9",
-    accentBg: "#F0F9FF",
-    accentText: "text-sky-600",
-    trend: "Calls → bookings",
+    key:    "conversion_rate" as const,
+    label:  "Conversion rate",
+    icon:   TrendingUp,
+    sub:    "Calls → bookings",
     format: (v: number | string) => `${Number(v).toFixed(1)}%`,
   },
 ]
@@ -51,39 +38,23 @@ function StatCard({
   label,
   value,
   icon: Icon,
-  accent,
-  accentBg,
-  accentText,
-  trend,
+  sub,
 }: {
   label: string
   value: number | string
   icon: React.ElementType
-  accent: string
-  accentBg: string
-  accentText: string
-  trend: string
+  sub: string
 }) {
   return (
-    <div className="surface-card relative overflow-hidden p-5">
-      {/* Top accent bar */}
-      <div
-        className="absolute inset-x-0 top-0 h-[3px] rounded-t-xl"
-        style={{ background: accent }}
-      />
-      <div className="flex items-center justify-between gap-3">
-        <div
-          className="flex h-10 w-10 items-center justify-center rounded-xl"
-          style={{ background: accentBg }}
-        >
-          <Icon className={cn("h-4.5 w-4.5", accentText)} style={{ width: 18, height: 18 }} />
-        </div>
-        <span className="section-label text-right">{trend}</span>
+    <div className="surface-card p-5">
+      <div className="flex items-center justify-between gap-3 mb-4">
+        <Icon className="h-4 w-4 text-[#9CA3AF]" strokeWidth={1.5} />
+        <span className="section-label">{sub}</span>
       </div>
-      <p className="mt-5 text-[30px] font-semibold tracking-tight text-ink tabular-nums leading-none">
+      <p className="text-[28px] font-light text-[#111111] tabular-nums tracking-tight leading-none">
         {value}
       </p>
-      <p className="mt-1.5 text-[13px] text-ink-4">{label}</p>
+      <p className="mt-1.5 text-[12px] font-normal text-[#9CA3AF]">{label}</p>
     </div>
   )
 }
@@ -91,22 +62,12 @@ function StatCard({
 function StatCardSkeleton() {
   return (
     <div className="surface-card p-5">
-      <div className="flex items-center justify-between">
-        <div className="h-10 w-10 animate-pulse rounded-xl bg-gray-100" />
-        <div className="h-3 w-20 animate-pulse rounded bg-gray-100" />
+      <div className="flex items-center justify-between mb-4">
+        <div className="h-4 w-4 animate-pulse rounded bg-[#F3F4F6]" />
+        <div className="h-2.5 w-20 animate-pulse rounded bg-[#F3F4F6]" />
       </div>
-      <div className="mt-5 space-y-2">
-        <div className="h-8 w-16 animate-pulse rounded bg-gray-100" />
-        <div className="h-3.5 w-24 animate-pulse rounded bg-gray-100" />
-      </div>
-    </div>
-  )
-}
-
-function StatCardError() {
-  return (
-    <div className="surface-card flex min-h-[136px] items-center justify-center p-5">
-      <p className="text-[13px] text-ink-5">Unavailable</p>
+      <div className="h-8 w-14 animate-pulse rounded bg-[#F3F4F6]" />
+      <div className="mt-2 h-3 w-24 animate-pulse rounded bg-[#F3F4F6]" />
     </div>
   )
 }
@@ -125,7 +86,11 @@ export function StatsCards() {
   if (isError || !stats) {
     return (
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, i) => <StatCardError key={i} />)}
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="surface-card flex min-h-[120px] items-center justify-center p-5">
+            <p className="text-[12px] text-[#9CA3AF]">Unavailable</p>
+          </div>
+        ))}
       </div>
     )
   }
@@ -138,10 +103,7 @@ export function StatsCards() {
           label={card.label}
           value={card.format(stats[card.key])}
           icon={card.icon}
-          accent={card.accent}
-          accentBg={card.accentBg}
-          accentText={card.accentText}
-          trend={card.trend}
+          sub={card.sub}
         />
       ))}
     </div>

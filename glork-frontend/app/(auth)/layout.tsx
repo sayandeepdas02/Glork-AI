@@ -3,82 +3,73 @@ import { CalendarClock, PhoneCall, Shield, Activity } from "lucide-react"
 import { Logo } from "@/components/ui/logo"
 
 const highlights = [
-  { icon: PhoneCall,    text: "AI answers every inbound patient call" },
+  { icon: PhoneCall,     text: "AI answers every inbound patient call" },
   { icon: CalendarClock, text: "Books directly into your live calendar" },
-  { icon: Shield,       text: "Flags urgent situations for human follow-up" },
-  { icon: Activity,     text: "Keeps a clean operational history for the team" },
+  { icon: Shield,        text: "Flags urgent situations for human follow-up" },
+  { icon: Activity,      text: "Keeps a clean operational history for the team" },
 ]
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#08111E] lg:grid lg:grid-cols-[1.1fr_0.9fr]">
+    <div className="min-h-screen bg-[#0A0A0A] lg:grid lg:grid-cols-[1.1fr_0.9fr]">
 
-      {/* ── Left panel (hero) ── */}
-      <div className="hero-grid relative hidden overflow-hidden lg:flex">
-        {/* Orbs */}
-        <div className="hero-orb pointer-events-none absolute -left-24 top-16 h-96 w-96 opacity-70 blur-3xl" />
-        <div className="hero-orb pointer-events-none absolute bottom-0 right-0 h-[28rem] w-[28rem] opacity-50 blur-3xl" />
-
+      {/* ── Left panel ── */}
+      <div className="relative hidden overflow-hidden lg:flex">
         <div className="relative flex w-full flex-col justify-between p-12 text-white">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <Logo className="h-9 w-9 rounded-xl" />
-            <span className="font-serif text-[22px] font-semibold tracking-tight text-white">Hyperglork</span>
+          <Link href="/" className="flex items-center gap-2.5">
+            <Logo className="h-7 w-7 rounded-md shrink-0" />
+            <span className="text-[15px] font-medium tracking-tight text-white">Hyperglork</span>
           </Link>
 
-          {/* Hero copy */}
-          <div className="max-w-xl">
-            <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60">
+          {/* Copy */}
+          <div className="max-w-lg">
+            <p className="text-[11px] font-normal tracking-[0.06em] text-[#6B7280] mb-5 uppercase">
               AI-powered clinic front desk
             </p>
-
-            <h1 className="font-serif text-[4rem] font-semibold leading-[0.95] tracking-tight text-white">
-              Your clinic&rsquo;s new<br />
-              <em className="not-italic text-[#7BBEF8]">first response.</em>
+            <h1 className="text-[3.5rem] font-light leading-[1.05] tracking-[-0.03em] text-white">
+              Your clinic&rsquo;s new<br />first response.
             </h1>
-
-            <p className="mt-5 max-w-md text-[16px] leading-8 text-white/55">
+            <p className="mt-5 text-[14px] font-light text-[#6B7280] leading-relaxed max-w-sm">
               Hyperglork keeps your practice reachable without forcing the team to live inside the phone queue.
             </p>
 
-            <div className="mt-8 space-y-2.5">
+            <div className="mt-8 space-y-2">
               {highlights.map((item) => (
                 <div
                   key={item.text}
-                  className="flex items-center gap-3 rounded-xl border border-white/6 bg-white/4 px-4 py-3"
+                  className="flex items-center gap-3 rounded-lg border border-white/6 bg-white/[0.03] px-4 py-3"
                 >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/8">
-                    <item.icon className="h-4 w-4 text-[#7BBEF8]" />
-                  </div>
-                  <p className="text-[13px] text-white/70">{item.text}</p>
+                  <item.icon className="h-4 w-4 shrink-0 text-[#6B7280]" strokeWidth={1.5} />
+                  <p className="text-[13px] font-light text-[#6B7280]">{item.text}</p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Footer note */}
-          <div className="rounded-xl border border-white/6 bg-white/4 p-4">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/35 mb-2">
+          <div className="rounded-lg border border-white/6 bg-white/[0.03] p-4 max-w-sm">
+            <p className="text-[10px] font-medium uppercase tracking-[0.10em] text-[#444444] mb-1.5">
               Operator note
             </p>
-            <p className="text-[13px] leading-6 text-white/50">
-              Review live call summaries, tune agent behavior, and manage appointment flow — all from a single console.
+            <p className="text-[12px] font-light leading-6 text-[#444444]">
+              Review live call summaries, tune agent behavior, and manage appointment flow — from a single console.
             </p>
           </div>
         </div>
       </div>
 
-      {/* ── Right panel (form) ── */}
+      {/* ── Right panel ── */}
       <div className="flex min-h-screen items-center justify-center bg-white px-6 py-10 sm:px-8 lg:px-12">
-        <div className="w-full max-w-[400px]">
+        <div className="w-full max-w-[380px]">
           {/* Mobile logo */}
-          <Link href="/" className="mb-8 flex items-center gap-3 lg:hidden">
-            <Logo className="h-8 w-8 rounded-lg" />
-            <span className="font-serif text-[21px] font-semibold tracking-tight text-ink">Hyperglork</span>
+          <Link href="/" className="mb-8 flex items-center gap-2.5 lg:hidden">
+            <Logo className="h-6 w-6 rounded-md" />
+            <span className="text-[14px] font-medium tracking-tight text-[#111111]">Hyperglork</span>
           </Link>
 
-          {/* Form card */}
-          <div className="rounded-xl border border-gray-100 bg-white p-7 shadow-card-lg sm:p-8">
+          {/* Form container — no card shadow on desktop, just content */}
+          <div>
             {children}
           </div>
         </div>

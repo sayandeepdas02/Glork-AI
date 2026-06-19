@@ -14,47 +14,33 @@ import { useAuth } from "@/hooks/use-auth"
 import { getGoogleAuthUrl } from "@/lib/api"
 
 const schema = z.object({
-  email: z.string().email("Enter a valid email"),
+  email:    z.string().email("Enter a valid email"),
   password: z.string().min(1, "Password is required"),
 })
-
 type FormValues = z.infer<typeof schema>
 
 function Field({
-  id,
-  label,
-  type = "text",
-  placeholder,
-  autoComplete,
-  register,
-  error,
-  rightSlot,
+  id, label, type = "text", placeholder, autoComplete, register, error, rightSlot,
 }: {
-  id: string
-  label: string
-  type?: string
-  placeholder?: string
-  autoComplete?: string
-  register: UseFormRegisterReturn
-  error?: string
+  id: string; label: string; type?: string; placeholder?: string
+  autoComplete?: string; register: UseFormRegisterReturn; error?: string
   rightSlot?: React.ReactNode
 }) {
   return (
     <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-[13px] font-medium text-ink-3">
+      <label htmlFor={id} className="block text-[12px] font-normal text-[#6B7280]">
         {label}
       </label>
       <div className="relative">
         <input
-          id={id}
-          type={type}
-          placeholder={placeholder}
-          autoComplete={autoComplete}
+          id={id} type={type} placeholder={placeholder} autoComplete={autoComplete}
           className={cn(
-            "h-11 w-full rounded-lg border border-gray-200 bg-white px-4 text-[14px] text-ink outline-none transition-all placeholder:text-ink-6",
-            "hover:border-gray-300 focus:border-brand focus:ring-3 focus:ring-brand/10",
-            rightSlot && "pr-11",
-            error && "border-red-300 focus:border-red-400 focus:ring-red-100"
+            "h-10 w-full rounded-lg border border-[#E5E7EB] bg-white px-3.5 text-[13px] font-normal text-[#111111] outline-none transition-colors",
+            "placeholder:text-[#D1D5DB]",
+            "hover:border-[#D1D5DB]",
+            "focus:border-[#111111] focus:ring-0",
+            rightSlot && "pr-10",
+            error && "border-[#EF4444] focus:border-[#EF4444]"
           )}
           {...register}
         />
@@ -62,14 +48,14 @@ function Field({
           <div className="absolute right-3.5 top-1/2 -translate-y-1/2">{rightSlot}</div>
         )}
       </div>
-      {error && <p className="text-[12px] text-red-500">{error}</p>}
+      {error && <p className="text-[11px] font-light text-[#EF4444]">{error}</p>}
     </div>
   )
 }
 
 function GoogleIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true">
+    <svg width="15" height="15" viewBox="0 0 48 48" aria-hidden="true">
       <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
       <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
       <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
@@ -81,30 +67,26 @@ function GoogleIcon() {
 const AUTH_MESSAGES: Record<string, string> = {
   session_expired: "Your session expired. Sign in again to continue.",
   auth_required:   "Sign in to access the clinic console.",
-  network_error:   "A network issue interrupted your session. Please sign in again.",
+  network_error:   "A network issue interrupted your session.",
 }
 
 export function LoginForm() {
-  const router = useRouter()
+  const router       = useRouter()
   const searchParams = useSearchParams()
-  const { login } = useAuth()
-  const [showPw, setShowPw] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { login }    = useAuth()
+  const [showPw, setShowPw]               = useState(false)
+  const [isSubmitting, setIsSubmitting]   = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
-  const [sessionMsg, setSessionMsg] = useState<string | null>(null)
+  const [sessionMsg, setSessionMsg]       = useState<string | null>(null)
 
   useEffect(() => {
     const reason = searchParams.get("reason")
-    if (reason && reason in AUTH_MESSAGES) {
-      setSessionMsg(AUTH_MESSAGES[reason as keyof typeof AUTH_MESSAGES])
-    }
+    if (reason && reason in AUTH_MESSAGES) setSessionMsg(AUTH_MESSAGES[reason])
   }, [searchParams])
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>({ resolver: zodResolver(schema) })
+  const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+  })
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true)
@@ -128,7 +110,7 @@ export function LoginForm() {
       const { auth_url } = await getGoogleAuthUrl()
       window.location.href = auth_url
     } catch {
-      toast.error("Could not initiate Google sign-in. Please try again.")
+      toast.error("Could not initiate Google sign-in.")
       setIsGoogleLoading(false)
     }
   }
@@ -136,8 +118,8 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {sessionMsg && (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
-          <p className="text-[13px] text-amber-900">{sessionMsg}</p>
+        <div className="rounded-lg border border-[#FEF3C7] bg-[#FFFBEB] px-4 py-3">
+          <p className="text-[12px] font-light text-[#92400E]">{sessionMsg}</p>
         </div>
       )}
 
@@ -147,48 +129,28 @@ export function LoginForm() {
         onClick={handleGoogleSignIn}
         disabled={isSubmitting || isGoogleLoading}
         className={cn(
-          "flex h-11 w-full items-center justify-center gap-2.5 rounded-lg border border-gray-200 bg-white text-[13px] font-medium text-ink-3 transition-all",
-          "hover:border-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+          "flex h-10 w-full items-center justify-center gap-2.5 rounded-lg border border-[#E5E7EB] bg-white text-[13px] font-normal text-[#333333] transition-colors",
+          "hover:bg-[#F9FAFB] hover:border-[#D1D5DB] disabled:cursor-not-allowed disabled:opacity-50"
         )}
       >
-        {isGoogleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
+        {isGoogleLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <GoogleIcon />}
         Continue with Google
       </button>
 
       {/* Divider */}
-      <div className="relative flex items-center gap-3 py-0.5">
-        <div className="h-px flex-1 bg-gray-100" />
-        <span className="text-[11px] uppercase tracking-[0.14em] text-ink-5">or with email</span>
-        <div className="h-px flex-1 bg-gray-100" />
+      <div className="relative flex items-center gap-3">
+        <div className="h-px flex-1 bg-[#F3F4F6]" />
+        <span className="text-[10px] font-normal uppercase tracking-[0.10em] text-[#D1D5DB]">or</span>
+        <div className="h-px flex-1 bg-[#F3F4F6]" />
       </div>
 
-      <Field
-        id="email"
-        label="Email address"
-        type="email"
-        placeholder="you@clinic.com"
-        autoComplete="email"
-        register={register("email")}
-        error={errors.email?.message}
-      />
-
-      <Field
-        id="password"
-        label="Password"
-        type={showPw ? "text" : "password"}
-        placeholder="Enter your password"
-        autoComplete="current-password"
-        register={register("password")}
-        error={errors.password?.message}
+      <Field id="email"    label="Email"    type="email"    placeholder="you@clinic.com" autoComplete="email"            register={register("email")}    error={errors.email?.message} />
+      <Field id="password" label="Password" type={showPw ? "text" : "password"} placeholder="••••••••" autoComplete="current-password" register={register("password")} error={errors.password?.message}
         rightSlot={
-          <button
-            type="button"
-            onClick={() => setShowPw(!showPw)}
+          <button type="button" onClick={() => setShowPw(!showPw)} tabIndex={-1}
             aria-label={showPw ? "Hide password" : "Show password"}
-            className="text-ink-5 transition-colors hover:text-ink-4"
-            tabIndex={-1}
-          >
-            {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            className="text-[#D1D5DB] hover:text-[#9CA3AF] transition-colors">
+            {showPw ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
           </button>
         }
       />
@@ -197,20 +159,16 @@ export function LoginForm() {
         type="submit"
         disabled={isSubmitting || isGoogleLoading}
         className={cn(
-          "mt-1 flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-brand text-[14px] font-semibold text-white transition-all",
-          "hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60"
+          "mt-1 flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-[#111111] text-[13px] font-medium text-white transition-colors",
+          "hover:bg-[#333333] disabled:cursor-not-allowed disabled:opacity-40"
         )}
       >
-        {isSubmitting ? (
-          <><Loader2 className="h-4 w-4 animate-spin" /> Signing in…</>
-        ) : (
-          "Sign in to dashboard"
-        )}
+        {isSubmitting ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Signing in…</> : "Sign in"}
       </button>
 
-      <p className="text-center text-[13px] text-ink-4">
+      <p className="text-center text-[12px] font-light text-[#9CA3AF]">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-semibold text-brand transition-colors hover:text-brand-dark">
+        <Link href="/register" className="font-normal text-[#111111] underline underline-offset-2 hover:text-[#333333]">
           Create one
         </Link>
       </p>

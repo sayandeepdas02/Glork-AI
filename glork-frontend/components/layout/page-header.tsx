@@ -11,11 +11,13 @@ export function PageHeader({ title, description, children, className }: PageHead
   return (
     <div className={cn("mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between", className)}>
       <div>
-        <h2 className="font-serif text-[2rem] font-semibold leading-tight tracking-tight text-ink md:text-[2.4rem]">
+        <h2 className="text-[1.875rem] font-light tracking-[-0.03em] text-[#111111] leading-tight">
           {title}
         </h2>
         {description && (
-          <p className="mt-1.5 max-w-xl text-[14px] leading-6 text-ink-4">{description}</p>
+          <p className="mt-1.5 text-[13px] font-light text-[#9CA3AF] max-w-xl leading-relaxed">
+            {description}
+          </p>
         )}
       </div>
       {children && (

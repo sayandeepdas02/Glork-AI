@@ -1,24 +1,23 @@
 import { cn } from "@/lib/utils"
 import type { CallOutcome } from "@/types"
 
-const CONFIG: Record<CallOutcome, { label: string; dot: string; bg: string; text: string }> = {
-  booked:      { label: "Booked",      dot: "bg-emerald-500", bg: "bg-emerald-50",  text: "text-emerald-700" },
-  enquiry:     { label: "Enquiry",     dot: "bg-blue-400",    bg: "bg-blue-50",     text: "text-blue-700" },
-  cancelled:   { label: "Cancelled",   dot: "bg-red-400",     bg: "bg-red-50",      text: "text-red-700" },
-  rescheduled: { label: "Rescheduled", dot: "bg-sky-400",     bg: "bg-sky-50",      text: "text-sky-700" },
-  transferred: { label: "Transferred", dot: "bg-purple-400",  bg: "bg-purple-50",   text: "text-purple-700" },
-  failed:      { label: "Failed",      dot: "bg-gray-400",    bg: "bg-gray-100",    text: "text-gray-600" },
-  unanswered:  { label: "Unanswered",  dot: "bg-orange-400",  bg: "bg-orange-50",   text: "text-orange-700" },
+const CONFIG: Record<CallOutcome, { label: string; cls: string }> = {
+  booked:      { label: "Booked",      cls: "bg-[#F0FDF4] text-[#166534] border-[#BBF7D0]" },
+  enquiry:     { label: "Enquiry",     cls: "bg-[#F0F9FF] text-[#075985] border-[#BAE6FD]" },
+  cancelled:   { label: "Cancelled",   cls: "bg-[#FEF2F2] text-[#991B1B] border-[#FECACA]" },
+  rescheduled: { label: "Rescheduled", cls: "bg-[#F0F9FF] text-[#0C4A6E] border-[#BAE6FD]" },
+  transferred: { label: "Transferred", cls: "bg-[#FAF5FF] text-[#6B21A8] border-[#E9D5FF]" },
+  failed:      { label: "Failed",      cls: "bg-[#F9FAFB] text-[#6B7280] border-[#E5E7EB]" },
+  unanswered:  { label: "Unanswered",  cls: "bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]" },
 }
 
 export function OutcomeBadge({ outcome }: { outcome: CallOutcome }) {
-  const c = CONFIG[outcome] ?? { label: outcome, dot: "bg-gray-400", bg: "bg-gray-100", text: "text-gray-600" }
+  const c = CONFIG[outcome] ?? { label: outcome, cls: "bg-[#F9FAFB] text-[#6B7280] border-[#E5E7EB]" }
   return (
     <span className={cn(
-      "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold",
-      c.bg, c.text
+      "inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] font-normal",
+      c.cls
     )}>
-      <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", c.dot)} />
       {c.label}
     </span>
   )

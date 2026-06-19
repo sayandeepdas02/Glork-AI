@@ -9,9 +9,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { sidebarOpen, setSidebarOpen } = useUIStore()
 
   return (
-    <div className="flex h-screen overflow-hidden bg-off-white">
+    <div className="flex h-screen overflow-hidden bg-white">
       {/* Desktop sidebar */}
-      <aside className="hidden w-[240px] shrink-0 border-r border-gray-100 bg-white lg:flex">
+      <aside className="hidden w-[240px] shrink-0 lg:flex">
         <Sidebar />
       </aside>
 
@@ -22,11 +22,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </SheetContent>
       </Sheet>
 
-      {/* Main area */}
+      {/* Main */}
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <TopNav />
-        <main className="flex-1 overflow-y-auto scrollbar-thin">
-          <div className="mx-auto w-full max-w-6xl px-5 py-6 sm:px-6 lg:px-8">
+        <main className="flex-1 overflow-y-auto scrollbar-thin bg-white">
+          <div className="mx-auto w-full max-w-6xl px-6 py-6 lg:px-8">
             {children}
           </div>
         </main>
