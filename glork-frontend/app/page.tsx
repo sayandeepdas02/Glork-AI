@@ -127,20 +127,23 @@ function LandingHeader() {
           style={smoothTransition}
           className={cn(
             "relative flex w-full items-center justify-between transition-all",
-            scrolled && !open ? "h-14 px-5" : "h-[68px] px-6"
+            scrolled && !open ? "h-14 px-5" : "h-[70px] px-6"
           )}
         >
           <Link href="/" className="flex items-center gap-3 shrink-0">
             <Logo className="h-7 w-7 rounded-xl" />
-            <span className="font-serif text-[22px] tracking-tight text-white">Hyperglork</span>
+            <div className="flex flex-col">
+              <span className="text-[18px] font-semibold tracking-[-0.03em] text-white">Hyperglork</span>
+              <span className="text-[10px] uppercase tracking-[0.18em] text-white/40">Clinic OS</span>
+            </div>
           </Link>
 
-          <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-1 md:flex">
+          <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-full border border-white/8 bg-white/[0.04] p-1 md:flex">
             {navLinks.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
-                className="rounded-full px-4 py-2 text-[14px] text-white/65 transition-colors hover:bg-white/10 hover:text-white"
+                className="rounded-full px-4 py-2 text-[13px] font-medium text-white/65 transition-colors hover:bg-white/10 hover:text-white"
               >
                 {item.label}
               </a>
@@ -150,15 +153,16 @@ function LandingHeader() {
           <div className="ml-auto hidden items-center gap-2 md:flex">
             <Link
               href="/login"
-              className="rounded-full px-4 py-2 text-[14px] text-white/65 transition-colors hover:bg-white/10 hover:text-white"
+              className="rounded-full px-4 py-2 text-[13px] font-medium text-white/65 transition-colors hover:bg-white/10 hover:text-white"
             >
               Sign in
             </Link>
             <Link
               href="/register"
-              className="flex items-center gap-1.5 rounded-full bg-white px-5 py-2 text-[14px] font-semibold text-[#0d1520] transition-colors hover:bg-white/90"
+              className="flex items-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-[13px] font-semibold text-[#0d1520] shadow-sm transition-colors hover:bg-white/90"
             >
               Start free
+              <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
@@ -186,7 +190,7 @@ function LandingHeader() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className="flex h-12 items-center rounded-xl px-3 text-[16px] text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                    className="flex h-12 items-center rounded-xl px-3 text-[15px] font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
                   >
                     {item.label}
                   </a>
@@ -250,7 +254,7 @@ function LandingFooter() {
           <div>
             <div className="mb-4 flex items-center gap-3">
               <Logo className="h-7 w-7 rounded-xl" />
-              <span className="font-serif text-[20px] leading-tight text-white">Hyperglork</span>
+              <span className="text-[18px] font-semibold tracking-[-0.03em] text-white">Hyperglork</span>
             </div>
             <p className="mb-6 max-w-[220px] text-[13px] leading-relaxed text-white/65">
               Hyperglork helps clinics answer every patient call, manage bookings, and run a calmer front desk with AI.
@@ -329,7 +333,7 @@ function LandingFooter() {
 
       <div className="relative z-10 flex justify-center select-none pb-6 pointer-events-none">
         <span
-          className="font-serif whitespace-nowrap leading-none"
+          className="whitespace-nowrap font-semibold tracking-[-0.05em] leading-none"
           style={{
             fontSize: "clamp(80px, 14vw, 220px)",
             color: "rgba(255,255,255,1)",

@@ -76,18 +76,19 @@ const config: Config = {
       fontFamily: {
         sans: [
           "var(--font-sans)",
-          "DM Sans",
+          "Montserrat",
           "Avenir Next",
           "system-ui",
           "-apple-system",
           "sans-serif",
         ],
         serif: [
-          "var(--font-serif)",
-          "Instrument Serif",
-          "Iowan Old Style",
-          "ui-serif",
-          "serif",
+          "var(--font-sans)",
+          "Montserrat",
+          "Avenir Next",
+          "system-ui",
+          "-apple-system",
+          "sans-serif",
         ],
         mono: [
           "ui-monospace",
