@@ -9,9 +9,9 @@ const CARDS = [
     key: "total_this_month" as const,
     label: "Total bookings",
     icon: Calendar,
-    iconColor: "text-brand",
-    iconBg: "bg-brand/10",
-    accentColor: "from-brand",
+    accent: "#1C80F2",
+    accentBg: "#EBF4FE",
+    accentText: "text-brand",
     trend: "This month",
     format: (v: number | string) => v,
   },
@@ -19,9 +19,9 @@ const CARDS = [
     key: "confirmed_this_month" as const,
     label: "Confirmed",
     icon: CheckCircle2,
-    iconColor: "text-emerald-600",
-    iconBg: "bg-emerald-50",
-    accentColor: "from-emerald-500",
+    accent: "#10B981",
+    accentBg: "#ECFDF5",
+    accentText: "text-emerald-600",
     trend: "Active schedule",
     format: (v: number | string) => v,
   },
@@ -29,9 +29,9 @@ const CARDS = [
     key: "cancelled_this_month" as const,
     label: "Cancelled",
     icon: XCircle,
-    iconColor: "text-red-500",
-    iconBg: "bg-red-50",
-    accentColor: "from-red-500",
+    accent: "#EF4444",
+    accentBg: "#FEF2F2",
+    accentText: "text-red-500",
     trend: "Needs review",
     format: (v: number | string) => v,
   },
@@ -39,10 +39,10 @@ const CARDS = [
     key: "conversion_rate" as const,
     label: "Conversion rate",
     icon: TrendingUp,
-    iconColor: "text-sky-600",
-    iconBg: "bg-sky-50",
-    accentColor: "from-sky-500",
-    trend: "Calls to bookings",
+    accent: "#0EA5E9",
+    accentBg: "#F0F9FF",
+    accentText: "text-sky-600",
+    trend: "Calls → bookings",
     format: (v: number | string) => `${Number(v).toFixed(1)}%`,
   },
 ]
@@ -51,30 +51,39 @@ function StatCard({
   label,
   value,
   icon: Icon,
-  iconBg,
-  iconColor,
-  accentColor,
+  accent,
+  accentBg,
+  accentText,
   trend,
 }: {
   label: string
   value: number | string
   icon: React.ElementType
-  iconBg: string
-  iconColor: string
-  accentColor: string
+  accent: string
+  accentBg: string
+  accentText: string
   trend: string
 }) {
   return (
     <div className="surface-card relative overflow-hidden p-5">
-      <div className={cn("absolute inset-x-0 top-0 h-1 bg-gradient-to-r to-transparent opacity-80", accentColor)} />
-      <div className="flex items-start justify-between gap-4">
-        <div className={cn("flex h-11 w-11 items-center justify-center rounded-2xl", iconBg)}>
-          <Icon className={cn("h-5 w-5", iconColor)} />
+      {/* Top accent bar */}
+      <div
+        className="absolute inset-x-0 top-0 h-[3px] rounded-t-xl"
+        style={{ background: accent }}
+      />
+      <div className="flex items-center justify-between gap-3">
+        <div
+          className="flex h-10 w-10 items-center justify-center rounded-xl"
+          style={{ background: accentBg }}
+        >
+          <Icon className={cn("h-4.5 w-4.5", accentText)} style={{ width: 18, height: 18 }} />
         </div>
-        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-5">{trend}</span>
+        <span className="section-label text-right">{trend}</span>
       </div>
-      <p className="mt-8 text-3xl font-semibold tracking-tight text-ink tabular-nums">{value}</p>
-      <p className="mt-1 text-sm text-ink-4">{label}</p>
+      <p className="mt-5 text-[30px] font-semibold tracking-tight text-ink tabular-nums leading-none">
+        {value}
+      </p>
+      <p className="mt-1.5 text-[13px] text-ink-4">{label}</p>
     </div>
   )
 }
@@ -82,10 +91,13 @@ function StatCard({
 function StatCardSkeleton() {
   return (
     <div className="surface-card p-5">
-      <div className="h-11 w-11 animate-pulse rounded-2xl bg-[#edf3fb]" />
-      <div className="mt-8 space-y-2">
-        <div className="h-8 w-20 animate-pulse rounded bg-[#edf3fb]" />
-        <div className="h-4 w-24 animate-pulse rounded bg-[#edf3fb]" />
+      <div className="flex items-center justify-between">
+        <div className="h-10 w-10 animate-pulse rounded-xl bg-gray-100" />
+        <div className="h-3 w-20 animate-pulse rounded bg-gray-100" />
+      </div>
+      <div className="mt-5 space-y-2">
+        <div className="h-8 w-16 animate-pulse rounded bg-gray-100" />
+        <div className="h-3.5 w-24 animate-pulse rounded bg-gray-100" />
       </div>
     </div>
   )
@@ -93,8 +105,8 @@ function StatCardSkeleton() {
 
 function StatCardError() {
   return (
-    <div className="surface-card flex min-h-[152px] items-center justify-center p-5">
-      <p className="text-sm text-ink-5">Unavailable</p>
+    <div className="surface-card flex min-h-[136px] items-center justify-center p-5">
+      <p className="text-[13px] text-ink-5">Unavailable</p>
     </div>
   )
 }
@@ -126,9 +138,9 @@ export function StatsCards() {
           label={card.label}
           value={card.format(stats[card.key])}
           icon={card.icon}
-          iconBg={card.iconBg}
-          iconColor={card.iconColor}
-          accentColor={card.accentColor}
+          accent={card.accent}
+          accentBg={card.accentBg}
+          accentText={card.accentText}
           trend={card.trend}
         />
       ))}

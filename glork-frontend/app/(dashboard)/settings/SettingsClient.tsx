@@ -64,8 +64,8 @@ export default function SettingsClient() {
               <div className="space-y-4">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <div key={i} className="space-y-2">
-                    <div className="h-4 w-20 animate-pulse rounded bg-[#edf3fb]" />
-                    <div className="h-11 animate-pulse rounded-2xl bg-[#edf3fb]" />
+                    <div className="h-3.5 w-20 animate-pulse rounded bg-gray-100" />
+                    <div className="h-10 animate-pulse rounded-lg bg-gray-100" />
                   </div>
                 ))}
               </div>
@@ -83,7 +83,7 @@ export default function SettingsClient() {
                   </div>
                 </div>
 
-                <Separator className="bg-[#edf2f8]" />
+                <Separator className="bg-gray-100" />
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
@@ -104,7 +104,7 @@ export default function SettingsClient() {
                     id="email"
                     value={doctor?.email ?? ""}
                     disabled
-                    className="bg-[#f7faff]"
+                    className="bg-off-white"
                     aria-describedby="email-hint"
                   />
                   <p id="email-hint" className="text-xs text-ink-5">

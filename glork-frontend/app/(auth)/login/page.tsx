@@ -7,13 +7,13 @@ export const metadata: Metadata = { title: "Sign In" }
 export default function LoginPage() {
   return (
     <div>
-      <div className="mb-8">
+      <div className="mb-7">
         <span className="eyebrow">Sign in</span>
-        <h1 className="mt-5 font-serif text-[2.35rem] leading-[0.96] tracking-tight text-ink sm:text-[2.6rem]">
-          Welcome back to the clinic console.
+        <h1 className="mt-4 font-serif text-[2rem] font-semibold leading-tight tracking-tight text-ink sm:text-[2.2rem]">
+          Welcome back.
         </h1>
-        <p className="mt-3 text-[15px] leading-7 text-ink-4">
-          Review bookings, watch the live call queue, and manage your AI receptionist from one place.
+        <p className="mt-2 text-[14px] leading-6 text-ink-4">
+          Manage bookings, review call logs, and tune your AI receptionist.
         </p>
       </div>
       <Suspense>

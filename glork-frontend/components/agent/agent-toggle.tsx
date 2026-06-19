@@ -1,8 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Loader2, Phone, PhoneOff } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Loader2, Phone, PhoneOff, Radio } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -35,85 +34,85 @@ export function AgentToggle() {
 
   return (
     <>
-      <Card
+      <div
         className={cn(
-          "border-2 transition-colors duration-300",
+          "rounded-xl border p-4 transition-colors duration-300",
           isActive
-            ? "border-[#1d6b4a] bg-[#f0faf5]"
-            : "border-gray-200 bg-white"
+            ? "border-brand/20 bg-brand-light"
+            : "border-gray-100 bg-off-white"
         )}
       >
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div
-                className={cn(
-                  "relative flex h-14 w-14 items-center justify-center rounded-full",
-                  isActive ? "bg-[#1d6b4a]" : "bg-gray-100"
-                )}
-              >
-                {isActive && (
-                  <span className="absolute inset-0 rounded-full bg-[#1d6b4a] animate-pulse-ring opacity-40" />
-                )}
-                {isActive ? (
-                  <Phone className="h-6 w-6 text-white" />
-                ) : (
-                  <PhoneOff className="h-6 w-6 text-gray-400" />
-                )}
-              </div>
-              <div>
-                <p className="text-base font-semibold text-gray-900">
-                  AI Receptionist
-                </p>
-                <p className={cn(
-                  "text-sm mt-0.5",
-                  isActive ? "text-[#1d6b4a] font-medium" : "text-gray-500"
-                )}>
-                  {isLoading
-                    ? "Loading..."
-                    : isActive
-                      ? "Active — answering patient calls"
-                      : "Inactive — not answering calls"}
-                </p>
-              </div>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            {/* Icon */}
+            <div
+              className={cn(
+                "relative flex h-11 w-11 items-center justify-center rounded-xl transition-colors duration-300",
+                isActive ? "bg-brand" : "bg-gray-100"
+              )}
+            >
+              {isActive && (
+                <span className="absolute inset-0 rounded-xl bg-brand/30 animate-pulse-ring" />
+              )}
+              {isActive ? (
+                <Radio className="h-5 w-5 text-white" />
+              ) : (
+                <PhoneOff className="h-5 w-5 text-ink-5" />
+              )}
             </div>
 
-            <div className="flex items-center gap-3">
-              {isPending && <Loader2 className="h-4 w-4 animate-spin text-gray-400" />}
-              <Switch
-                checked={isActive}
-                onCheckedChange={handleToggleClick}
-                disabled={isLoading || isPending}
-                className="data-[state=checked]:bg-[#1d6b4a]"
-              />
+            <div>
+              <p className="text-[14px] font-semibold text-ink">AI Receptionist</p>
+              <p
+                className={cn(
+                  "text-[12px] mt-0.5 font-medium",
+                  isActive ? "text-brand" : "text-ink-5"
+                )}
+              >
+                {isLoading
+                  ? "Loading…"
+                  : isActive
+                    ? "Live — answering patient calls"
+                    : "Inactive — not answering calls"}
+              </p>
             </div>
           </div>
 
-          {isActive && config?.glork_phone_number && (
-            <div className="mt-4 pt-4 border-t border-[#c8e6d4]">
-              <p className="text-xs text-gray-500">
-                Patients can reach the AI at{" "}
-                <span className="font-semibold text-gray-700">{config.glork_phone_number}</span>
-              </p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+          <div className="flex items-center gap-2 shrink-0">
+            {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin text-ink-5" />}
+            <Switch
+              checked={isActive}
+              onCheckedChange={handleToggleClick}
+              disabled={isLoading || isPending}
+              className="data-[state=checked]:bg-brand"
+            />
+          </div>
+        </div>
+
+        {isActive && config?.glork_phone_number && (
+          <div className="mt-3 pt-3 border-t border-brand/15">
+            <p className="text-[12px] text-ink-4">
+              Reception line:{" "}
+              <span className="font-mono font-semibold text-ink">{config.glork_phone_number}</span>
+            </p>
+          </div>
+        )}
+      </div>
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-xl border-gray-100">
           <AlertDialogHeader>
-            <AlertDialogTitle>Deactivate AI Receptionist?</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-[16px]">Deactivate AI receptionist?</AlertDialogTitle>
+            <AlertDialogDescription className="text-[13px] text-ink-4">
               The AI will stop answering patient calls immediately. Any ongoing call will complete,
               but new calls won&apos;t be handled until you reactivate.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Keep Active</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-lg text-[13px]">Keep active</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmDeactivate}
-              className="bg-gray-900 hover:bg-gray-800"
+              className="rounded-lg bg-ink text-[13px] text-white hover:bg-ink-2"
             >
               Deactivate
             </AlertDialogAction>

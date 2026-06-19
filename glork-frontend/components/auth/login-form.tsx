@@ -40,8 +40,8 @@ function Field({
   rightSlot?: React.ReactNode
 }) {
   return (
-    <div className="space-y-2">
-      <label htmlFor={id} className="block text-sm font-medium text-ink-3">
+    <div className="space-y-1.5">
+      <label htmlFor={id} className="block text-[13px] font-medium text-ink-3">
         {label}
       </label>
       <div className="relative">
@@ -51,23 +51,25 @@ function Field({
           placeholder={placeholder}
           autoComplete={autoComplete}
           className={cn(
-            "h-12 w-full rounded-2xl border border-[#d9e3ef] bg-white px-4 text-sm text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] outline-none transition-all placeholder:text-ink-5",
-            "hover:border-[#c4d5ea] focus:border-brand focus:ring-4 focus:ring-brand/10",
-            rightSlot && "pr-12",
+            "h-11 w-full rounded-lg border border-gray-200 bg-white px-4 text-[14px] text-ink outline-none transition-all placeholder:text-ink-6",
+            "hover:border-gray-300 focus:border-brand focus:ring-3 focus:ring-brand/10",
+            rightSlot && "pr-11",
             error && "border-red-300 focus:border-red-400 focus:ring-red-100"
           )}
           {...register}
         />
-        {rightSlot && <div className="absolute right-4 top-1/2 -translate-y-1/2">{rightSlot}</div>}
+        {rightSlot && (
+          <div className="absolute right-3.5 top-1/2 -translate-y-1/2">{rightSlot}</div>
+        )}
       </div>
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error && <p className="text-[12px] text-red-500">{error}</p>}
     </div>
   )
 }
 
 function GoogleIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true">
       <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
       <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
       <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
@@ -78,8 +80,8 @@ function GoogleIcon() {
 
 const AUTH_MESSAGES: Record<string, string> = {
   session_expired: "Your session expired. Sign in again to continue.",
-  auth_required: "Sign in to access the clinic console.",
-  network_error: "A network issue interrupted your session. Please sign in again.",
+  auth_required:   "Sign in to access the clinic console.",
+  network_error:   "A network issue interrupted your session. Please sign in again.",
 }
 
 export function LoginForm() {
@@ -102,9 +104,7 @@ export function LoginForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(schema),
-  })
+  } = useForm<FormValues>({ resolver: zodResolver(schema) })
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true)
@@ -134,30 +134,32 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {sessionMsg && (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
-          <p className="text-sm text-amber-900">{sessionMsg}</p>
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
+          <p className="text-[13px] text-amber-900">{sessionMsg}</p>
         </div>
       )}
 
+      {/* Google */}
       <button
         type="button"
         onClick={handleGoogleSignIn}
         disabled={isSubmitting || isGoogleLoading}
         className={cn(
-          "flex h-12 w-full items-center justify-center gap-2.5 rounded-2xl border border-[#d9e3ef] bg-white text-sm font-medium text-ink-3 transition-all",
-          "hover:border-brand/25 hover:bg-brand/5 hover:text-brand disabled:cursor-not-allowed disabled:opacity-60"
+          "flex h-11 w-full items-center justify-center gap-2.5 rounded-lg border border-gray-200 bg-white text-[13px] font-medium text-ink-3 transition-all",
+          "hover:border-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
         )}
       >
         {isGoogleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
         Continue with Google
       </button>
 
-      <div className="relative flex items-center gap-3 py-1">
-        <div className="h-px flex-1 bg-[#dfe7f2]" />
-        <span className="text-xs uppercase tracking-[0.14em] text-ink-5">or with email</span>
-        <div className="h-px flex-1 bg-[#dfe7f2]" />
+      {/* Divider */}
+      <div className="relative flex items-center gap-3 py-0.5">
+        <div className="h-px flex-1 bg-gray-100" />
+        <span className="text-[11px] uppercase tracking-[0.14em] text-ink-5">or with email</span>
+        <div className="h-px flex-1 bg-gray-100" />
       </div>
 
       <Field
@@ -183,7 +185,7 @@ export function LoginForm() {
             type="button"
             onClick={() => setShowPw(!showPw)}
             aria-label={showPw ? "Hide password" : "Show password"}
-            className="text-ink-5 transition-colors hover:text-ink-3"
+            className="text-ink-5 transition-colors hover:text-ink-4"
             tabIndex={-1}
           >
             {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -195,14 +197,18 @@ export function LoginForm() {
         type="submit"
         disabled={isSubmitting || isGoogleLoading}
         className={cn(
-          "flex h-12 w-full items-center justify-center gap-2 rounded-full bg-brand text-sm font-semibold text-white shadow-[0_18px_38px_rgba(28,128,242,0.22)] transition-all",
-          "hover:-translate-y-0.5 hover:bg-brand-dark disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+          "mt-1 flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-brand text-[14px] font-semibold text-white transition-all",
+          "hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60"
         )}
       >
-        {isSubmitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Signing in…</> : "Enter dashboard"}
+        {isSubmitting ? (
+          <><Loader2 className="h-4 w-4 animate-spin" /> Signing in…</>
+        ) : (
+          "Sign in to dashboard"
+        )}
       </button>
 
-      <p className="text-center text-sm text-ink-4">
+      <p className="text-center text-[13px] text-ink-4">
         Don&apos;t have an account?{" "}
         <Link href="/register" className="font-semibold text-brand transition-colors hover:text-brand-dark">
           Create one

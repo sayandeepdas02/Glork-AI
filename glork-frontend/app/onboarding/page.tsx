@@ -43,7 +43,7 @@ export default function OnboardingPage() {
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,#f8fbff_0%,#eef4fc_100%)]">
-      <header className="border-b border-white/70 bg-white/75 backdrop-blur-xl">
+      <header className="border-b border-gray-100 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <Logo className="h-9 w-9 rounded-2xl" />

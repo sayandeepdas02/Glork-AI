@@ -40,25 +40,25 @@ function Pagination({
   if (totalPages <= 1) return null
 
   return (
-    <div className="flex items-center justify-center gap-3 pt-2">
+    <div className="flex items-center justify-center gap-3 pt-1">
       <button
         onClick={() => onPageChange(page - 1)}
         disabled={page === 1}
         aria-label="Previous page"
-        className="inline-flex items-center gap-1 rounded-full border border-[#d8e2ef] bg-white px-4 py-2 text-sm font-medium text-ink-4 transition-colors hover:text-brand disabled:cursor-not-allowed disabled:opacity-40"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-4 py-2 text-[13px] font-medium text-ink-4 transition-colors hover:border-gray-300 hover:text-ink-2 disabled:cursor-not-allowed disabled:opacity-40"
       >
-        <ChevronLeft className="h-4 w-4" /> Previous
+        <ChevronLeft className="h-3.5 w-3.5" /> Previous
       </button>
-      <span className="text-sm text-ink-5 tabular-nums">
-        {page} / {totalPages}
+      <span className="text-[13px] text-ink-5 tabular-nums">
+        Page {page} of {totalPages}
       </span>
       <button
         onClick={() => onPageChange(page + 1)}
         disabled={page >= totalPages}
         aria-label="Next page"
-        className="inline-flex items-center gap-1 rounded-full border border-[#d8e2ef] bg-white px-4 py-2 text-sm font-medium text-ink-4 transition-colors hover:text-brand disabled:cursor-not-allowed disabled:opacity-40"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-4 py-2 text-[13px] font-medium text-ink-4 transition-colors hover:border-gray-300 hover:text-ink-2 disabled:cursor-not-allowed disabled:opacity-40"
       >
-        Next <ChevronRight className="h-4 w-4" />
+        Next <ChevronRight className="h-3.5 w-3.5" />
       </button>
     </div>
   )
@@ -72,10 +72,10 @@ export default function CallsClient() {
   const limit = callFilters.limit ?? 20
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <PageHeader
-        title="Calls"
-        description="Inspect recent conversations, outcomes, and summaries produced by the receptionist."
+        title="Call logs"
+        description="Inspect every conversation, outcome, and summary produced by the AI receptionist."
       >
         <Select
           value={callFilters.outcome ?? ""}
@@ -84,17 +84,17 @@ export default function CallsClient() {
           }
         >
           <SelectTrigger
-            className="h-11 w-full rounded-full border-[#d8e2ef] bg-white px-4 text-sm text-ink-4 focus:ring-brand sm:w-48"
+            className="h-10 w-[180px] rounded-lg border-gray-200 bg-white px-3 text-[13px] text-ink-4 focus:ring-brand"
             aria-label="Filter by call outcome"
           >
             <SelectValue placeholder="All outcomes" />
           </SelectTrigger>
-          <SelectContent className="rounded-2xl border-[#e4ecf6] bg-white">
+          <SelectContent className="rounded-xl border-gray-100 bg-white shadow-card-md">
             {OUTCOME_OPTIONS.map((option) => (
               <SelectItem
                 key={option.value}
                 value={option.value}
-                className="rounded-xl text-ink-3 focus:bg-[#eff4fb] focus:text-ink"
+                className="rounded-lg text-[13px] text-ink-3 focus:bg-off-white focus:text-ink"
               >
                 {option.label}
               </SelectItem>
@@ -105,13 +105,12 @@ export default function CallsClient() {
 
       {isError ? (
         <div className="surface-card border-red-100 bg-red-50 px-6 py-12 text-center">
-          <p className="text-sm font-medium text-red-600">Could not load call history.</p>
-          <p className="mt-1 text-xs text-red-400">Check your connection and try again.</p>
+          <p className="text-[14px] font-medium text-red-600">Could not load call history.</p>
+          <p className="mt-1 text-[12px] text-red-400">Check your connection and try again.</p>
         </div>
       ) : (
         <>
           <CallLogTable calls={data?.items ?? []} isLoading={isLoading} />
-
           {data && (
             <Pagination
               page={page}
