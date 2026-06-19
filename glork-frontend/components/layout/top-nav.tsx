@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Bell, Menu, Plus } from "lucide-react"
+import { Menu, Plus } from "lucide-react"
 import { useUIStore } from "@/store/ui-store"
 import { useAuthStore } from "@/store/auth-store"
 import { useAuth } from "@/hooks/use-auth"
@@ -16,96 +16,101 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-const PAGE_TITLES: Record<string, { title: string; sub: string }> = {
-  "/dashboard": { title: "Command Center", sub: "Calls, bookings, and clinic coverage at a glance" },
-  "/bookings": { title: "Bookings", sub: "Appointments flowing through the reception pipeline" },
-  "/calls": { title: "Calls", sub: "Audit what the AI handled and what still needs attention" },
-  "/agent": { title: "Agent", sub: "Tune behavior, schedules, and calendar connection" },
-  "/settings": { title: "Settings", sub: "Clinic profile and account controls" },
+const PAGE_TITLES: Record<string, string> = {
+  "/dashboard": "Dashboard",
+  "/bookings":  "Bookings",
+  "/calls":     "Calls",
+  "/agent":     "Agent config",
+  "/settings":  "Settings",
 }
 
-function getPageMeta(pathname: string) {
-  for (const [prefix, meta] of Object.entries(PAGE_TITLES)) {
-    if (pathname === prefix || pathname.startsWith(`${prefix}/`)) return meta
+function getTitle(pathname: string) {
+  for (const [prefix, title] of Object.entries(PAGE_TITLES)) {
+    if (pathname === prefix || pathname.startsWith(`${prefix}/`)) return title
   }
-  return { title: "Hyperglork", sub: "" }
+  return "Hyperglork"
 }
 
 export function TopNav() {
   const toggleSidebar = useUIStore((s) => s.toggleSidebar)
-  const doctor = useAuthStore((s) => s.doctor)
-  const { logout } = useAuth()
-  const pathname = usePathname()
-  const { title, sub } = getPageMeta(pathname)
+  const doctor        = useAuthStore((s) => s.doctor)
+  const { logout }    = useAuth()
+  const pathname      = usePathname()
+  const title         = getTitle(pathname)
 
   return (
-    <header className="sticky top-0 z-20 border-b border-white/70 bg-[#f6f8fc]/85 backdrop-blur-xl">
-      <div className="mx-auto flex h-[78px] max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-20 h-14 border-b border-[#EEEEEE] bg-white">
+      <div className="flex h-full items-center justify-between gap-4 px-5 sm:px-6 lg:px-8">
+
+        {/* Left */}
         <div className="flex min-w-0 items-center gap-3">
           <button
             onClick={toggleSidebar}
-            aria-label="Open navigation menu"
-            className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#d8e2ef] bg-white text-ink-4 transition-colors hover:text-brand lg:hidden"
+            aria-label="Open navigation"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-[#9CA3AF] transition-colors hover:bg-[#F3F4F6] hover:text-[#111111] lg:hidden"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-4 w-4" strokeWidth={1.5} />
           </button>
 
-          <div className="min-w-0">
-            <h1 className="truncate text-lg font-semibold text-ink">{title}</h1>
-            {sub && <p className="truncate text-sm text-ink-4">{sub}</p>}
-          </div>
+          <h1 className="text-[14px] font-medium text-[#111111] tracking-tight">
+            {title}
+          </h1>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* Right */}
+        <div className="flex items-center gap-2 shrink-0">
+
+          {/* New booking CTA */}
           {pathname === "/bookings" && (
             <Link
               href="/bookings"
-              className="hidden items-center gap-1.5 rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(28,128,242,0.22)] transition-transform hover:-translate-y-0.5 sm:inline-flex"
+              className="hidden items-center gap-1.5 rounded-lg bg-[#111111] px-3.5 py-2 text-[12px] font-medium text-white transition-colors hover:bg-[#333333] sm:inline-flex"
             >
-              <Plus className="h-3.5 w-3.5" />
+              <Plus className="h-3.5 w-3.5" strokeWidth={2} />
               New booking
             </Link>
           )}
 
-          <button
-            aria-label="View notifications"
-            className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#d8e2ef] bg-white text-ink-4 transition-colors hover:text-brand"
-          >
-            <Bell className="h-4 w-4" />
-          </button>
-
+          {/* Account */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
                 aria-label={`Account menu for ${doctor?.name ?? "account"}`}
                 aria-haspopup="menu"
-                className="flex h-10 min-w-[40px] items-center justify-center rounded-2xl bg-brand px-3 text-sm font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#111111] text-[11px] font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] focus-visible:ring-offset-2"
               >
                 {doctor ? getInitials(doctor.name) : "DR"}
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-60 rounded-2xl border-[#e4ecf6] bg-white p-2 shadow-card">
+            <DropdownMenuContent
+              align="end"
+              className="w-52 rounded-xl border border-[#EEEEEE] bg-white p-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.08)]"
+            >
               <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col gap-0.5 px-1 py-1">
-                  <p className="text-sm font-semibold text-ink">{doctor?.name}</p>
-                  <p className="text-xs text-ink-4">{doctor?.email}</p>
+                <div className="px-1 py-1">
+                  <p className="text-[13px] font-medium text-[#111111]">{doctor?.name}</p>
+                  <p className="text-[11px] text-[#9CA3AF] mt-0.5">{doctor?.email}</p>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-[#edf2f8]" />
+              <DropdownMenuSeparator className="bg-[#EEEEEE]" />
               <DropdownMenuItem asChild>
-                <Link href="/settings" className="cursor-pointer rounded-xl text-ink-3 focus:bg-[#eff4fb] focus:text-ink">
+                <Link href="/settings"
+                  className="cursor-pointer rounded-lg text-[13px] font-normal text-[#333333] focus:bg-[#F3F4F6] focus:text-[#111111]"
+                >
                   Profile settings
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/agent" className="cursor-pointer rounded-xl text-ink-3 focus:bg-[#eff4fb] focus:text-ink">
+                <Link href="/agent"
+                  className="cursor-pointer rounded-lg text-[13px] font-normal text-[#333333] focus:bg-[#F3F4F6] focus:text-[#111111]"
+                >
                   Agent configuration
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-[#edf2f8]" />
+              <DropdownMenuSeparator className="bg-[#EEEEEE]" />
               <DropdownMenuItem
                 onClick={logout}
-                className="rounded-xl text-red-600 focus:bg-red-50 focus:text-red-600"
+                className="cursor-pointer rounded-lg text-[13px] font-normal text-[#EF4444] focus:bg-[#FEF2F2] focus:text-[#EF4444]"
               >
                 Sign out
               </DropdownMenuItem>

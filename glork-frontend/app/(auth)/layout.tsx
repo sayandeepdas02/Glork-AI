@@ -1,73 +1,77 @@
 import Link from "next/link"
-import { Activity, CalendarClock, PhoneCall, Shield, Sparkles } from "lucide-react"
+import { CalendarClock, PhoneCall, Shield, Activity } from "lucide-react"
 import { Logo } from "@/components/ui/logo"
 
 const highlights = [
-  { icon: PhoneCall, text: "AI answers every inbound patient call" },
+  { icon: PhoneCall,     text: "AI answers every inbound patient call" },
   { icon: CalendarClock, text: "Books directly into your live calendar" },
-  { icon: Shield, text: "Flags urgent situations for human follow-up" },
-  { icon: Activity, text: "Keeps a clean operational history for the team" },
+  { icon: Shield,        text: "Flags urgent situations for human follow-up" },
+  { icon: Activity,      text: "Keeps a clean operational history for the team" },
 ]
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#081120] lg:grid lg:grid-cols-[1.08fr_0.92fr]">
-      <div className="hero-grid relative hidden overflow-hidden lg:flex">
-        <div className="hero-orb absolute -left-20 top-20 h-80 w-80 blur-3xl" />
-        <div className="hero-orb absolute bottom-0 right-0 h-[26rem] w-[26rem] opacity-70 blur-3xl" />
+    <div className="min-h-screen bg-[#0A0A0A] lg:grid lg:grid-cols-[1.1fr_0.9fr]">
 
+      {/* ── Left panel ── */}
+      <div className="relative hidden overflow-hidden lg:flex">
         <div className="relative flex w-full flex-col justify-between p-12 text-white">
-          <Link href="/" className="flex items-center gap-3">
-            <Logo className="h-10 w-10 rounded-2xl" />
-            <span className="font-serif text-[24px] tracking-tight text-white">Hyperglork</span>
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2.5">
+            <Logo className="h-7 w-7 rounded-md shrink-0" />
+            <span className="text-[15px] font-medium tracking-tight text-white">Hyperglork</span>
           </Link>
 
-          <div className="max-w-xl">
-            <span className="glass-dark inline-flex items-center gap-2 rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/68">
-              <Sparkles className="h-3.5 w-3.5 text-[#8fc6ff]" />
-              A calmer clinical front desk
-            </span>
-
-            <h1 className="mt-8 font-serif text-[4.5rem] leading-[0.96] tracking-tight text-white">
-              Your clinic’s new
-              <span className="block text-[#8fc6ff]">first response.</span>
+          {/* Copy */}
+          <div className="max-w-lg">
+            <p className="text-[11px] font-normal tracking-[0.06em] text-[#6B7280] mb-5 uppercase">
+              AI-powered clinic front desk
+            </p>
+            <h1 className="text-[3.5rem] font-light leading-[1.05] tracking-[-0.03em] text-white">
+              Your clinic&rsquo;s new<br />first response.
             </h1>
-
-            <p className="mt-6 max-w-lg text-[17px] leading-8 text-white/60">
+            <p className="mt-5 text-[14px] font-light text-[#6B7280] leading-relaxed max-w-sm">
               Hyperglork keeps your practice reachable without forcing the team to live inside the phone queue.
-              Sign in to manage the operating surface, not just a settings page.
             </p>
 
-            <div className="mt-10 grid gap-3">
+            <div className="mt-8 space-y-2">
               {highlights.map((item) => (
-                <div key={item.text} className="glass-dark flex items-center gap-3 rounded-[22px] px-4 py-3.5">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/8 text-[#9fd0ff]">
-                    <item.icon className="h-4 w-4" />
-                  </div>
-                  <p className="text-sm text-white/74">{item.text}</p>
+                <div
+                  key={item.text}
+                  className="flex items-center gap-3 rounded-lg border border-white/6 bg-white/[0.03] px-4 py-3"
+                >
+                  <item.icon className="h-4 w-4 shrink-0 text-[#6B7280]" strokeWidth={1.5} />
+                  <p className="text-[13px] font-light text-[#6B7280]">{item.text}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="glass-dark max-w-md rounded-[28px] p-5">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/44">Operator note</p>
-            <p className="mt-3 text-sm leading-7 text-white/68">
-              The new frontend keeps the same product behavior, but the visual model is now closer to a premium
-              operating console than a generic SaaS dashboard.
+          {/* Footer note */}
+          <div className="rounded-lg border border-white/6 bg-white/[0.03] p-4 max-w-sm">
+            <p className="text-[10px] font-medium uppercase tracking-[0.10em] text-[#444444] mb-1.5">
+              Operator note
+            </p>
+            <p className="text-[12px] font-light leading-6 text-[#444444]">
+              Review live call summaries, tune agent behavior, and manage appointment flow — from a single console.
             </p>
           </div>
         </div>
       </div>
 
-      <div className="flex min-h-screen items-center justify-center bg-[linear-gradient(180deg,#f8fbff_0%,#eff5fd_100%)] px-5 py-8 sm:px-8 lg:px-12">
-        <div className="w-full max-w-[430px]">
-          <Link href="/" className="mb-10 flex items-center gap-3 lg:hidden">
-            <Logo className="h-9 w-9 rounded-xl" />
-            <span className="font-serif text-[23px] tracking-tight text-ink">Hyperglork</span>
+      {/* ── Right panel ── */}
+      <div className="flex min-h-screen items-center justify-center bg-white px-6 py-10 sm:px-8 lg:px-12">
+        <div className="w-full max-w-[380px]">
+          {/* Mobile logo */}
+          <Link href="/" className="mb-8 flex items-center gap-2.5 lg:hidden">
+            <Logo className="h-6 w-6 rounded-md" />
+            <span className="text-[14px] font-medium tracking-tight text-[#111111]">Hyperglork</span>
           </Link>
 
-          <div className="surface-card p-7 sm:p-8">{children}</div>
+          {/* Form container — no card shadow on desktop, just content */}
+          <div>
+            {children}
+          </div>
         </div>
       </div>
     </div>

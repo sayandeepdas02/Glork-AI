@@ -24,25 +24,25 @@ function Pagination({
   if (totalPages <= 1) return null
 
   return (
-    <div className="flex items-center justify-center gap-3 pt-2">
+    <div className="flex items-center justify-center gap-3 pt-1">
       <button
         onClick={() => onPageChange(page - 1)}
         disabled={page === 1}
         aria-label="Previous page"
-        className="inline-flex items-center gap-1 rounded-full border border-[#d8e2ef] bg-white px-4 py-2 text-sm font-medium text-ink-4 transition-colors hover:text-brand disabled:cursor-not-allowed disabled:opacity-40"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-4 py-2 text-[13px] font-medium text-[#6B7280] transition-colors hover:border-gray-300 hover:text-[#1A1A1A] disabled:cursor-not-allowed disabled:opacity-40"
       >
-        <ChevronLeft className="h-4 w-4" /> Previous
+        <ChevronLeft className="h-3.5 w-3.5" /> Previous
       </button>
-      <span className="text-sm text-ink-5 tabular-nums">
-        {page} / {totalPages}
+      <span className="text-[13px] text-[#9CA3AF] tabular-nums">
+        Page {page} of {totalPages}
       </span>
       <button
         onClick={() => onPageChange(page + 1)}
         disabled={page >= totalPages}
         aria-label="Next page"
-        className="inline-flex items-center gap-1 rounded-full border border-[#d8e2ef] bg-white px-4 py-2 text-sm font-medium text-ink-4 transition-colors hover:text-brand disabled:cursor-not-allowed disabled:opacity-40"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-4 py-2 text-[13px] font-medium text-[#6B7280] transition-colors hover:border-gray-300 hover:text-[#1A1A1A] disabled:cursor-not-allowed disabled:opacity-40"
       >
-        Next <ChevronRight className="h-4 w-4" />
+        Next <ChevronRight className="h-3.5 w-3.5" />
       </button>
     </div>
   )
@@ -65,7 +65,7 @@ export default function BookingsClient() {
         <button
           onClick={() => setCreateOpen(true)}
           aria-label="Create new booking"
-          className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_38px_rgba(28,128,242,0.22)] transition-transform hover:-translate-y-0.5"
+          className="inline-flex items-center gap-2 rounded-lg bg-[#111111] px-4 py-2 text-[12px] font-medium text-white transition-colors hover:bg-[#333333]"
         >
           <Plus className="h-4 w-4" />
           New booking

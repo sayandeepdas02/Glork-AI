@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { AlertTriangle, Copy, Phone, Power, PowerOff, Sparkles } from "lucide-react"
+import { AlertTriangle, Copy, Phone, Power, PowerOff } from "lucide-react"
 import { toast } from "sonner"
 import { cn, copyToClipboard } from "@/lib/utils"
 import { useAuthStore } from "@/store/auth-store"
@@ -15,99 +15,107 @@ export function AgentStatusBanner() {
   const { mutate: toggle, isPending } = useToggleAgent()
 
   if (isConfigLoading || isCalendarLoading) {
-    return <div className="h-[108px] animate-pulse rounded-[32px] bg-[#edf3fb]" />
+    return <div className="h-[72px] animate-pulse rounded-lg bg-[#F3F4F6]" />
   }
 
   if (isConfigError || isCalendarError) {
     return (
-      <div className="surface-card px-6 py-5">
-        <p className="text-sm text-ink-4">Agent status unavailable. Configuration could not be loaded.</p>
+      <div className="surface-card px-5 py-3.5">
+        <p className="text-[13px] text-[#9CA3AF]">Agent status unavailable.</p>
       </div>
     )
   }
 
-  const isActive = doctor?.is_agent_active
+  const isActive         = doctor?.is_agent_active
   const calendarConnected = calendarStatus?.is_connected
 
+  /* ── Setup incomplete ── */
   if (!calendarConnected && !isActive) {
     return (
-      <div className="surface-card flex flex-col gap-4 px-6 py-5 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-amber-200 bg-amber-50">
-            <AlertTriangle className="h-5 w-5 text-amber-600" />
+      <div className="surface-card flex flex-col gap-3 px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FEF3C7]">
+            <AlertTriangle className="h-3.5 w-3.5 text-[#D97706]" strokeWidth={1.5} />
           </div>
           <div>
-            <p className="text-sm font-semibold text-ink">Agent setup incomplete</p>
-            <p className="mt-1 text-sm leading-7 text-ink-4">
-              Connect Google Calendar before turning the receptionist live for booking flow.
+            <p className="text-[13px] font-medium text-[#111111]">Setup incomplete</p>
+            <p className="text-[12px] font-light text-[#9CA3AF] mt-0.5">
+              Connect Google Calendar before going live with the AI receptionist.
             </p>
           </div>
         </div>
         <Link
           href="/onboarding?step=2"
-          className="inline-flex items-center justify-center rounded-full bg-amber-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-amber-400"
+          className="inline-flex items-center justify-center rounded-lg border border-[#D97706] px-4 py-2 text-[12px] font-medium text-[#D97706] transition-colors hover:bg-[#FEF3C7] shrink-0"
         >
-          Complete setup
+          Complete setup →
         </Link>
       </div>
     )
   }
 
+  /* ── Agent offline ── */
   if (!isActive) {
     return (
-      <div className="surface-card flex flex-col gap-4 px-6 py-5 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#dbe5f0] bg-[#eff4fb]">
-            <PowerOff className="h-5 w-5 text-ink-5" />
+      <div className="surface-card flex flex-col gap-3 px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F3F4F6]">
+            <PowerOff className="h-3.5 w-3.5 text-[#9CA3AF]" strokeWidth={1.5} />
           </div>
           <div>
-            <p className="text-sm font-semibold text-ink">Agent offline</p>
-            <p className="mt-1 text-sm leading-7 text-ink-4">
-              Calls are not being answered automatically right now. Reactivate when the clinic is ready.
+            <p className="text-[13px] font-medium text-[#111111]">Agent offline</p>
+            <p className="text-[12px] font-light text-[#9CA3AF] mt-0.5">
+              Calls are not being answered automatically right now.
             </p>
           </div>
         </div>
         <button
           onClick={() => toggle()}
           disabled={isPending}
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_38px_rgba(28,128,242,0.22)] transition-all hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-60"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#111111] px-4 py-2 text-[12px] font-medium text-white transition-colors hover:bg-[#333333] disabled:opacity-50 shrink-0"
         >
-          <Power className="h-4 w-4" />
+          <Power className="h-3.5 w-3.5" strokeWidth={1.5} />
           {isPending ? "Activating…" : "Activate agent"}
         </button>
       </div>
     )
   }
 
+  /* ── Agent live ── */
   return (
-    <div className="relative overflow-hidden rounded-[32px] border border-brand/15 bg-[linear-gradient(135deg,#0d1a2e_0%,#13263d_55%,#1c80f2_180%)] px-6 py-6 text-white shadow-[0_26px_80px_rgba(13,26,46,0.28)]">
-      <div className="absolute -right-10 top-0 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
-      <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10">
-            <Sparkles className="h-5 w-5 text-[#9fd0ff]" />
+    <div className="relative overflow-hidden rounded-lg border border-[#1A1A1A] bg-[#111111] px-5 py-4 text-white">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex items-center gap-3">
+          {/* Live dot */}
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/8 border border-white/10">
+            <span className="h-2 w-2 rounded-full bg-[#22C55E] animate-pulse-dot" />
           </div>
+
           <div>
-            <p className="text-sm font-semibold text-white">Agent live and answering calls</p>
-            <p className="mt-1 max-w-2xl text-sm leading-7 text-white/68">
-              The reception line is active. New intents, calendar updates, and summaries are feeding the command center.
+            <div className="flex items-center gap-2">
+              <p className="text-[13px] font-medium text-white">Agent live</p>
+              <span className="text-[10px] font-medium text-[#22C55E] uppercase tracking-wider">
+                · answering calls
+              </span>
+            </div>
+            <p className="text-[12px] font-light text-white/50 mt-0.5">
+              Reception line active. Intents and summaries feed the dashboard in real time.
             </p>
+
             {agentConfig?.glork_phone_number && (
-              <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-3 py-1.5 text-xs text-white/82">
-                <Phone className="h-3.5 w-3.5 text-[#9fd0ff]" />
+              <button
+                aria-label="Copy agent phone number"
+                onClick={async () => {
+                  const ok = await copyToClipboard(agentConfig.glork_phone_number!)
+                  if (ok) toast.success("Copied to clipboard")
+                  else toast.error("Failed to copy. Please copy manually.")
+                }}
+                className="mt-2 inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] text-white/60 transition-colors hover:bg-white/8 hover:text-white/80"
+              >
+                <Phone className="h-3 w-3" strokeWidth={1.5} />
                 <span className="font-mono">{agentConfig.glork_phone_number}</span>
-                <button
-                  aria-label="Copy agent phone number"
-                  onClick={async () => {
-                    const ok = await copyToClipboard(agentConfig.glork_phone_number!)
-                    if (ok) toast.success("Copied to clipboard")
-                    else toast.error("Failed to copy. Please copy manually.")
-                  }}
-                  className="text-white/60 transition-colors hover:text-white"
-                >
-                  <Copy className="h-3.5 w-3.5" />
-                </button>
-              </div>
+                <Copy className="h-3 w-3 opacity-50" strokeWidth={1.5} />
+              </button>
             )}
           </div>
         </div>
@@ -115,11 +123,9 @@ export function AgentStatusBanner() {
         <button
           onClick={() => toggle()}
           disabled={isPending}
-          className={cn(
-            "inline-flex items-center justify-center gap-2 rounded-full border border-white/12 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/16 disabled:opacity-60"
-          )}
+          className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/8 px-4 py-2 text-[12px] font-medium text-white transition-colors hover:bg-white/12 disabled:opacity-40 shrink-0"
         >
-          <PowerOff className="h-4 w-4" />
+          <PowerOff className="h-3.5 w-3.5" strokeWidth={1.5} />
           {isPending ? "Deactivating…" : "Deactivate"}
         </button>
       </div>

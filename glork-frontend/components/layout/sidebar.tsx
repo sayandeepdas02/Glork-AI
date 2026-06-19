@@ -2,105 +2,123 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Calendar, LayoutDashboard, LogOut, Phone, Settings, Settings2, Sparkles } from "lucide-react"
+import {
+  Calendar,
+  LayoutDashboard,
+  LogOut,
+  Phone,
+  Settings,
+  Settings2,
+} from "lucide-react"
 import { cn, getInitials } from "@/lib/utils"
 import { Logo } from "@/components/ui/logo"
 import { useAuth } from "@/hooks/use-auth"
 import { useAuthStore } from "@/store/auth-store"
 
-const NAV_ITEMS = [
-  { href: "/dashboard", label: "Command Center", icon: LayoutDashboard, exact: true },
-  { href: "/bookings", label: "Bookings", icon: Calendar },
-  { href: "/calls", label: "Calls", icon: Phone },
-  { href: "/agent", label: "Agent", icon: Settings2 },
-  { href: "/settings", label: "Settings", icon: Settings },
+interface NavItem {
+  href: string
+  label: string
+  icon: React.ElementType
+  exact?: boolean
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { href: "/dashboard", label: "Dashboard",    icon: LayoutDashboard, exact: true },
+  { href: "/bookings",  label: "Bookings",     icon: Calendar },
+  { href: "/calls",     label: "Calls",        icon: Phone },
+  { href: "/agent",     label: "Agent config", icon: Settings2 },
+  { href: "/settings",  label: "Settings",     icon: Settings },
 ]
 
 export function Sidebar({ onClose }: { onClose?: () => void }) {
-  const pathname = usePathname()
+  const pathname  = usePathname()
   const { logout } = useAuth()
-  const doctor = useAuthStore((s) => s.doctor)
+  const doctor    = useAuthStore((s) => s.doctor)
+
+  const isActive = ({ href, exact }: NavItem) =>
+    exact ? pathname === href : pathname === href || pathname.startsWith(`${href}/`)
 
   return (
-    <div className="flex h-full w-full flex-col bg-white/90 backdrop-blur-xl">
-      <div className="border-b border-[#e4ecf6] px-5 pb-5 pt-6">
-        <div className="flex items-center gap-3">
-          <Logo className="h-9 w-9 rounded-2xl" />
-          <div>
-            <p className="font-serif text-[22px] tracking-tight text-ink">Hyperglork</p>
-            <p className="text-[11px] uppercase tracking-[0.16em] text-ink-5">Clinic OS</p>
-          </div>
-        </div>
+    <div className="flex h-full w-full flex-col bg-[#FAFAFA] border-r border-[#EEEEEE]">
 
-        {doctor && (
-          <div className="mt-5 rounded-[24px] border border-[#e4ecf6] bg-[linear-gradient(135deg,#ffffff_0%,#f4f8fe_100%)] p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand text-sm font-semibold text-white">
-                {getInitials(doctor.name)}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-ink">{doctor.name}</p>
-                <p className="truncate text-xs text-ink-4">{doctor.clinic_name}</p>
-              </div>
-              <div className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-700">
-                <span className={cn("h-2 w-2 rounded-full", doctor.is_agent_active ? "bg-emerald-500" : "bg-slate-300")} />
-                {doctor.is_agent_active ? "Live" : "Idle"}
-              </div>
-            </div>
-          </div>
-        )}
+      {/* Logo */}
+      <div className="flex h-14 items-center gap-2.5 border-b border-[#EEEEEE] px-5 shrink-0">
+        <Logo className="h-6 w-6 rounded-md shrink-0" />
+        <span className="text-[15px] font-medium tracking-tight text-[#111111]">
+          Hyperglork
+        </span>
       </div>
 
-      <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-5 scrollbar-sidebar">
-        <div>
-          <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-5">
-            Workspace
-          </p>
-          <div className="mt-3 space-y-1.5">
-            {NAV_ITEMS.map(({ href, label, icon: Icon, exact }) => {
-              const active = exact ? pathname === href : pathname === href || pathname.startsWith(`${href}/`)
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  onClick={onClose}
-                  aria-current={active ? "page" : undefined}
-                  className={cn(
-                    "group flex items-center gap-3 rounded-[20px] px-3.5 py-3 text-[13px] font-medium transition-all duration-200",
-                    active
-                      ? "bg-brand text-white shadow-[0_18px_34px_rgba(28,128,242,0.22)]"
-                      : "text-ink-4 hover:bg-[#eff4fb] hover:text-ink-2"
-                  )}
-                >
-                  <Icon className={cn("h-4 w-4 shrink-0", active ? "text-white" : "text-ink-5 group-hover:text-brand")} />
-                  <span>{label}</span>
-                </Link>
-              )
-            })}
+      {/* Doctor profile */}
+      {doctor && (
+        <div className="border-b border-[#EEEEEE] px-4 py-3 shrink-0">
+          <div className="flex items-center gap-2.5 rounded-lg bg-white border border-[#EEEEEE] px-3 py-2.5">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#111111] text-[12px] font-medium text-white">
+              {getInitials(doctor.name)}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[13px] font-medium text-[#111111] leading-tight">{doctor.name}</p>
+              <p className="truncate text-[11px] text-[#9CA3AF] mt-0.5">{doctor.clinic_name}</p>
+            </div>
+            <div
+              className={cn(
+                "flex items-center gap-1.5 rounded-md px-2 py-1 text-[10px] font-medium uppercase tracking-wider shrink-0",
+                doctor.is_agent_active
+                  ? "bg-[#F0FDF4] text-[#166534]"
+                  : "bg-[#F3F4F6] text-[#6B7280]"
+              )}
+            >
+              <span
+                className={cn(
+                  "h-1.5 w-1.5 rounded-full",
+                  doctor.is_agent_active ? "bg-[#22C55E] animate-pulse-dot" : "bg-[#D1D5DB]"
+                )}
+              />
+              {doctor.is_agent_active ? "Live" : "Off"}
+            </div>
           </div>
         </div>
+      )}
 
-        <div className="rounded-[24px] border border-[#e4ecf6] bg-[#f7faff] p-4">
-          <div className="flex items-center gap-2 text-brand">
-            <Sparkles className="h-4 w-4" />
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em]">Operator focus</p>
-          </div>
-          <p className="mt-3 text-sm leading-6 text-ink-4">
-            Watch missed intent, reschedules, and urgent transfer requests before they become admin debt.
-          </p>
-        </div>
+      {/* Nav */}
+      <nav className="flex-1 overflow-y-auto py-3 px-3 space-y-0.5 scrollbar-sidebar">
+        {NAV_ITEMS.map((item) => {
+          const active = isActive(item)
+          const Icon   = item.icon
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onClose}
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-normal transition-colors duration-100",
+                active
+                  ? "bg-white border border-[#EEEEEE] text-[#111111] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+                  : "text-[#6B7280] hover:bg-white hover:text-[#111111] hover:border hover:border-[#EEEEEE]"
+              )}
+            >
+              <Icon
+                className={cn(
+                  "h-[15px] w-[15px] shrink-0",
+                  active ? "text-[#111111]" : "text-[#9CA3AF]"
+                )}
+                strokeWidth={active ? 2 : 1.5}
+              />
+              {item.label}
+            </Link>
+          )
+        })}
       </nav>
 
-      <div className="border-t border-[#e4ecf6] p-3">
+      {/* Sign out */}
+      <div className="shrink-0 border-t border-[#EEEEEE] p-3">
         <button
-          onClick={() => {
-            onClose?.()
-            logout()
-          }}
+          onClick={() => { onClose?.(); logout() }}
           aria-label="Sign out"
-          className="flex w-full items-center gap-3 rounded-[18px] px-3.5 py-3 text-sm font-medium text-ink-4 transition-colors hover:bg-[#eff4fb] hover:text-ink-2"
+          className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-normal text-[#9CA3AF] transition-colors hover:bg-white hover:text-[#EF4444] hover:border hover:border-[#EEEEEE]"
         >
-          <LogOut className="h-4 w-4 shrink-0 text-ink-5" />
+          <LogOut className="h-[15px] w-[15px] shrink-0" strokeWidth={1.5} />
           Sign out
         </button>
       </div>

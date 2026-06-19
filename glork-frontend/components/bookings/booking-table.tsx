@@ -33,23 +33,23 @@ interface BookingTableProps {
 export function BookingTableSkeleton() {
   return (
     <div className="surface-card overflow-hidden">
-      <div className="flex items-center gap-3 border-b border-[#e7eef7] bg-[#f7faff] px-5 py-4">
+      <div className="flex items-center gap-3 border-b border-gray-100 bg-[#FAFAFA] px-5 py-4">
         {["w-28", "w-36", "w-24", "w-20", "w-16"].map((width, index) => (
           <div key={index} className={cn("h-3 rounded bg-[#e6eef8] animate-pulse", width)} />
         ))}
       </div>
       {Array.from({ length: 5 }).map((_, index) => (
-        <div key={index} className="flex items-center gap-4 border-b border-[#e7eef7] px-5 py-4">
-          <div className="h-10 w-10 rounded-2xl bg-[#edf3fb] animate-pulse shrink-0" />
+        <div key={index} className="flex items-center gap-4 border-b border-gray-100 px-5 py-4">
+          <div className="h-10 w-10 rounded-2xl bg-gray-100 animate-pulse shrink-0" />
           <div className="flex-1 space-y-2">
-            <div className="h-4 w-32 rounded bg-[#edf3fb] animate-pulse" />
-            <div className="h-3 w-24 rounded bg-[#edf3fb] animate-pulse" />
+            <div className="h-4 w-32 rounded bg-gray-100 animate-pulse" />
+            <div className="h-3 w-24 rounded bg-gray-100 animate-pulse" />
           </div>
           <div className="hidden md:flex gap-2">
-            <div className="h-4 w-28 rounded bg-[#edf3fb] animate-pulse" />
+            <div className="h-4 w-28 rounded bg-gray-100 animate-pulse" />
           </div>
-          <div className="h-5 w-20 rounded-full bg-[#edf3fb] animate-pulse" />
-          <div className="h-8 w-8 rounded-2xl bg-[#edf3fb] animate-pulse" />
+          <div className="h-5 w-20 rounded-full bg-gray-100 animate-pulse" />
+          <div className="h-8 w-8 rounded-2xl bg-gray-100 animate-pulse" />
         </div>
       ))}
     </div>
@@ -67,11 +67,11 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
   if (!bookings.length) {
     return (
       <div className="surface-card flex flex-col items-center justify-center py-20 text-center">
-        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-[22px] border border-[#dfe8f3] bg-[#f3f8ff]">
-          <Calendar className="h-6 w-6 text-ink-5" />
+        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-[#F3F4F6]">
+          <Calendar className="h-4 w-4 text-[#9CA3AF]" strokeWidth={1.5} />
         </div>
-        <p className="text-sm font-semibold text-ink">No bookings found</p>
-        <p className="mt-1.5 max-w-sm text-sm leading-7 text-ink-5">
+        <p className="text-[13px] font-normal text-[#111111]">No bookings found</p>
+        <p className="mt-1 max-w-sm text-[12px] font-light text-[#9CA3AF]">
           Your AI receptionist will automatically add bookings here once patient calls begin converting.
         </p>
       </div>
@@ -81,11 +81,9 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
   return (
     <>
       <div className="surface-card overflow-hidden">
-        <div className="hidden grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,1fr)_40px] gap-4 border-b border-[#e7eef7] bg-[#f7faff] px-5 py-4 md:grid">
+        <div className="hidden grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,1fr)_40px] gap-4 border-b border-gray-100 bg-[#FAFAFA] px-5 py-4 md:grid">
           {["Patient", "Date & time", "Status", "Source", ""].map((heading) => (
-            <p key={heading} className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-5">
-              {heading}
-            </p>
+            <p key={heading} className="section-label">{heading}</p>
           ))}
         </div>
 
@@ -94,28 +92,28 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
             <div
               key={booking.id}
               onClick={() => router.push(`/bookings/${booking.id}`)}
-              className="grid cursor-pointer grid-cols-[minmax(0,1fr)_auto] gap-4 px-5 py-4 transition-colors hover:bg-[#f7faff] md:grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,1fr)_40px]"
+              className="grid cursor-pointer grid-cols-[minmax(0,1fr)_auto] gap-4 px-5 py-4 transition-colors hover:bg-[#FAFAFA] md:grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,1fr)_40px]"
             >
               <div className="flex min-w-0 items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-brand/15 bg-brand/10">
-                  <span className="text-xs font-semibold text-brand">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F3F4F6]">
+                  <span className="text-[11px] font-medium text-[#6B7280]">
                     {booking.patient_name.slice(0, 2).toUpperCase()}
                   </span>
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-ink">{booking.patient_name}</p>
-                  <p className="mt-1 flex items-center gap-1 text-[11px] text-ink-5">
-                    <Phone className="h-3 w-3 shrink-0" />
+                  <p className="truncate text-[13px] font-normal text-[#111111]">{booking.patient_name}</p>
+                  <p className="mt-0.5 flex items-center gap-1 text-[11px] font-light text-[#9CA3AF]">
+                    <Phone className="h-3 w-3 shrink-0" strokeWidth={1.5} />
                     <span className="font-mono">{booking.patient_phone}</span>
                   </p>
                 </div>
               </div>
 
               <div className="hidden md:block">
-                <p className="text-sm font-medium text-ink">
+                <p className="text-[13px] font-normal text-[#333333]">
                   {formatAppointmentDate(booking.appointment_start, timezone)}
                 </p>
-                <p className="mt-1 text-[11px] text-ink-5">
+                <p className="mt-0.5 text-[11px] font-light text-[#9CA3AF]">
                   {formatAppointmentTime(booking.appointment_start, timezone)}
                 </p>
               </div>
@@ -126,11 +124,11 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
 
               <div className="hidden md:flex items-center gap-1.5">
                 {booking.call_log_id ? (
-                  <span className="inline-flex items-center gap-1 rounded-full border border-brand/15 bg-brand/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-brand">
-                    <Zap className="h-3 w-3" /> AI
+                  <span className="inline-flex items-center gap-1 rounded-md border border-[#E5E7EB] bg-[#F3F4F6] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[#333333]">
+                    <Zap className="h-2.5 w-2.5" strokeWidth={1.5} /> AI
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 rounded-full border border-[#d9e3ef] bg-[#f3f7fd] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-5">
+                  <span className="inline-flex items-center gap-1 rounded-md border border-[#E5E7EB] bg-[#FAFAFA] px-2 py-0.5 text-[10px] font-normal uppercase tracking-wider text-[#9CA3AF]">
                     Manual
                   </span>
                 )}
@@ -139,19 +137,19 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
               <div onClick={(event) => event.stopPropagation()}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="flex h-8 w-8 items-center justify-center rounded-2xl text-ink-5 transition-colors hover:bg-[#eef4fb] hover:text-ink">
+                    <button className="flex h-8 w-8 items-center justify-center rounded-lg text-[#9CA3AF] transition-colors hover:bg-[#F3F4F6] hover:text-[#111111]">
                       <MoreHorizontal className="h-4 w-4" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="rounded-2xl border-[#e4ecf6] bg-white">
-                    <DropdownMenuItem className="rounded-xl text-ink-3 focus:bg-[#eff4fb] focus:text-ink" onClick={() => router.push(`/bookings/${booking.id}`)}>
+                  <DropdownMenuContent align="end" className="rounded-xl border-gray-100 bg-white">
+                    <DropdownMenuItem className="rounded-lg text-[13px] text-[#333333] focus:bg-[#FAFAFA] focus:text-[#111111]" onClick={() => router.push(`/bookings/${booking.id}`)}>
                       View details
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="rounded-xl text-ink-3 focus:bg-[#eff4fb] focus:text-ink" onClick={() => router.push(`/bookings/${booking.id}`)}>
+                    <DropdownMenuItem className="rounded-lg text-[13px] text-[#333333] focus:bg-[#FAFAFA] focus:text-[#111111]" onClick={() => router.push(`/bookings/${booking.id}`)}>
                       Reschedule
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      className="rounded-xl text-red-500 focus:bg-red-50 focus:text-red-500"
+                      className="rounded-lg text-[13px] text-red-500 focus:bg-red-50 focus:text-red-500"
                       disabled={booking.status === "cancelled"}
                       onClick={() => setCancelId(booking.id)}
                     >
@@ -166,15 +164,15 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
       </div>
 
       <AlertDialog open={!!cancelId} onOpenChange={() => setCancelId(null)}>
-        <AlertDialogContent className="rounded-[28px] border-[#e4ecf6] bg-white">
+        <AlertDialogContent className="rounded-xl border-gray-100 bg-white">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-ink">Cancel this booking?</AlertDialogTitle>
-            <AlertDialogDescription className="text-ink-4">
+            <AlertDialogTitle className="text-[16px] text-ink">Cancel this booking?</AlertDialogTitle>
+            <AlertDialogDescription className="text-[13px] text-[#6B7280]">
               This will cancel the appointment and remove it from Google Calendar. The patient will be notified.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-full border-[#d8e2ef] bg-white text-ink-4 hover:bg-[#eff4fb]">
+            <AlertDialogCancel className="rounded-lg text-[13px] border-gray-200 bg-white text-[#6B7280] hover:bg-[#FAFAFA]">
               Keep booking
             </AlertDialogCancel>
             <AlertDialogAction
@@ -185,7 +183,7 @@ export function BookingTable({ bookings, isLoading }: BookingTableProps) {
                   setCancelId(null)
                 }
               }}
-              className="rounded-full bg-red-600 text-white hover:bg-red-700 disabled:opacity-60"
+              className="rounded-lg text-[13px] bg-red-600 text-white hover:bg-red-700 disabled:opacity-60"
             >
               {isCancelPending ? "Cancelling…" : "Cancel booking"}
             </AlertDialogAction>

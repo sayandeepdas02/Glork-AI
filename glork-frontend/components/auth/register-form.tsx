@@ -38,19 +38,12 @@ function passwordStrength(pw: string): { score: number; label: string; color: st
   if (s <= 1) return { score: 20, label: "Weak", color: "bg-red-400" }
   if (s === 2) return { score: 40, label: "Fair", color: "bg-orange-400" }
   if (s === 3) return { score: 60, label: "Good", color: "bg-sky-400" }
-  if (s === 4) return { score: 80, label: "Strong", color: "bg-brand" }
+  if (s === 4) return { score: 80, label: "Strong", color: "bg-[#111111]" }
   return { score: 100, label: "Very strong", color: "bg-emerald-500" }
 }
 
 function Field({
-  id,
-  label,
-  type = "text",
-  placeholder,
-  autoComplete,
-  register,
-  error,
-  rightSlot,
+  id, label, type = "text", placeholder, autoComplete, register, error, rightSlot,
 }: {
   id: string
   label: string
@@ -62,10 +55,8 @@ function Field({
   rightSlot?: React.ReactNode
 }) {
   return (
-    <div className="space-y-2">
-      <label htmlFor={id} className="block text-sm font-medium text-ink-3">
-        {label}
-      </label>
+    <div className="space-y-1.5">
+      <label htmlFor={id} className="block text-[13px] font-medium text-[#333333]">{label}</label>
       <div className="relative">
         <input
           id={id}
@@ -73,23 +64,23 @@ function Field({
           placeholder={placeholder}
           autoComplete={autoComplete}
           className={cn(
-            "h-12 w-full rounded-2xl border border-[#d9e3ef] bg-white px-4 text-sm text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] outline-none transition-all placeholder:text-ink-5",
-            "hover:border-[#c4d5ea] focus:border-brand focus:ring-4 focus:ring-brand/10",
-            rightSlot && "pr-12",
+            "h-10 w-full rounded-lg border border-[#E5E7EB] bg-white px-3.5 text-[13px] text-[#111111] outline-none transition-colors placeholder:text-[#D1D5DB]",
+            "hover:border-[#D1D5DB] focus:border-[#111111] focus:ring-0",
+            rightSlot && "pr-11",
             error && "border-red-300 focus:border-red-400 focus:ring-red-100"
           )}
           {...register}
         />
-        {rightSlot && <div className="absolute right-4 top-1/2 -translate-y-1/2">{rightSlot}</div>}
+        {rightSlot && <div className="absolute right-3.5 top-1/2 -translate-y-1/2">{rightSlot}</div>}
       </div>
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error && <p className="text-[12px] text-red-500">{error}</p>}
     </div>
   )
 }
 
 function GoogleIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true">
       <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
       <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
       <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
@@ -105,12 +96,7 @@ export function RegisterForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<FormValues>({
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
   })
 
@@ -151,62 +137,38 @@ export function RegisterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {/* Google */}
       <button
         type="button"
         onClick={handleGoogleSignUp}
         disabled={isSubmitting || isGoogleLoading}
         className={cn(
-          "flex h-12 w-full items-center justify-center gap-2.5 rounded-2xl border border-[#d9e3ef] bg-white text-sm font-medium text-ink-3 transition-all",
-          "hover:border-brand/25 hover:bg-brand/5 hover:text-brand disabled:cursor-not-allowed disabled:opacity-60"
+          "flex h-11 w-full items-center justify-center gap-2.5 rounded-lg border border-gray-200 bg-white text-[13px] font-medium text-[#333333] transition-all",
+          "hover:border-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
         )}
       >
         {isGoogleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
         Continue with Google
       </button>
 
-      <div className="relative flex items-center gap-3 py-1">
-        <div className="h-px flex-1 bg-[#dfe7f2]" />
-        <span className="text-xs uppercase tracking-[0.14em] text-ink-5">or use email</span>
-        <div className="h-px flex-1 bg-[#dfe7f2]" />
+      {/* Divider */}
+      <div className="relative flex items-center gap-3 py-0.5">
+        <div className="h-px flex-1 bg-gray-100" />
+        <span className="text-[11px] uppercase tracking-[0.14em] text-[#9CA3AF]">or use email</span>
+        <div className="h-px flex-1 bg-gray-100" />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field
-          id="name"
-          label="Full name"
-          placeholder="Dr. Jane Smith"
-          register={register("name")}
-          error={errors.name?.message}
-        />
-        <Field
-          id="clinic_name"
-          label="Clinic name"
-          placeholder="Northside Family Clinic"
-          register={register("clinic_name")}
-          error={errors.clinic_name?.message}
-        />
+        <Field id="name"        label="Full name"    placeholder="Dr. Jane Smith"            register={register("name")}        error={errors.name?.message} />
+        <Field id="clinic_name" label="Clinic name"  placeholder="Northside Family Clinic"   register={register("clinic_name")} error={errors.clinic_name?.message} />
       </div>
 
-      <Field
-        id="specialty"
-        label="Specialty"
-        placeholder="General practice, pediatrics, dermatology..."
-        register={register("specialty")}
-        error={errors.specialty?.message}
-      />
+      <Field id="specialty" label="Specialty (optional)" placeholder="General practice, pediatrics…" register={register("specialty")} />
 
-      <Field
-        id="email"
-        label="Email address"
-        type="email"
-        placeholder="you@clinic.com"
-        autoComplete="email"
-        register={register("email")}
-        error={errors.email?.message}
-      />
+      <Field id="email" label="Email address" type="email" placeholder="you@clinic.com" autoComplete="email" register={register("email")} error={errors.email?.message} />
 
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         <Field
           id="password"
           label="Password"
@@ -216,54 +178,42 @@ export function RegisterForm() {
           register={register("password")}
           error={errors.password?.message}
           rightSlot={
-            <button
-              type="button"
-              tabIndex={-1}
-              onClick={() => setShowPw(!showPw)}
+            <button type="button" tabIndex={-1} onClick={() => setShowPw(!showPw)}
               aria-label={showPw ? "Hide password" : "Show password"}
-              className="text-ink-5 transition-colors hover:text-ink-3"
-            >
+              className="text-[#9CA3AF] transition-colors hover:text-[#6B7280]">
               {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           }
         />
         {pw && (
           <div className="space-y-1">
-            <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#e7eef7]">
+            <div className="h-1 w-full overflow-hidden rounded-full bg-gray-100">
               <div
                 className={cn("h-full rounded-full transition-all duration-300", strength.color)}
                 style={{ width: `${strength.score}%` }}
               />
             </div>
-            <p className="text-[11px] text-ink-5">{strength.label}</p>
+            <p className="text-[11px] text-[#9CA3AF]">{strength.label}</p>
           </div>
         )}
       </div>
 
-      <Field
-        id="confirm_password"
-        label="Confirm password"
-        type="password"
-        placeholder="Repeat password"
-        autoComplete="new-password"
-        register={register("confirm_password")}
-        error={errors.confirm_password?.message}
-      />
+      <Field id="confirm_password" label="Confirm password" type="password" placeholder="Repeat password" autoComplete="new-password" register={register("confirm_password")} error={errors.confirm_password?.message} />
 
       <button
         type="submit"
         disabled={isSubmitting || isGoogleLoading}
         className={cn(
-          "flex h-12 w-full items-center justify-center gap-2 rounded-full bg-brand text-sm font-semibold text-white shadow-[0_18px_38px_rgba(28,128,242,0.22)] transition-all",
-          "hover:-translate-y-0.5 hover:bg-brand-dark disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+          "mt-1 flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-[#111111] text-[13px] font-medium text-white transition-colors",
+          "hover:bg-[#333333] disabled:cursor-not-allowed disabled:opacity-40"
         )}
       >
         {isSubmitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Creating account…</> : "Create workspace"}
       </button>
 
-      <p className="text-center text-sm text-ink-4">
+      <p className="text-center text-[13px] text-[#6B7280]">
         Already have an account?{" "}
-        <Link href="/login" className="font-semibold text-brand transition-colors hover:text-brand-dark">
+        <Link href="/login" className="font-normal text-[#111111] underline underline-offset-2 hover:text-[#333333]">
           Sign in
         </Link>
       </p>

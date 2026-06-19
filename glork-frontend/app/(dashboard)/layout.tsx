@@ -9,21 +9,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { sidebarOpen, setSidebarOpen } = useUIStore()
 
   return (
-    <div className="flex min-h-screen bg-transparent">
-      <aside className="hidden w-[310px] shrink-0 border-r border-white/70 bg-white/65 shadow-[18px_0_60px_rgba(12,24,41,0.04)] backdrop-blur-xl lg:flex">
+    <div className="flex h-screen overflow-hidden bg-white">
+      {/* Desktop sidebar */}
+      <aside className="hidden w-[240px] shrink-0 lg:flex">
         <Sidebar />
       </aside>
 
+      {/* Mobile sidebar */}
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-        <SheetContent side="left" className="w-[310px] border-r-0 p-0">
+        <SheetContent side="left" className="w-[240px] border-r-0 p-0">
           <Sidebar onClose={() => setSidebarOpen(false)} />
         </SheetContent>
       </Sheet>
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      {/* Main */}
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <TopNav />
-        <main className="flex-1 overflow-y-auto scrollbar-thin">
-          <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">{children}</div>
+        <main className="flex-1 overflow-y-auto scrollbar-thin bg-white">
+          <div className="mx-auto w-full max-w-6xl px-6 py-6 lg:px-8">
+            {children}
+          </div>
         </main>
       </div>
     </div>

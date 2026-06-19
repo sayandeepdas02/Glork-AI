@@ -7,12 +7,14 @@ export default function RegisterPage() {
   return (
     <div>
       <div className="mb-8">
-        <span className="eyebrow">Create account</span>
-        <h1 className="mt-5 font-serif text-[2.35rem] leading-[0.96] tracking-tight text-ink sm:text-[2.6rem]">
-          Launch a better front desk in minutes.
+        <p className="text-[11px] font-normal tracking-[0.06em] uppercase text-[#9CA3AF] mb-3">
+          Create account
+        </p>
+        <h1 className="text-[2rem] font-light tracking-[-0.03em] text-[#111111] leading-tight">
+          Set up your clinic.
         </h1>
-        <p className="mt-3 text-[15px] leading-7 text-ink-4">
-          Start the clinic workspace, connect your calendar, and hand routine calls to the agent.
+        <p className="mt-2 text-[13px] font-light text-[#9CA3AF]">
+          Connect your calendar and hand routine calls to the AI receptionist.
         </p>
       </div>
       <RegisterForm />

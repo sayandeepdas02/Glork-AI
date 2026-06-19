@@ -41,7 +41,7 @@ export function StepGoLive({ onBack, onComplete }: StepGoLiveProps) {
             <CheckCircle2 className="h-8 w-8 text-[#1d6b4a]" />
           </div>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900">Almost there!</h2>
+        <h2 className="text-[14px] font-medium text-[#111111]">Almost there!</h2>
         <p className="text-sm text-gray-500 mt-1">
           Review your setup and activate the AI receptionist.
         </p>
