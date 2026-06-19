@@ -2,10 +2,16 @@
 
 import { useMemo } from "react"
 import { format, subDays } from "date-fns"
+import { AlertTriangle, ArrowUpRight } from "lucide-react"
 import {
-  Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from "recharts"
-import { AlertTriangle } from "lucide-react"
 import { StatsCards } from "@/components/dashboard/stats-cards"
 import { UpcomingBookings } from "@/components/dashboard/upcoming-bookings"
 import { RecentCalls } from "@/components/dashboard/recent-calls"
@@ -36,16 +42,16 @@ interface CustomTooltipProps {
 function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-xl border border-[#E8E8E3] bg-white px-3.5 py-2.5 shadow-md text-xs">
-      <p className="font-semibold text-[#111] mb-2">{label}</p>
-      <div className="space-y-1.5">
-        {payload.map((p) => (
-          <div key={p.name} className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full" style={{ background: p.fill }} />
-              <span className="text-[#888]">{p.name}</span>
+    <div className="rounded-[20px] border border-[#dbe5f0] bg-white px-4 py-3 shadow-card">
+      <p className="text-sm font-semibold text-ink">{label}</p>
+      <div className="mt-2 space-y-1.5">
+        {payload.map((entry) => (
+          <div key={entry.name} className="flex items-center justify-between gap-5 text-xs">
+            <div className="flex items-center gap-2 text-ink-4">
+              <span className="h-2 w-2 rounded-full" style={{ background: entry.fill }} />
+              {entry.name}
             </div>
-            <span className="font-semibold text-[#111] tabular-nums">{p.value}</span>
+            <span className="font-semibold text-ink">{entry.value}</span>
           </div>
         ))}
       </div>
@@ -75,63 +81,67 @@ function CallsChart() {
         other: 0,
       }
     })
+
     if (!calls?.items) return days
+
     calls.items.forEach((call) => {
       if (!call.started_at) return
       const day = format(new Date(call.started_at), "yyyy-MM-dd")
-      const bucket = days.find((d) => d.day === day)
-      if (bucket) {
-        bucket.total++
-        if (call.outcome === "booked") bucket.booked++
-        else bucket.other++
-      }
+      const bucket = days.find((item) => item.day === day)
+      if (!bucket) return
+      bucket.total++
+      if (call.outcome === "booked") bucket.booked++
+      else bucket.other++
     })
+
     return days
   }, [calls])
 
   if (isLoading) {
-    return <div className="h-52 animate-pulse rounded-xl bg-[#F0F0EC]" />
+    return <div className="h-64 animate-pulse rounded-[24px] bg-[#edf3fb]" />
   }
 
   if (isError) {
     return (
-      <div className="h-52 flex flex-col items-center justify-center gap-2 rounded-xl bg-[#FAF5F5] border border-red-100">
-        <AlertTriangle className="h-5 w-5 text-red-300" aria-hidden="true" />
-        <p className="text-xs text-[#aaa]">Could not load chart data</p>
+      <div className="flex h-64 flex-col items-center justify-center gap-2 rounded-[24px] border border-red-100 bg-red-50">
+        <AlertTriangle className="h-5 w-5 text-red-300" />
+        <p className="text-sm text-red-600">Could not load volume data.</p>
       </div>
     )
   }
 
   return (
     <div>
-      <ResponsiveContainer width="100%" height={200}>
-        <BarChart data={chartData} barGap={4} margin={{ top: 10, right: 0, left: -18, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" vertical={false} />
+      <ResponsiveContainer width="100%" height={240}>
+        <BarChart data={chartData} barGap={6} margin={{ top: 10, right: 0, left: -18, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(120,139,167,0.18)" vertical={false} />
           <XAxis
             dataKey="date"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#999", fontSize: 11, fontWeight: 500 }}
+            tick={{ fill: "#7e8ba0", fontSize: 11, fontWeight: 500 }}
             dy={8}
           />
           <YAxis
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#999", fontSize: 11 }}
+            tick={{ fill: "#7e8ba0", fontSize: 11 }}
             allowDecimals={false}
             width={28}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.03)", radius: 6 }} />
-          <Bar dataKey="other" name="Other" fill="#D8D8D0" radius={[4, 4, 0, 0]} maxBarSize={28} />
-          <Bar dataKey="booked" name="Booked" fill="var(--brand)" radius={[4, 4, 0, 0]} maxBarSize={28} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(28,128,242,0.05)", radius: 10 }} />
+          <Bar dataKey="other" name="Other" fill="#d8e2ef" radius={[8, 8, 0, 0]} maxBarSize={28} />
+          <Bar dataKey="booked" name="Booked" fill="#1c80f2" radius={[8, 8, 0, 0]} maxBarSize={28} />
         </BarChart>
       </ResponsiveContainer>
-      <div className="flex items-center gap-4 mt-3 px-1">
-        <span className="flex items-center gap-1.5 text-[11px] text-[#888]">
-          <span className="inline-block h-2 w-2 rounded-sm bg-[#D8D8D0]" /> Other
+      <div className="mt-4 flex items-center gap-5 px-1 text-[11px] text-ink-5">
+        <span className="flex items-center gap-2">
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#d8e2ef]" />
+          Other
         </span>
-        <span className="flex items-center gap-1.5 text-[11px] text-[#888]">
-          <span className="inline-block h-2 w-2 rounded-sm bg-brand" /> Booked
+        <span className="flex items-center gap-2">
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-brand" />
+          Booked
         </span>
       </div>
     </div>
@@ -143,38 +153,57 @@ export default function DashboardClient() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-[#111]">{getGreeting()} 👋</h2>
-          <p className="text-[13px] text-[#888] mt-0.5 font-mono">Here&apos;s what&apos;s happening with your clinic</p>
+      <section className="section-frame overflow-hidden p-6 sm:p-7">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-3xl">
+            <span className="eyebrow">Overview</span>
+            <h2 className="mt-5 font-serif text-[2.6rem] leading-tight text-ink sm:text-[3.35rem]">
+              {getGreeting()}. Your reception system is staying ahead of the queue.
+            </h2>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-ink-4">
+              Watch what the AI handled, what converted, and what still needs a person before the day gets noisy.
+            </p>
+          </div>
+
+          <div className="surface-card-muted flex items-center gap-4 px-5 py-4">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-5">This month</p>
+              <p className="mt-1 text-3xl font-semibold text-ink tabular-nums">{stats?.total_this_month ?? "—"}</p>
+              <p className="text-sm text-ink-4">Bookings processed</p>
+            </div>
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand text-white">
+              <ArrowUpRight className="h-5 w-5" />
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
       <AgentStatusBanner />
       <StatsCards />
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
-        <div className="lg:col-span-3 rounded-2xl bg-white border border-[#E8E8E3] p-5">
-          <div className="flex items-center justify-between mb-5">
+      <div className="grid gap-6 xl:grid-cols-[1.4fr_0.9fr]">
+        <div className="surface-card p-6">
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <h3 className="text-sm font-semibold text-[#111]">Call volume</h3>
-              <p className="text-[11px] font-mono text-[#aaa] mt-0.5">Last 7 days</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-5">Calls</p>
+              <h3 className="mt-2 text-xl font-semibold text-ink">Seven-day booking momentum</h3>
+              <p className="mt-2 text-sm leading-7 text-ink-4">
+                Which patient conversations are converting into confirmed appointments.
+              </p>
             </div>
             {stats && (
-              <div className="text-right">
-                <p className="text-lg font-bold text-[#111] tabular-nums">
-                  {stats.total_this_month}
-                </p>
-                <p className="text-[11px] font-mono text-[#aaa]">bookings this month</p>
+              <div className="rounded-[22px] bg-[#eff4fb] px-4 py-3 text-right">
+                <p className="text-2xl font-semibold text-ink tabular-nums">{stats.total_this_month}</p>
+                <p className="text-xs text-ink-5">bookings this month</p>
               </div>
             )}
           </div>
-          <CallsChart />
+          <div className="mt-6">
+            <CallsChart />
+          </div>
         </div>
 
-        <div className="lg:col-span-2">
-          <UpcomingBookings />
-        </div>
+        <UpcomingBookings />
       </div>
 
       <RecentCalls />

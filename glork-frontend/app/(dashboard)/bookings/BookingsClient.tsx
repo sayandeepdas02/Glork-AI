@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Plus } from "lucide-react"
 import { BookingTable } from "@/components/bookings/booking-table"
 import { BookingFilters } from "@/components/bookings/booking-filters"
 import { BookingForm } from "@/components/bookings/booking-form"
+import { PageHeader } from "@/components/layout/page-header"
 import { useBookings } from "@/hooks/use-bookings"
 import { useUIStore } from "@/store/ui-store"
 
@@ -28,20 +29,20 @@ function Pagination({
         onClick={() => onPageChange(page - 1)}
         disabled={page === 1}
         aria-label="Previous page"
-        className="inline-flex items-center gap-1 rounded-xl border border-[#D8D8D3] bg-white px-3 py-2 text-xs font-semibold text-[#555] transition-all hover:bg-[#F5F5F2] disabled:opacity-40 disabled:cursor-not-allowed"
+        className="inline-flex items-center gap-1 rounded-full border border-[#d8e2ef] bg-white px-4 py-2 text-sm font-medium text-ink-4 transition-colors hover:text-brand disabled:cursor-not-allowed disabled:opacity-40"
       >
-        <ChevronLeft className="h-3.5 w-3.5" aria-hidden="true" /> Previous
+        <ChevronLeft className="h-4 w-4" /> Previous
       </button>
-      <span className="text-xs font-mono text-[#888] tabular-nums">
+      <span className="text-sm text-ink-5 tabular-nums">
         {page} / {totalPages}
       </span>
       <button
         onClick={() => onPageChange(page + 1)}
         disabled={page >= totalPages}
         aria-label="Next page"
-        className="inline-flex items-center gap-1 rounded-xl border border-[#D8D8D3] bg-white px-3 py-2 text-xs font-semibold text-[#555] transition-all hover:bg-[#F5F5F2] disabled:opacity-40 disabled:cursor-not-allowed"
+        className="inline-flex items-center gap-1 rounded-full border border-[#d8e2ef] bg-white px-4 py-2 text-sm font-medium text-ink-4 transition-colors hover:text-brand disabled:cursor-not-allowed disabled:opacity-40"
       >
-        Next <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+        Next <ChevronRight className="h-4 w-4" />
       </button>
     </div>
   )
@@ -56,37 +57,29 @@ export default function BookingsClient() {
   const limit = bookingFilters.limit ?? 20
 
   return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-[#111]">Bookings</h2>
-            {data && (
-              <span className="inline-flex items-center justify-center rounded-full bg-[#F0F0EC] px-2.5 py-0.5 text-xs font-medium text-[#666] border border-[#E0E0DB]">
-                {data.total}
-              </span>
-            )}
-          </div>
-          <p className="text-sm font-mono text-[#888] mt-1">
-            Manage your patient appointments
-          </p>
-        </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Bookings"
+        description="Appointments, confirmations, and schedule changes flowing through the AI reception layer."
+      >
         <button
           onClick={() => setCreateOpen(true)}
           aria-label="Create new booking"
-          className="inline-flex items-center gap-1.5 rounded-xl bg-brand hover:bg-brand-light px-4 py-2.5 text-sm font-semibold text-white transition-all duration-150"
+          className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_38px_rgba(28,128,242,0.22)] transition-transform hover:-translate-y-0.5"
         >
-          <Plus className="h-4 w-4" aria-hidden="true" />
-          New Booking
+          <Plus className="h-4 w-4" />
+          New booking
         </button>
+      </PageHeader>
+
+      <div className="surface-card p-5">
+        <BookingFilters />
       </div>
 
-      <BookingFilters />
-
       {isError ? (
-        <div className="rounded-2xl border border-red-100 bg-red-50 py-12 text-center">
+        <div className="surface-card border-red-100 bg-red-50 px-6 py-12 text-center">
           <p className="text-sm font-medium text-red-600">Could not load bookings.</p>
-          <p className="text-xs text-red-400 mt-1">Check your connection and try again.</p>
+          <p className="mt-1 text-xs text-red-400">Check your connection and try again.</p>
         </div>
       ) : (
         <>
@@ -97,7 +90,7 @@ export default function BookingsClient() {
               page={page}
               limit={limit}
               total={data.total}
-              onPageChange={(p) => setBookingFilters({ page: p })}
+              onPageChange={(nextPage) => setBookingFilters({ page: nextPage })}
             />
           )}
         </>

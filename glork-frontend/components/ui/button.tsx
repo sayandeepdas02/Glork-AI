@@ -4,22 +4,22 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "bg-brand text-white hover:bg-brand-dark",
+        default: "bg-brand text-white shadow-[0_12px_28px_rgba(28,128,242,0.28)] hover:-translate-y-0.5 hover:bg-brand-dark",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        outline: "border border-[#d8e2ef] bg-white text-ink-2 hover:border-brand/30 hover:bg-brand/5 hover:text-brand",
+        secondary: "bg-[#eff4fb] text-ink-2 hover:bg-[#e5edf8]",
+        ghost: "text-ink-4 hover:bg-[#eff4fb] hover:text-ink-2",
         link: "text-brand underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
+        default: "h-11 px-5 py-2.5",
+        sm: "h-9 px-4 text-[13px]",
+        lg: "h-12 px-7 text-[15px]",
+        icon: "h-10 w-10 rounded-2xl",
       },
     },
     defaultVariants: { variant: "default", size: "default" },

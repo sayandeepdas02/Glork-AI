@@ -37,33 +37,50 @@ function passwordStrength(pw: string): { score: number; label: string; color: st
   if (/[^A-Za-z0-9]/.test(pw)) s++
   if (s <= 1) return { score: 20, label: "Weak", color: "bg-red-400" }
   if (s === 2) return { score: 40, label: "Fair", color: "bg-orange-400" }
-  if (s === 3) return { score: 60, label: "Good", color: "bg-yellow-400" }
-  if (s === 4) return { score: 80, label: "Strong", color: "bg-emerald-400" }
+  if (s === 3) return { score: 60, label: "Good", color: "bg-sky-400" }
+  if (s === 4) return { score: 80, label: "Strong", color: "bg-brand" }
   return { score: 100, label: "Very strong", color: "bg-emerald-500" }
 }
 
 function Field({
-  id, label, type = "text", placeholder, autoComplete, register, error, rightSlot, half,
+  id,
+  label,
+  type = "text",
+  placeholder,
+  autoComplete,
+  register,
+  error,
+  rightSlot,
 }: {
-  id: string; label: string; type?: string; placeholder?: string; autoComplete?: string
-  register: UseFormRegisterReturn; error?: string; rightSlot?: React.ReactNode; half?: boolean
+  id: string
+  label: string
+  type?: string
+  placeholder?: string
+  autoComplete?: string
+  register: UseFormRegisterReturn
+  error?: string
+  rightSlot?: React.ReactNode
 }) {
   return (
-    <div className={cn("space-y-1.5", half && "")}>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700">{label}</label>
+    <div className="space-y-2">
+      <label htmlFor={id} className="block text-sm font-medium text-ink-3">
+        {label}
+      </label>
       <div className="relative">
         <input
-          id={id} type={type} placeholder={placeholder} autoComplete={autoComplete}
+          id={id}
+          type={type}
+          placeholder={placeholder}
+          autoComplete={autoComplete}
           className={cn(
-            "w-full rounded-xl border bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400",
-            "outline-none transition-all duration-150",
-            "border-gray-200 hover:border-gray-300 focus:border-brand focus:ring-2 focus:ring-brand/10",
-            rightSlot && "pr-11",
-            error && "border-red-300 focus:border-red-400 focus:ring-red-100",
+            "h-12 w-full rounded-2xl border border-[#d9e3ef] bg-white px-4 text-sm text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] outline-none transition-all placeholder:text-ink-5",
+            "hover:border-[#c4d5ea] focus:border-brand focus:ring-4 focus:ring-brand/10",
+            rightSlot && "pr-12",
+            error && "border-red-300 focus:border-red-400 focus:ring-red-100"
           )}
           {...register}
         />
-        {rightSlot && <div className="absolute right-3 top-1/2 -translate-y-1/2">{rightSlot}</div>}
+        {rightSlot && <div className="absolute right-4 top-1/2 -translate-y-1/2">{rightSlot}</div>}
       </div>
       {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
@@ -88,7 +105,12 @@ export function RegisterForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<FormValues>({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<FormValues>({
     resolver: zodResolver(schema),
   })
 
@@ -108,7 +130,9 @@ export function RegisterForm() {
       router.push("/onboarding")
     } catch (err: unknown) {
       toast.error(
-        isAxiosError(err) ? (err.response?.data?.detail ?? "Registration failed. Please try again.") : "Registration failed. Please try again."
+        isAxiosError(err)
+          ? (err.response?.data?.detail ?? "Registration failed. Please try again.")
+          : "Registration failed. Please try again."
       )
     } finally {
       setIsSubmitting(false)
@@ -127,99 +151,119 @@ export function RegisterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="pb-1">
-        <button
-          type="button"
-          onClick={handleGoogleSignUp}
-          disabled={isSubmitting || isGoogleLoading}
-          className={cn(
-            "w-full flex items-center justify-center gap-2.5 rounded-xl",
-            "border border-gray-200 bg-white hover:bg-gray-50",
-            "py-3 text-sm font-medium text-gray-700 transition-all duration-150",
-            "disabled:opacity-60 disabled:cursor-not-allowed"
-          )}
-        >
-          {isGoogleLoading
-            ? <Loader2 className="h-4 w-4 animate-spin" />
-            : <GoogleIcon />}
-          Sign up with Google
-        </button>
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <button
+        type="button"
+        onClick={handleGoogleSignUp}
+        disabled={isSubmitting || isGoogleLoading}
+        className={cn(
+          "flex h-12 w-full items-center justify-center gap-2.5 rounded-2xl border border-[#d9e3ef] bg-white text-sm font-medium text-ink-3 transition-all",
+          "hover:border-brand/25 hover:bg-brand/5 hover:text-brand disabled:cursor-not-allowed disabled:opacity-60"
+        )}
+      >
+        {isGoogleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
+        Continue with Google
+      </button>
 
       <div className="relative flex items-center gap-3 py-1">
-        <div className="flex-1 h-px bg-gray-100" />
-        <span className="text-xs text-gray-400">or continue with email</span>
-        <div className="flex-1 h-px bg-gray-100" />
+        <div className="h-px flex-1 bg-[#dfe7f2]" />
+        <span className="text-xs uppercase tracking-[0.14em] text-ink-5">or use email</span>
+        <div className="h-px flex-1 bg-[#dfe7f2]" />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <Field id="name" label="Full name" placeholder="Dr. Jane Smith"
-          register={register("name")} error={errors.name?.message} />
-        <Field id="clinic_name" label="Clinic name" placeholder="Smith Clinic"
-          register={register("clinic_name")} error={errors.clinic_name?.message} />
-      </div>
-
-      <Field id="specialty" label="Specialty (optional)" placeholder="e.g. General Practice"
-        register={register("specialty")} error={errors.specialty?.message} />
-
-      <Field id="email" label="Email address" type="email" placeholder="you@clinic.com"
-        autoComplete="email" register={register("email")} error={errors.email?.message} />
-
-      <div className="space-y-1.5">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Field
-          id="password" label="Password" type={showPw ? "text" : "password"}
-          placeholder="Min. 8 characters" autoComplete="new-password"
-          register={register("password")} error={errors.password?.message}
+          id="name"
+          label="Full name"
+          placeholder="Dr. Jane Smith"
+          register={register("name")}
+          error={errors.name?.message}
+        />
+        <Field
+          id="clinic_name"
+          label="Clinic name"
+          placeholder="Northside Family Clinic"
+          register={register("clinic_name")}
+          error={errors.clinic_name?.message}
+        />
+      </div>
+
+      <Field
+        id="specialty"
+        label="Specialty"
+        placeholder="General practice, pediatrics, dermatology..."
+        register={register("specialty")}
+        error={errors.specialty?.message}
+      />
+
+      <Field
+        id="email"
+        label="Email address"
+        type="email"
+        placeholder="you@clinic.com"
+        autoComplete="email"
+        register={register("email")}
+        error={errors.email?.message}
+      />
+
+      <div className="space-y-2">
+        <Field
+          id="password"
+          label="Password"
+          type={showPw ? "text" : "password"}
+          placeholder="Minimum 8 characters"
+          autoComplete="new-password"
+          register={register("password")}
+          error={errors.password?.message}
           rightSlot={
-            <button type="button" tabIndex={-1}
+            <button
+              type="button"
+              tabIndex={-1}
               onClick={() => setShowPw(!showPw)}
               aria-label={showPw ? "Hide password" : "Show password"}
-              className="text-gray-400 hover:text-gray-600 transition-colors">
+              className="text-ink-5 transition-colors hover:text-ink-3"
+            >
               {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           }
         />
         {pw && (
-          <div className="space-y-1 pt-0.5">
-            <div className="h-1 w-full rounded-full bg-gray-100 overflow-hidden">
+          <div className="space-y-1">
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#e7eef7]">
               <div
                 className={cn("h-full rounded-full transition-all duration-300", strength.color)}
                 style={{ width: `${strength.score}%` }}
               />
             </div>
-            <p className="text-[11px] text-gray-400">{strength.label}</p>
+            <p className="text-[11px] text-ink-5">{strength.label}</p>
           </div>
         )}
       </div>
 
       <Field
-        id="confirm_password" label="Confirm password" type="password"
-        placeholder="Repeat password" autoComplete="new-password"
-        register={register("confirm_password")} error={errors.confirm_password?.message}
+        id="confirm_password"
+        label="Confirm password"
+        type="password"
+        placeholder="Repeat password"
+        autoComplete="new-password"
+        register={register("confirm_password")}
+        error={errors.confirm_password?.message}
       />
 
-      <div className="pt-1">
-        <button
-          type="submit"
-          disabled={isSubmitting || isGoogleLoading}
-          className={cn(
-            "w-full flex items-center justify-center gap-2 rounded-xl",
-            "bg-brand hover:bg-brand-light text-[#0F0F0F] font-semibold",
-            "py-3 text-sm transition-all duration-150",
-            "hover:-translate-y-0.5",
-            "disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
-          )}
-        >
-          {isSubmitting
-            ? <><Loader2 className="h-4 w-4 animate-spin" /> Creating account…</>
-            : "Create account"}
-        </button>
-      </div>
+      <button
+        type="submit"
+        disabled={isSubmitting || isGoogleLoading}
+        className={cn(
+          "flex h-12 w-full items-center justify-center gap-2 rounded-full bg-brand text-sm font-semibold text-white shadow-[0_18px_38px_rgba(28,128,242,0.22)] transition-all",
+          "hover:-translate-y-0.5 hover:bg-brand-dark disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+        )}
+      >
+        {isSubmitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Creating account…</> : "Create workspace"}
+      </button>
 
-      <p className="text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-ink-4">
         Already have an account?{" "}
-        <Link href="/login" className="font-semibold text-brand hover:text-brand-dark transition-colors">
+        <Link href="/login" className="font-semibold text-brand transition-colors hover:text-brand-dark">
           Sign in
         </Link>
       </p>

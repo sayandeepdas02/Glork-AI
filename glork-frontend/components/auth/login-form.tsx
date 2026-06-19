@@ -20,7 +20,7 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>
 
-function FloatingInput({
+function Field({
   id,
   label,
   type = "text",
@@ -29,7 +29,6 @@ function FloatingInput({
   register,
   error,
   rightSlot,
-  className,
 }: {
   id: string
   label: string
@@ -39,11 +38,10 @@ function FloatingInput({
   register: UseFormRegisterReturn
   error?: string
   rightSlot?: React.ReactNode
-  className?: string
 }) {
   return (
-    <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+    <div className="space-y-2">
+      <label htmlFor={id} className="block text-sm font-medium text-ink-3">
         {label}
       </label>
       <div className="relative">
@@ -53,21 +51,16 @@ function FloatingInput({
           placeholder={placeholder}
           autoComplete={autoComplete}
           className={cn(
-            "w-full rounded-xl border bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400",
-            "transition-all duration-150 outline-none",
-            "border-gray-200 hover:border-gray-300",
-            "focus:border-brand focus:ring-2 focus:ring-brand/10",
-            rightSlot && "pr-11",
-            error && "border-red-300 focus:border-red-400 focus:ring-red-100",
-            className
+            "h-12 w-full rounded-2xl border border-[#d9e3ef] bg-white px-4 text-sm text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] outline-none transition-all placeholder:text-ink-5",
+            "hover:border-[#c4d5ea] focus:border-brand focus:ring-4 focus:ring-brand/10",
+            rightSlot && "pr-12",
+            error && "border-red-300 focus:border-red-400 focus:ring-red-100"
           )}
           {...register}
         />
-        {rightSlot && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2">{rightSlot}</div>
-        )}
+        {rightSlot && <div className="absolute right-4 top-1/2 -translate-y-1/2">{rightSlot}</div>}
       </div>
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   )
 }
@@ -84,9 +77,9 @@ function GoogleIcon() {
 }
 
 const AUTH_MESSAGES: Record<string, string> = {
-  session_expired: "Your session has expired — please sign in again.",
-  auth_required: "Please sign in to continue.",
-  network_error: "A network error occurred. Please check your connection and sign in again.",
+  session_expired: "Your session expired. Sign in again to continue.",
+  auth_required: "Sign in to access the clinic console.",
+  network_error: "A network issue interrupted your session. Please sign in again.",
 }
 
 export function LoginForm() {
@@ -99,15 +92,17 @@ export function LoginForm() {
   const [sessionMsg, setSessionMsg] = useState<string | null>(null)
 
   useEffect(() => {
-    // Read reason from URL query param (set by the axios interceptor).
-    // Using query params avoids sessionStorage which is accessible to XSS.
     const reason = searchParams.get("reason")
     if (reason && reason in AUTH_MESSAGES) {
       setSessionMsg(AUTH_MESSAGES[reason as keyof typeof AUTH_MESSAGES])
     }
   }, [searchParams])
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>({
     resolver: zodResolver(schema),
   })
 
@@ -118,7 +113,9 @@ export function LoginForm() {
       router.push("/dashboard")
     } catch (err: unknown) {
       toast.error(
-        isAxiosError(err) ? (err.response?.data?.detail ?? "Invalid email or password") : "Invalid email or password"
+        isAxiosError(err)
+          ? (err.response?.data?.detail ?? "Invalid email or password")
+          : "Invalid email or password"
       )
     } finally {
       setIsSubmitting(false)
@@ -139,12 +136,31 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       {sessionMsg && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-          <p className="text-xs text-amber-800">{sessionMsg}</p>
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
+          <p className="text-sm text-amber-900">{sessionMsg}</p>
         </div>
       )}
 
-      <FloatingInput
+      <button
+        type="button"
+        onClick={handleGoogleSignIn}
+        disabled={isSubmitting || isGoogleLoading}
+        className={cn(
+          "flex h-12 w-full items-center justify-center gap-2.5 rounded-2xl border border-[#d9e3ef] bg-white text-sm font-medium text-ink-3 transition-all",
+          "hover:border-brand/25 hover:bg-brand/5 hover:text-brand disabled:cursor-not-allowed disabled:opacity-60"
+        )}
+      >
+        {isGoogleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
+        Continue with Google
+      </button>
+
+      <div className="relative flex items-center gap-3 py-1">
+        <div className="h-px flex-1 bg-[#dfe7f2]" />
+        <span className="text-xs uppercase tracking-[0.14em] text-ink-5">or with email</span>
+        <div className="h-px flex-1 bg-[#dfe7f2]" />
+      </div>
+
+      <Field
         id="email"
         label="Email address"
         type="email"
@@ -154,7 +170,7 @@ export function LoginForm() {
         error={errors.email?.message}
       />
 
-      <FloatingInput
+      <Field
         id="password"
         label="Password"
         type={showPw ? "text" : "password"}
@@ -167,7 +183,7 @@ export function LoginForm() {
             type="button"
             onClick={() => setShowPw(!showPw)}
             aria-label={showPw ? "Hide password" : "Show password"}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-ink-5 transition-colors hover:text-ink-3"
             tabIndex={-1}
           >
             {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -179,45 +195,17 @@ export function LoginForm() {
         type="submit"
         disabled={isSubmitting || isGoogleLoading}
         className={cn(
-          "w-full flex items-center justify-center gap-2 rounded-xl",
-          "bg-brand hover:bg-brand-light text-[#0F0F0F] font-semibold",
-          "py-3 text-sm transition-all duration-150",
-          "hover:-translate-y-0.5",
-          "disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
+          "flex h-12 w-full items-center justify-center gap-2 rounded-full bg-brand text-sm font-semibold text-white shadow-[0_18px_38px_rgba(28,128,242,0.22)] transition-all",
+          "hover:-translate-y-0.5 hover:bg-brand-dark disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
         )}
       >
-        {isSubmitting
-          ? <><Loader2 className="h-4 w-4 animate-spin" /> Signing in…</>
-          : "Sign in"}
+        {isSubmitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Signing in…</> : "Enter dashboard"}
       </button>
 
-      <div className="relative flex items-center gap-3 py-1">
-        <div className="flex-1 h-px bg-gray-100" />
-        <span className="text-xs text-gray-400">or</span>
-        <div className="flex-1 h-px bg-gray-100" />
-      </div>
-
-      <button
-        type="button"
-        onClick={handleGoogleSignIn}
-        disabled={isSubmitting || isGoogleLoading}
-        className={cn(
-          "w-full flex items-center justify-center gap-2.5 rounded-xl",
-          "border border-gray-200 bg-white hover:bg-gray-50",
-          "py-3 text-sm font-medium text-gray-700 transition-all duration-150",
-          "disabled:opacity-60 disabled:cursor-not-allowed"
-        )}
-      >
-        {isGoogleLoading
-          ? <Loader2 className="h-4 w-4 animate-spin" />
-          : <GoogleIcon />}
-        Sign in with Google
-      </button>
-
-      <p className="text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-ink-4">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-semibold text-brand hover:text-brand-dark transition-colors">
-          Create one free
+        <Link href="/register" className="font-semibold text-brand transition-colors hover:text-brand-dark">
+          Create one
         </Link>
       </p>
     </form>
