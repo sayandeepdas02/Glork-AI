@@ -125,8 +125,8 @@ function Header() {
 
 function Hero() {
   return (
-    <section className="px-6 pt-20 pb-20">
-      <div className="mx-auto max-w-[1200px]">
+    <section className="pt-20 pb-20">
+      <div className="mx-auto max-w-[1200px] px-6">
         <p className="text-[12px] text-[#9CA3AF] tracking-[0.04em] mb-6">
           Clinic infrastructure
         </p>
@@ -166,8 +166,8 @@ function Metrics() {
     { value: "Zero", label: "Missed booking follow-ups" },
   ]
   return (
-    <section className="border-t border-b border-[#E5E7EB] py-10 px-6">
-      <div className="mx-auto max-w-[1200px] grid grid-cols-1 sm:grid-cols-3 gap-8">
+    <section className="border-t border-b border-[#E5E7EB] py-10">
+      <div className="mx-auto max-w-[1200px] px-6 grid grid-cols-1 sm:grid-cols-3 gap-8">
         {items.map((item) => (
           <div key={item.label}>
             <p className="text-[26px] font-[500] text-[#111111] tracking-[-0.02em]">
@@ -203,8 +203,8 @@ const features = [
 
 function Features() {
   return (
-    <section id="product" className="px-6 py-20">
-      <div className="mx-auto max-w-[1200px]">
+    <section id="product" className="py-20">
+      <div className="mx-auto max-w-[1200px] px-6">
         <p className="text-[12px] text-[#9CA3AF] tracking-[0.04em] mb-5">Product</p>
         <h2 className="text-[26px] font-[500] tracking-[-0.02em] text-[#111111] max-w-[480px] mb-14">
           Designed for the volume and complexity of clinical call handling.
@@ -247,8 +247,8 @@ const steps = [
 
 function Workflow() {
   return (
-    <section id="workflow" className="border-t border-[#E5E7EB] px-6 py-20 bg-[#F9FAFB]">
-      <div className="mx-auto max-w-[1200px]">
+    <section id="workflow" className="border-t border-[#E5E7EB] py-20 bg-[#F9FAFB]">
+      <div className="mx-auto max-w-[1200px] px-6">
         <p className="text-[12px] text-[#9CA3AF] tracking-[0.04em] mb-5">Workflow</p>
         <h2 className="text-[26px] font-[500] tracking-[-0.02em] text-[#111111] max-w-[460px] mb-14">
           Three steps. No staff involvement for routine calls.
@@ -288,8 +288,8 @@ const reasons = [
 
 function WhySection() {
   return (
-    <section id="why" className="border-t border-[#E5E7EB] px-6 py-20">
-      <div className="mx-auto max-w-[1200px]">
+    <section id="why" className="border-t border-[#E5E7EB] py-20">
+      <div className="mx-auto max-w-[1200px] px-6">
         <p className="text-[12px] text-[#9CA3AF] tracking-[0.04em] mb-5">Why Hyperglork</p>
         <h2 className="text-[26px] font-[500] tracking-[-0.02em] text-[#111111] max-w-[500px] mb-14">
           Built for clinics. Not retrofitted from a generic AI calling product.
@@ -311,8 +311,8 @@ function WhySection() {
 
 function CTA() {
   return (
-    <section className="border-t border-[#E5E7EB] px-6 py-20 bg-[#111111]">
-      <div className="mx-auto max-w-[1200px]">
+    <section className="border-t border-[#E5E7EB] py-20 bg-[#111111]">
+      <div className="mx-auto max-w-[1200px] px-6">
         <h2 className="text-[26px] font-[500] tracking-[-0.02em] text-white mb-4 max-w-[420px]">
           Ready to put your front desk on autopilot?
         </h2>
@@ -358,8 +358,8 @@ function Footer() {
   }
 
   return (
-    <footer className="border-t border-[#E5E7EB] px-6 py-12">
-      <div className="mx-auto max-w-[1200px]">
+    <footer className="border-t border-[#E5E7EB] py-12">
+      <div className="mx-auto max-w-[1200px] px-6">
         <div className="flex flex-col sm:flex-row gap-12 justify-between">
           <div className="flex-shrink-0">
             <div className="flex items-center gap-2 mb-3">
