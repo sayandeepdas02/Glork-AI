@@ -70,7 +70,7 @@ function GoogleCallbackInner() {
         </div>
         <Link
           href="/login"
-          className="inline-block text-sm font-semibold text-brand hover:text-brand-dark transition-colors"
+          className="inline-block text-sm font-semibold text-[#111111] underline underline-offset-2 hover:text-[#333333] transition-colors"
         >
           Back to sign in
         </Link>
@@ -80,7 +80,7 @@ function GoogleCallbackInner() {
 
   return (
     <div className="flex flex-col items-center gap-4 py-4">
-      <Loader2 className="h-8 w-8 animate-spin text-brand" />
+      <Loader2 className="h-8 w-8 animate-spin text-[#111111]" />
       <p className="text-sm text-gray-500">Completing Google sign-in…</p>
     </div>
   )
@@ -90,13 +90,13 @@ export default function GoogleCallbackPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Signing you in</h1>
+        <h1 className="text-[15px] font-medium text-[#111111] tracking-tight">Signing you in</h1>
         <p className="text-sm text-gray-500 mt-1.5">Just a moment…</p>
       </div>
       <Suspense
         fallback={
           <div className="flex justify-center py-4">
-            <Loader2 className="h-8 w-8 animate-spin text-brand" />
+            <Loader2 className="h-8 w-8 animate-spin text-[#111111]" />
           </div>
         }
       >

@@ -38,7 +38,7 @@ function passwordStrength(pw: string): { score: number; label: string; color: st
   if (s <= 1) return { score: 20, label: "Weak", color: "bg-red-400" }
   if (s === 2) return { score: 40, label: "Fair", color: "bg-orange-400" }
   if (s === 3) return { score: 60, label: "Good", color: "bg-sky-400" }
-  if (s === 4) return { score: 80, label: "Strong", color: "bg-brand" }
+  if (s === 4) return { score: 80, label: "Strong", color: "bg-[#111111]" }
   return { score: 100, label: "Very strong", color: "bg-emerald-500" }
 }
 
@@ -56,7 +56,7 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-[13px] font-medium text-ink-3">{label}</label>
+      <label htmlFor={id} className="block text-[13px] font-medium text-[#333333]">{label}</label>
       <div className="relative">
         <input
           id={id}
@@ -64,8 +64,8 @@ function Field({
           placeholder={placeholder}
           autoComplete={autoComplete}
           className={cn(
-            "h-11 w-full rounded-lg border border-gray-200 bg-white px-4 text-[14px] text-ink outline-none transition-all placeholder:text-ink-6",
-            "hover:border-gray-300 focus:border-brand focus:ring-2 focus:ring-brand/10",
+            "h-10 w-full rounded-lg border border-[#E5E7EB] bg-white px-3.5 text-[13px] text-[#111111] outline-none transition-colors placeholder:text-[#D1D5DB]",
+            "hover:border-[#D1D5DB] focus:border-[#111111] focus:ring-0",
             rightSlot && "pr-11",
             error && "border-red-300 focus:border-red-400 focus:ring-red-100"
           )}
@@ -144,7 +144,7 @@ export function RegisterForm() {
         onClick={handleGoogleSignUp}
         disabled={isSubmitting || isGoogleLoading}
         className={cn(
-          "flex h-11 w-full items-center justify-center gap-2.5 rounded-lg border border-gray-200 bg-white text-[13px] font-medium text-ink-3 transition-all",
+          "flex h-11 w-full items-center justify-center gap-2.5 rounded-lg border border-gray-200 bg-white text-[13px] font-medium text-[#333333] transition-all",
           "hover:border-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
         )}
       >
@@ -155,7 +155,7 @@ export function RegisterForm() {
       {/* Divider */}
       <div className="relative flex items-center gap-3 py-0.5">
         <div className="h-px flex-1 bg-gray-100" />
-        <span className="text-[11px] uppercase tracking-[0.14em] text-ink-5">or use email</span>
+        <span className="text-[11px] uppercase tracking-[0.14em] text-[#9CA3AF]">or use email</span>
         <div className="h-px flex-1 bg-gray-100" />
       </div>
 
@@ -180,7 +180,7 @@ export function RegisterForm() {
           rightSlot={
             <button type="button" tabIndex={-1} onClick={() => setShowPw(!showPw)}
               aria-label={showPw ? "Hide password" : "Show password"}
-              className="text-ink-5 transition-colors hover:text-ink-4">
+              className="text-[#9CA3AF] transition-colors hover:text-[#6B7280]">
               {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           }
@@ -193,7 +193,7 @@ export function RegisterForm() {
                 style={{ width: `${strength.score}%` }}
               />
             </div>
-            <p className="text-[11px] text-ink-5">{strength.label}</p>
+            <p className="text-[11px] text-[#9CA3AF]">{strength.label}</p>
           </div>
         )}
       </div>
@@ -204,16 +204,16 @@ export function RegisterForm() {
         type="submit"
         disabled={isSubmitting || isGoogleLoading}
         className={cn(
-          "mt-1 flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-brand text-[14px] font-semibold text-white transition-all",
-          "hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60"
+          "mt-1 flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-[#111111] text-[13px] font-medium text-white transition-colors",
+          "hover:bg-[#333333] disabled:cursor-not-allowed disabled:opacity-40"
         )}
       >
         {isSubmitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Creating account…</> : "Create workspace"}
       </button>
 
-      <p className="text-center text-[13px] text-ink-4">
+      <p className="text-center text-[13px] text-[#6B7280]">
         Already have an account?{" "}
-        <Link href="/login" className="font-semibold text-brand transition-colors hover:text-brand-dark">
+        <Link href="/login" className="font-normal text-[#111111] underline underline-offset-2 hover:text-[#333333]">
           Sign in
         </Link>
       </p>

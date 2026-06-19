@@ -17,18 +17,18 @@ export function ErrorFallback({
 }: ErrorFallbackProps) {
   return (
     <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
-      <div className="h-12 w-12 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center mb-4">
-        <AlertTriangle className="h-5 w-5 text-red-500" />
+      <div className="h-10 w-10 rounded-lg bg-[#FEF2F2] border border-[#FECACA] flex items-center justify-center mb-4">
+        <AlertTriangle className="h-4 w-4 text-[#EF4444]" strokeWidth={1.5} />
       </div>
-      <h3 className="text-sm font-semibold text-[#111] mb-1">{title}</h3>
-      <p className="text-xs text-[#888] mb-5 max-w-xs leading-relaxed">
+      <h3 className="text-[13px] font-medium text-[#111111] mb-1">{title}</h3>
+      <p className="text-[12px] font-light text-[#9CA3AF] mb-5 max-w-xs leading-relaxed">
         {description ?? error.message ?? "An unexpected error occurred. Please try again."}
       </p>
       <button
         onClick={reset}
-        className="inline-flex items-center gap-1.5 rounded-xl bg-brand hover:bg-brand-light px-4 py-2 text-sm font-semibold text-white transition-all duration-150"
+        className="inline-flex items-center gap-1.5 rounded-lg bg-[#111111] hover:bg-[#333333] px-4 py-2 text-[12px] font-medium text-white transition-colors"
       >
-        <RefreshCw className="h-3.5 w-3.5" />
+        <RefreshCw className="h-3 w-3" strokeWidth={1.5} />
         Try again
       </button>
     </div>

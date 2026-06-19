@@ -29,10 +29,10 @@ interface CustomTooltipProps { active?: boolean; payload?: TooltipEntry[]; label
 function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-lg border border-[#EEEEEE] bg-white px-3.5 py-3 shadow-[0_4px_12px_rgba(0,0,0,0.07)]">
-      <p className="text-[12px] font-medium text-[#111111] mb-1.5">{label}</p>
+    <div className="rounded-lg border border-[#EEEEEE] bg-white px-3 py-2.5 shadow-[0_4px_12px_rgba(0,0,0,0.07)]">
+      <p className="text-[11px] font-medium text-[#111111] mb-1">{label}</p>
       {payload.map((entry) => (
-        <div key={entry.name} className="flex items-center justify-between gap-5 text-[11px]">
+        <div key={entry.name} className="flex items-center justify-between gap-4 text-[11px]">
           <span className="flex items-center gap-1.5 text-[#9CA3AF]">
             <span className="h-1.5 w-1.5 rounded-full" style={{ background: entry.fill }} />
             {entry.name}
@@ -70,48 +70,48 @@ function CallsChart() {
   }, [calls])
 
   if (isLoading) {
-    return <div className="h-48 animate-pulse rounded-lg bg-[#F3F4F6]" />
+    return <div className="h-40 animate-pulse rounded-lg bg-[#F3F4F6]" />
   }
 
   if (isError) {
     return (
-      <div className="flex h-48 flex-col items-center justify-center gap-2 rounded-lg border border-[#EEEEEE] bg-[#FAFAFA]">
+      <div className="flex h-40 flex-col items-center justify-center gap-1.5 rounded-lg border border-[#EEEEEE]">
         <AlertTriangle className="h-4 w-4 text-[#D1D5DB]" />
-        <p className="text-[12px] text-[#9CA3AF]">Could not load data</p>
+        <p className="text-[11px] font-light text-[#9CA3AF]">Could not load data</p>
       </div>
     )
   }
 
   return (
     <div>
-      <ResponsiveContainer width="100%" height={200}>
-        <BarChart data={chartData} barGap={3} margin={{ top: 6, right: 0, left: -22, bottom: 0 }}>
+      <ResponsiveContainer width="100%" height={160}>
+        <BarChart data={chartData} barGap={3} margin={{ top: 4, right: 0, left: -24, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
           <XAxis
             dataKey="date"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#9CA3AF", fontSize: 11, fontWeight: 400 }}
-            dy={5}
+            tick={{ fill: "#9CA3AF", fontSize: 10, fontWeight: 400 }}
+            dy={4}
           />
           <YAxis
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#9CA3AF", fontSize: 11 }}
+            tick={{ fill: "#9CA3AF", fontSize: 10 }}
             allowDecimals={false}
-            width={22}
+            width={20}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.03)", radius: 4 }} />
-          <Bar dataKey="other"  name="Other"  fill="#E5E7EB" radius={[4, 4, 0, 0]} maxBarSize={20} />
-          <Bar dataKey="booked" name="Booked" fill="#111111" radius={[4, 4, 0, 0]} maxBarSize={20} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.02)", radius: 4 }} />
+          <Bar dataKey="other"  name="Other"  fill="#E5E7EB" radius={[3, 3, 0, 0]} maxBarSize={18} />
+          <Bar dataKey="booked" name="Booked" fill="#111111" radius={[3, 3, 0, 0]} maxBarSize={18} />
         </BarChart>
       </ResponsiveContainer>
-      <div className="mt-3 flex items-center gap-4 px-1">
-        <span className="flex items-center gap-1.5 text-[11px] text-[#9CA3AF]">
-          <span className="h-2 w-2 rounded-full bg-[#E5E7EB]" />Other
+      <div className="mt-2.5 flex items-center gap-4 px-0.5">
+        <span className="flex items-center gap-1.5 text-[10px] text-[#9CA3AF]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#E5E7EB]" />Other
         </span>
-        <span className="flex items-center gap-1.5 text-[11px] text-[#9CA3AF]">
-          <span className="h-2 w-2 rounded-full bg-[#111111]" />Booked
+        <span className="flex items-center gap-1.5 text-[10px] text-[#9CA3AF]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#111111]" />Booked
         </span>
       </div>
     </div>
@@ -123,17 +123,26 @@ export default function DashboardClient() {
   const doctor          = useAuthStore((s) => s.doctor)
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
 
-      {/* Hero greeting */}
-      <div className="pb-2">
-        <p className="eyebrow mb-2">Overview</p>
-        <h2 className="text-[2rem] font-light text-[#111111] tracking-tight leading-tight">
-          {getGreeting()}{doctor?.name ? `, ${doctor.name.split(" ")[0]}` : ""}.
-        </h2>
-        <p className="mt-2 text-[13px] font-light text-[#9CA3AF] max-w-md leading-relaxed">
-          Your AI receptionist is handling the front desk. Here&rsquo;s what&rsquo;s happening today.
-        </p>
+      {/* Greeting — compact */}
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <p className="text-[13px] font-normal text-[#111111]">
+            {getGreeting()}{doctor?.name ? `, ${doctor.name.split(" ")[0]}` : ""}.
+          </p>
+          <p className="text-[11px] font-normal text-[#9CA3AF] mt-0.5">
+            Your AI receptionist is handling the front desk.
+          </p>
+        </div>
+        {stats && (
+          <div className="flex items-center gap-3 rounded-lg border border-[#EEEEEE] bg-[#FAFAFA] px-4 py-2.5 shrink-0">
+            <div>
+              <p className="text-[18px] font-light text-[#111111] tabular-nums leading-none">{stats.total_this_month}</p>
+              <p className="text-[10px] text-[#9CA3AF] mt-0.5 uppercase tracking-wider">bookings this month</p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Agent status */}
@@ -143,34 +152,19 @@ export default function DashboardClient() {
       <StatsCards />
 
       {/* Chart + upcoming */}
-      <div className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
-
-        {/* Calls chart */}
+      <div className="grid gap-4 xl:grid-cols-[1.5fr_1fr]">
         <div className="surface-card p-5">
-          <div className="flex items-start justify-between gap-4 mb-5">
+          <div className="flex items-start justify-between gap-4 mb-4">
             <div>
-              <p className="section-label mb-1.5">Call volume</p>
-              <h3 className="text-[15px] font-medium text-[#111111] tracking-tight">
-                7-day booking momentum
-              </h3>
-              <p className="mt-1 text-[12px] font-light text-[#9CA3AF]">
-                Calls converting into confirmed appointments.
-              </p>
+              <p className="section-label mb-1">Call volume</p>
+              <h3 className="text-[13px] font-medium text-[#111111]">7-day booking momentum</h3>
             </div>
-            {stats && (
-              <div className="rounded-lg bg-[#FAFAFA] border border-[#EEEEEE] px-4 py-3 text-right shrink-0">
-                <p className="text-[22px] font-light text-[#111111] tabular-nums">{stats.total_this_month}</p>
-                <p className="text-[10px] text-[#9CA3AF] mt-0.5 uppercase tracking-wider">this month</p>
-              </div>
-            )}
           </div>
           <CallsChart />
         </div>
-
         <UpcomingBookings />
       </div>
 
-      {/* Recent calls */}
       <RecentCalls />
     </div>
   )

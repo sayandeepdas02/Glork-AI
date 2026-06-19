@@ -9,13 +9,13 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, description, children, className }: PageHeaderProps) {
   return (
-    <div className={cn("mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between", className)}>
+    <div className={cn("mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", className)}>
       <div>
-        <h2 className="text-[1.875rem] font-light tracking-[-0.03em] text-[#111111] leading-tight">
+        <h2 className="text-[15px] font-medium text-[#111111] tracking-tight">
           {title}
         </h2>
         {description && (
-          <p className="mt-1.5 text-[13px] font-light text-[#9CA3AF] max-w-xl leading-relaxed">
+          <p className="mt-0.5 text-[12px] font-normal text-[#9CA3AF]">
             {description}
           </p>
         )}

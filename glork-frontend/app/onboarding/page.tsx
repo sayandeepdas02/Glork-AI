@@ -42,27 +42,27 @@ export default function OnboardingPage() {
   }, [router])
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#f8fbff_0%,#eef4fc_100%)]">
+    <div className="min-h-screen bg-white">
       <header className="border-b border-gray-100 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <Logo className="h-9 w-9 rounded-2xl" />
+            <Logo className="h-9 w-9 rounded-lg" />
             <div>
-              <p className="font-serif text-[24px] tracking-tight text-ink">Hyperglork</p>
-              <p className="text-[11px] uppercase tracking-[0.16em] text-ink-5">Onboarding</p>
+              <p className="text-[14px] font-medium tracking-tight text-[#111111]">Hyperglork</p>
+              <p className="text-[11px] uppercase tracking-[0.16em] text-[#9CA3AF]">Onboarding</p>
             </div>
           </div>
-          <p className="text-sm text-ink-4">Step {step} of {TOTAL_STEPS}</p>
+          <p className="text-sm text-[#9CA3AF]">Step {step} of {TOTAL_STEPS}</p>
         </div>
       </header>
 
       <div className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
         <div className="section-frame px-6 py-7">
           <span className="eyebrow">Setup</span>
-          <h1 className="mt-5 font-serif text-[2.5rem] leading-tight text-ink md:text-[3.25rem]">
+          <h1 className="mt-5 text-[18px] font-medium text-[#111111] leading-tight">
             Build the front desk before the first call hits.
           </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-ink-4">
+          <p className="mt-3 max-w-2xl text-[12px] font-light leading-relaxed text-[#9CA3AF]">
             This flow wires together clinic identity, calendar access, call behavior, and operating hours so the agent launches with context.
           </p>
         </div>

@@ -52,7 +52,7 @@ export function StepProfile({ onNext }: StepProfileProps) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900">Confirm your profile</h2>
+        <h2 className="text-[14px] font-medium text-[#111111]">Confirm your profile</h2>
         <p className="text-sm text-gray-500 mt-1">
           The AI agent will use this information to greet callers.
         </p>

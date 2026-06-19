@@ -12,7 +12,7 @@ export function StepHours({ onNext, onBack }: StepHoursProps) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900">Set your working hours</h2>
+        <h2 className="text-[14px] font-medium text-[#111111]">Set your working hours</h2>
         <p className="text-sm text-gray-500 mt-1">
           The AI will only book appointments within these hours.
         </p>

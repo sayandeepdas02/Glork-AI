@@ -17,7 +17,7 @@ export function StepCalendar({ onNext, onSkip }: StepCalendarProps) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900">Connect Google Calendar</h2>
+        <h2 className="text-[14px] font-medium text-[#111111]">Connect Google Calendar</h2>
         <p className="text-sm text-gray-500 mt-1">
           Required so the AI can check your availability and create appointments.
         </p>
