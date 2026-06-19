@@ -1,12 +1,13 @@
 import type { Metadata } from "next"
-import { Inter, Instrument_Serif } from "next/font/google"
+import { DM_Sans, Instrument_Serif } from "next/font/google"
 import "./globals.css"
 import { Providers } from "@/providers/providers"
 
-const inter = Inter({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-sans",
   display: "swap",
+  weight: ["400", "500", "600", "700"],
 })
 
 const instrumentSerif = Instrument_Serif({
@@ -17,43 +18,42 @@ const instrumentSerif = Instrument_Serif({
 
 export const metadata: Metadata = {
   title: {
-    default: "Hyperglork — AI Receptionist for Doctors",
+    default: "Hyperglork — AI Receptionist for Modern Clinics",
     template: "%s | Hyperglork",
   },
   description:
-    "Hyperglork's AI voice receptionist answers every patient call 24/7, books appointments into Google Calendar, and sends instant confirmations — so you can focus on medicine, not admin.",
+    "Hyperglork answers patient calls, books appointments, and keeps clinics responsive with an AI receptionist built for healthcare teams.",
   keywords: [
     "AI receptionist",
-    "medical AI",
-    "doctor appointment booking",
-    "clinic automation",
-    "AI voice assistant healthcare",
-    "patient call management",
-    "google calendar booking",
+    "healthcare automation",
+    "clinic call handling",
+    "appointment booking",
+    "medical AI assistant",
+    "patient scheduling",
     "Hyperglork",
   ],
   authors: [{ name: "Hyperglork" }],
   creator: "Hyperglork",
   openGraph: {
-    title: "Hyperglork — AI Receptionist for Doctors",
+    title: "Hyperglork — AI Receptionist for Modern Clinics",
     description:
-      "Never miss a patient call again. Hyperglork's AI answers 24/7, books appointments, and sends confirmations automatically.",
+      "A clinical front desk that never sleeps. Answer every patient call, route urgency, and book appointments automatically.",
     type: "website",
-    locale: "en_IN",
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hyperglork — AI Receptionist for Doctors",
+    title: "Hyperglork — AI Receptionist for Modern Clinics",
     description:
-      "AI-powered voice receptionist that books appointments, answers patient calls, and manages your calendar automatically.",
+      "AI-powered call handling and booking for clinics that want a calmer front desk.",
   },
   robots: { index: true, follow: true },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${instrumentSerif.variable}`}>
-      <body className="antialiased font-sans">
+    <html lang="en" suppressHydrationWarning className={`${dmSans.variable} ${instrumentSerif.variable}`}>
+      <body className="app-shell font-sans antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>

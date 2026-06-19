@@ -1,10 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { AlertTriangle, Copy, Phone, Power, PowerOff, Zap } from "lucide-react"
+import { AlertTriangle, Copy, Phone, Power, PowerOff, Sparkles } from "lucide-react"
 import { toast } from "sonner"
-import { cn } from "@/lib/utils"
-import { copyToClipboard } from "@/lib/utils"
+import { cn, copyToClipboard } from "@/lib/utils"
 import { useAuthStore } from "@/store/auth-store"
 import { useAgentConfig, useToggleAgent } from "@/hooks/use-agent-config"
 import { useCalendarStatus } from "@/hooks/use-calendar"
@@ -15,18 +14,14 @@ export function AgentStatusBanner() {
   const { data: calendarStatus, isError: isCalendarError, isLoading: isCalendarLoading } = useCalendarStatus()
   const { mutate: toggle, isPending } = useToggleAgent()
 
-  // Show loading state while queries are in-flight to avoid flicker
   if (isConfigLoading || isCalendarLoading) {
-    return (
-      <div className="h-[68px] rounded-2xl border border-[#E8E8E3] bg-[#FAFAF8] animate-pulse" />
-    )
+    return <div className="h-[108px] animate-pulse rounded-[32px] bg-[#edf3fb]" />
   }
 
-  // If queries fail we cannot determine real agent state — show degraded banner
   if (isConfigError || isCalendarError) {
     return (
-      <div className="rounded-2xl border border-[#E8E8E3] bg-white px-5 py-4">
-        <p className="text-sm text-[#888]">Agent status unavailable — could not load configuration.</p>
+      <div className="surface-card px-6 py-5">
+        <p className="text-sm text-ink-4">Agent status unavailable. Configuration could not be loaded.</p>
       </div>
     )
   }
@@ -34,112 +29,98 @@ export function AgentStatusBanner() {
   const isActive = doctor?.is_agent_active
   const calendarConnected = calendarStatus?.is_connected
 
-  /* ── Setup needed ── */
   if (!calendarConnected && !isActive) {
     return (
-      <div className="relative overflow-hidden rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4">
-        <div className="absolute inset-y-0 left-0 w-1 bg-amber-500 rounded-l-2xl" />
-        <div className="flex items-center gap-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 border border-amber-200">
+      <div className="surface-card flex flex-col gap-4 px-6 py-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex items-start gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-amber-200 bg-amber-50">
             <AlertTriangle className="h-5 w-5 text-amber-600" />
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-amber-900">Agent setup incomplete</p>
-            <p className="text-xs text-amber-700 mt-0.5">
-              Connect Google Calendar to enable appointment booking
+          <div>
+            <p className="text-sm font-semibold text-ink">Agent setup incomplete</p>
+            <p className="mt-1 text-sm leading-7 text-ink-4">
+              Connect Google Calendar before turning the receptionist live for booking flow.
             </p>
           </div>
-          <Link
-            href="/onboarding?step=2"
-            className="shrink-0 rounded-xl bg-amber-500 hover:bg-amber-400 px-4 py-2 text-xs font-semibold text-white transition-colors"
-          >
-            Complete setup
-          </Link>
         </div>
+        <Link
+          href="/onboarding?step=2"
+          className="inline-flex items-center justify-center rounded-full bg-amber-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-amber-400"
+        >
+          Complete setup
+        </Link>
       </div>
     )
   }
 
-  /* ── Inactive ── */
   if (!isActive) {
     return (
-      <div className="relative overflow-hidden rounded-2xl border border-[#E8E8E3] bg-white px-5 py-4">
-        <div className="flex items-center gap-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F0F0EC] border border-[#E0E0DB]">
-            <PowerOff className="h-5 w-5 text-[#aaa]" />
+      <div className="surface-card flex flex-col gap-4 px-6 py-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex items-start gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#dbe5f0] bg-[#eff4fb]">
+            <PowerOff className="h-5 w-5 text-ink-5" />
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-[#111]">Agent is inactive</p>
-            <p className="text-xs text-[#888] mt-0.5">
-              Calls are not being answered automatically
+          <div>
+            <p className="text-sm font-semibold text-ink">Agent offline</p>
+            <p className="mt-1 text-sm leading-7 text-ink-4">
+              Calls are not being answered automatically right now. Reactivate when the clinic is ready.
             </p>
           </div>
-          <button
-            onClick={() => toggle()}
-            disabled={isPending}
-            className="shrink-0 inline-flex items-center gap-1.5 rounded-xl bg-brand hover:bg-brand-light px-4 py-2 text-xs font-semibold text-white transition-all duration-150 disabled:opacity-60"
-          >
-            <Power className="h-3.5 w-3.5" />
-            {isPending ? "Activating…" : "Activate"}
-          </button>
         </div>
+        <button
+          onClick={() => toggle()}
+          disabled={isPending}
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_38px_rgba(28,128,242,0.22)] transition-all hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-60"
+        >
+          <Power className="h-4 w-4" />
+          {isPending ? "Activating…" : "Activate agent"}
+        </button>
       </div>
     )
   }
 
-  /* ── Active ── */
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-brand/20 bg-brand/5 px-5 py-4">
-      {/* Left accent stripe */}
-      <div className="absolute inset-y-0 left-0 w-1 bg-brand rounded-l-2xl" />
-      {/* Subtle glow */}
-      <div className="absolute top-0 right-0 w-48 h-full bg-brand/5 blur-2xl pointer-events-none" />
-
-      <div className="relative flex items-center gap-4">
-        {/* Icon with pulse */}
-        <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand">
-          <Zap className="h-5 w-5 text-white fill-white" />
-          <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-brand border-2 border-white">
-            <span className="absolute inset-0 animate-ping rounded-full bg-brand opacity-60" />
-          </span>
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-[#111]">
-            Agent is live · Answering calls
-          </p>
-          {agentConfig?.glork_phone_number && (
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <Phone className="h-3 w-3 text-brand shrink-0" />
-              <span className="text-xs text-brand font-mono font-medium">
-                {agentConfig.glork_phone_number}
-              </span>
-              <button
-                aria-label="Copy agent phone number"
-                onClick={async () => {
-                  const ok = await copyToClipboard(agentConfig.glork_phone_number!)
-                  if (ok) toast.success("Copied to clipboard")
-                  else toast.error("Failed to copy — please copy manually")
-                }}
-                className="text-brand hover:text-brand-dark transition-colors"
-              >
-                <Copy className="h-3 w-3" />
-              </button>
-            </div>
-          )}
+    <div className="relative overflow-hidden rounded-[32px] border border-brand/15 bg-[linear-gradient(135deg,#0d1a2e_0%,#13263d_55%,#1c80f2_180%)] px-6 py-6 text-white shadow-[0_26px_80px_rgba(13,26,46,0.28)]">
+      <div className="absolute -right-10 top-0 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+      <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex items-start gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10">
+            <Sparkles className="h-5 w-5 text-[#9fd0ff]" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-white">Agent live and answering calls</p>
+            <p className="mt-1 max-w-2xl text-sm leading-7 text-white/68">
+              The reception line is active. New intents, calendar updates, and summaries are feeding the command center.
+            </p>
+            {agentConfig?.glork_phone_number && (
+              <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-3 py-1.5 text-xs text-white/82">
+                <Phone className="h-3.5 w-3.5 text-[#9fd0ff]" />
+                <span className="font-mono">{agentConfig.glork_phone_number}</span>
+                <button
+                  aria-label="Copy agent phone number"
+                  onClick={async () => {
+                    const ok = await copyToClipboard(agentConfig.glork_phone_number!)
+                    if (ok) toast.success("Copied to clipboard")
+                    else toast.error("Failed to copy. Please copy manually.")
+                  }}
+                  className="text-white/60 transition-colors hover:text-white"
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         <button
           onClick={() => toggle()}
           disabled={isPending}
           className={cn(
-            "shrink-0 inline-flex items-center gap-1.5 rounded-xl border border-[#D8D8D3]",
-            "bg-white hover:bg-[#EAEAE5] px-4 py-2 text-xs font-semibold text-[#666] hover:text-[#111]",
-            "transition-all duration-150 disabled:opacity-60"
+            "inline-flex items-center justify-center gap-2 rounded-full border border-white/12 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/16 disabled:opacity-60"
           )}
         >
-          <PowerOff className="h-3.5 w-3.5" />
-          {isPending ? "…" : "Deactivate"}
+          <PowerOff className="h-4 w-4" />
+          {isPending ? "Deactivating…" : "Deactivate"}
         </button>
       </div>
     </div>

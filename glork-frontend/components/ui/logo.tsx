@@ -11,19 +11,14 @@ export function Logo({ className, ...props }: LogoProps) {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 100 100"
       fill="none"
-      className={cn("w-8 h-8", className)}
+      className={cn("h-8 w-8", className)}
       {...props}
     >
-      {/* Yellow background */}
-      <rect width="100" height="100" fill="#F5E040" />
-      {/* Left vertical bar */}
-      <rect x="11" y="11" width="26" height="78" rx="7" fill="#0F0F0F" />
-      {/* Right vertical bar */}
-      <rect x="63" y="11" width="26" height="78" rx="7" fill="#0F0F0F" />
-      {/* Diagonal crossbar 1: top-left to bottom-right */}
-      <polygon points="37,33 63,47 63,67 37,53" fill="#0F0F0F" />
-      {/* Diagonal crossbar 2: top-right to bottom-left */}
-      <polygon points="37,47 63,33 63,53 37,67" fill="#0F0F0F" />
+      <rect width="100" height="100" rx="26" fill="#1C80F2" />
+      <rect x="15" y="14" width="18" height="72" rx="9" fill="#F8FBFF" />
+      <rect x="67" y="14" width="18" height="72" rx="9" fill="#F8FBFF" />
+      <path d="M33 34L67 52V66L33 48V34Z" fill="#F8FBFF" />
+      <path d="M33 52L67 34V48L33 66V52Z" fill="#F8FBFF" />
     </svg>
   )
 }

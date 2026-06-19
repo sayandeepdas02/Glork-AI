@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { PageHeader } from "@/components/layout/page-header"
 import { useMe, useAuth, useUpdateMe } from "@/hooks/use-auth"
 import { getInitials } from "@/lib/utils"
 
@@ -47,101 +48,97 @@ export default function SettingsClient() {
   }
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <div>
-        <h2 className="text-xl font-bold text-gray-900">Settings</h2>
-        <p className="text-sm text-gray-500 mt-0.5">Manage your account and preferences</p>
+    <div className="space-y-6">
+      <PageHeader
+        title="Settings"
+        description="Clinic identity, account details, and the controls that shape how Hyperglork represents your practice."
+      />
+
+      <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+        <Card>
+          <CardHeader>
+            <CardTitle>Profile</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <div className="space-y-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="space-y-2">
+                    <div className="h-4 w-20 animate-pulse rounded bg-[#edf3fb]" />
+                    <div className="h-11 animate-pulse rounded-2xl bg-[#edf3fb]" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-16 w-16">
+                    <AvatarFallback className="bg-brand text-lg text-white">
+                      {getInitials(doctor?.name ?? "")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-lg font-semibold text-ink">{doctor?.name}</p>
+                    <p className="text-sm text-ink-4">{doctor?.email}</p>
+                  </div>
+                </div>
+
+                <Separator className="bg-[#edf2f8]" />
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Full name</Label>
+                    <Input id="name" {...register("name")} aria-invalid={!!errors.name} />
+                    {errors.name && <p className="text-xs text-red-500">Required</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="clinic_name">Clinic name</Label>
+                    <Input id="clinic_name" {...register("clinic_name")} aria-invalid={!!errors.clinic_name} />
+                    {errors.clinic_name && <p className="text-xs text-red-500">Required</p>}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    value={doctor?.email ?? ""}
+                    disabled
+                    className="bg-[#f7faff]"
+                    aria-describedby="email-hint"
+                  />
+                  <p id="email-hint" className="text-xs text-ink-5">
+                    Email cannot be changed from this screen.
+                  </p>
+                </div>
+
+                <div className="flex justify-end">
+                  <Button type="submit" disabled={!isDirty || isSaving}>
+                    {isSaving ? "Saving…" : "Save changes"}
+                  </Button>
+                </div>
+              </form>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="border-red-100">
+          <CardHeader>
+            <CardTitle className="text-red-600">Danger zone</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-ink">Sign out</p>
+              <p className="text-sm leading-7 text-ink-4">
+                End the current session on this device and return to the sign-in screen.
+              </p>
+              <Button variant="outline" onClick={logout} className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700">
+                Sign out
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-
-      <Card className="rounded-2xl border border-gray-100 shadow-card">
-        <CardHeader>
-          <CardTitle className="text-base">Profile</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="space-y-4">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="space-y-1.5">
-                  <div className="h-4 w-20 animate-pulse rounded bg-gray-100" />
-                  <div className="h-9 animate-pulse rounded-md bg-gray-100" />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-              <div className="flex items-center gap-4 mb-4">
-                <Avatar className="h-14 w-14">
-                  <AvatarFallback className="bg-gradient-to-br from-[#FF7733] to-[#CC3300] text-white text-lg">
-                    {getInitials(doctor?.name ?? "")}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-semibold text-gray-900">{doctor?.name}</p>
-                  <p className="text-sm text-gray-500">{doctor?.email}</p>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" {...register("name")} aria-invalid={!!errors.name} />
-                  {errors.name && <p className="text-xs text-red-500">Required</p>}
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="clinic_name">Clinic Name</Label>
-                  <Input id="clinic_name" {...register("clinic_name")} aria-invalid={!!errors.clinic_name} />
-                  {errors.clinic_name && <p className="text-xs text-red-500">Required</p>}
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  value={doctor?.email ?? ""}
-                  disabled
-                  className="bg-gray-50"
-                  aria-describedby="email-hint"
-                />
-                <p id="email-hint" className="text-xs text-gray-400">Email cannot be changed.</p>
-              </div>
-
-              <div className="flex justify-end">
-                <Button
-                  type="submit"
-                  disabled={!isDirty || isSaving}
-                  className="bg-brand hover:bg-brand-light text-white"
-                >
-                  {isSaving ? "Saving…" : "Save Changes"}
-                </Button>
-              </div>
-            </form>
-          )}
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border border-red-100 shadow-card">
-        <CardHeader>
-          <CardTitle className="text-base text-red-600">Danger Zone</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-900">Sign out</p>
-              <p className="text-sm text-gray-500">Sign out of all sessions on this device.</p>
-            </div>
-            <Button
-              variant="outline"
-              onClick={logout}
-              className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
-            >
-              Sign Out
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }

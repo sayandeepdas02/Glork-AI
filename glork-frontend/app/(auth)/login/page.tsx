@@ -8,10 +8,14 @@ export default function LoginPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-[1.75rem] font-bold text-[#111] tracking-tight">Welcome back</h1>
-        <p className="text-[14px] text-[#777] mt-1.5">Sign in to your Hyperglork dashboard</p>
+        <span className="eyebrow">Sign in</span>
+        <h1 className="mt-5 font-serif text-[2.8rem] leading-[0.95] tracking-tight text-ink">
+          Welcome back to the clinic console.
+        </h1>
+        <p className="mt-3 text-[15px] leading-7 text-ink-4">
+          Review bookings, watch the live call queue, and manage your AI receptionist from one place.
+        </p>
       </div>
-      {/* Suspense required: LoginForm uses useSearchParams() for auth redirect reason */}
       <Suspense>
         <LoginForm />
       </Suspense>
