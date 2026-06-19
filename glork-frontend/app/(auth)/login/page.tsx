@@ -9,7 +9,7 @@ export default function LoginPage() {
     <div>
       <div className="mb-8">
         <span className="eyebrow">Sign in</span>
-        <h1 className="mt-5 font-serif text-[2.8rem] leading-[0.95] tracking-tight text-ink">
+        <h1 className="mt-5 font-serif text-[2.35rem] leading-[0.96] tracking-tight text-ink sm:text-[2.6rem]">
           Welcome back to the clinic console.
         </h1>
         <p className="mt-3 text-[15px] leading-7 text-ink-4">

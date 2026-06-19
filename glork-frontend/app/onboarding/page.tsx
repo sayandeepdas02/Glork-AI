@@ -59,7 +59,7 @@ export default function OnboardingPage() {
       <div className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
         <div className="section-frame px-6 py-7">
           <span className="eyebrow">Setup</span>
-          <h1 className="mt-5 font-serif text-4xl leading-tight text-ink md:text-5xl">
+          <h1 className="mt-5 font-serif text-[2.5rem] leading-tight text-ink md:text-[3.25rem]">
             Build the front desk before the first call hits.
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-ink-4">

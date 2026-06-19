@@ -157,7 +157,7 @@ export default function DashboardClient() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <span className="eyebrow">Overview</span>
-            <h2 className="mt-5 font-serif text-4xl leading-tight text-ink sm:text-5xl">
+            <h2 className="mt-5 font-serif text-[2.6rem] leading-tight text-ink sm:text-[3.35rem]">
               {getGreeting()}. Your reception system is staying ahead of the queue.
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-ink-4">
